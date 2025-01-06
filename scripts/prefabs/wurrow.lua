@@ -46,6 +46,13 @@ local function onload(inst)
     end
 end
 
+local function CustomSanityFn(inst, dt)
+    if TheWorld.state.isday and not TheWorld:HasTag("cave") then
+        return -0.05
+    end
+    return 0
+end
+
 local common_postinit = function(inst) 
 	inst:AddTag("monster")
 	inst:AddTag("worm")
@@ -69,14 +76,12 @@ local master_postinit = function(inst)
 	
 	inst.components.hunger.hungerrate = 1.5 * TUNING.WILSON_HUNGER_RATE
 
-	inst.components.sanity.no_moisture_penalty = true
-
 	inst.components.foodaffinity:AddPrefabAffinity("unagi", TUNING.AFFINITY_15_CALORIES_SMALL)
 
 	local foodaffinity = inst.components.foodaffinity
-    foodaffinity:AddFoodtypeAffinity(FOODTYPE.MEAT,        1.33)
-    foodaffinity:AddPrefabAffinity  ("wormlight",          1.33)
-	foodaffinity:AddPrefabAffinity  ("wormlight_lesser",   1.33)
+	foodaffinity:AddFoodtypeAffinity(FOODTYPE.MEAT,        1.33)
+	foodaffinity:AddPrefabAffinity  ("wormlight",           1.0)
+	foodaffinity:AddPrefabAffinity  ("wormlight_lesser",    1.0)
 
 	inst.components.eater:SetDiet({ FOODTYPE.VEGGIE, FOODTYPE.BERRY, FOODTYPE.SEEDS, FOODTYPE.MEAT })
 	if inst.components.eater ~= nil then
@@ -88,6 +93,9 @@ local master_postinit = function(inst)
     inst.OnNewSpawn = onload
 
 	inst.components.sanity.night_drain_mult = 0
+	inst.components.sanity.custom_rate_fn = CustomSanityFn
+    inst.components.sanity:SetLightDrainImmune(true)
+	
 	inst.components.sanity:AddSanityAuraImmunity("worm")
 	inst.components.sanity:AddSanityAuraImmunity("worm_boss")
 end

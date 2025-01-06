@@ -48,7 +48,7 @@ end
 
 local function CustomSanityFn(inst, dt)
     if TheWorld.state.isday and not TheWorld:HasTag("cave") then
-        return -0.05
+        return -(5 / (TUNING.SEG_TIME * 2))
     end
     return 0
 end
@@ -63,6 +63,7 @@ end
 local master_postinit = function(inst)
     inst.starting_inventory = start_inv[TheNet:GetServerGameMode()] or start_inv.default
 
+--Ilaskus: I don't think this works if it's for them to not target you...
 	inst.components.combat.shouldavoidaggrofn = function(attacker, inst) return attacker.prefab ~= 'worm' end
 	inst.components.combat.shouldavoidaggrofn = function(attacker, inst) return attacker.prefab ~= 'worm_boss' end
 
@@ -92,7 +93,6 @@ local master_postinit = function(inst)
 	inst.OnLoad = onload
     inst.OnNewSpawn = onload
 
-	inst.components.sanity.night_drain_mult = 0
 	inst.components.sanity.custom_rate_fn = CustomSanityFn
     inst.components.sanity:SetLightDrainImmune(true)
 	

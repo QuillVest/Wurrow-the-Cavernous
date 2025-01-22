@@ -2,6 +2,7 @@ local MakePlayerCharacter = require "prefabs/player_common"
 
 local assets = {
     Asset("SCRIPT", "scripts/prefabs/player_common.lua"),
+	Asset("ANIM", "anim/beard_silk.zip"),
 }
 
 SetSharedLootTable("wurrow",
@@ -53,43 +54,38 @@ local function CustomSanityFn(inst, dt)
     return 0
 end
 
-local WURROW_COLORCUBES =
-{
-    day = resolvefilepath("images/color_cubes/bat_vision_on_cc.tex"),
-    dusk = resolvefilepath("images/color_cubes/bat_vision_on_cc.tex"),
-    night = resolvefilepath("images/color_cubes/bat_vision_on_cc.tex"),
-    full_moon = "images/color_cubes/fungus_cc.tex",
-}
+local BEARD_DAYS = { 3, 6, 9 }
+local BEARD_BITS = { 1, 3, 6 }
 
-local function WurrowEnterLight(inst)
+local function OnResetBeard(inst)
+    inst.AnimState:ClearOverrideSymbol("beard")
 end
 
-local function WurrowEnterDark(inst)
+local function OnGrowShortBeard(inst, skinname)
+    if skinname == nil then
+        inst.AnimState:OverrideSymbol("beard", "beard_silk", "beardsilk_short")
+    else
+        inst.AnimState:OverrideSkinSymbol("beard", skinname, "beardsilk_short" )
+    end
+    inst.components.beard.bits = BEARD_BITS[1]
 end
 
-local function CheckLight(inst)
-	if inst:IsInLight() then
-		if inst.updatewathomvisiontask == nil then
-			inst.updatewathomvisiontask = inst:DoTaskInTime(1, function()
-				inst.components.playervision:SetCustomCCTable(nil)
-				inst.components.playervision:ForceNightVision(false)
-				inst:RemoveTag("WurrowInDark")
-				
-				if inst.updatewathomvisiontask ~= nil then
-					inst.updatewathomvisiontask:Cancel()
-				end
-			end)
-		end
-	else	
-		if inst.updatewathomvisiontask ~= nil then
-			inst.updatewathomvisiontask:Cancel()
-		end
-				
-		inst.updatewathomvisiontask = nil
-		inst.components.playervision:SetCustomCCTable(WURROW_COLORCUBES)
-		inst.components.playervision:ForceNightVision(true)
-		inst:AddTag("WurrowInDark")
-	end
+local function OnGrowMediumBeard(inst, skinname)
+    if skinname == nil then
+        inst.AnimState:OverrideSymbol("beard", "beard_silk", "beardsilk_medium")
+    else
+        inst.AnimState:OverrideSkinSymbol("beard", skinname, "beardsilk_medium" )
+    end
+    inst.components.beard.bits = BEARD_BITS[2]
+end
+
+local function OnGrowLongBeard(inst, skinname)
+    if skinname == nil then
+        inst.AnimState:OverrideSymbol("beard", "beard_silk", "beardsilk_long")
+    else
+        inst.AnimState:OverrideSkinSymbol("beard", skinname, "beardsilk_long" )
+    end
+    inst.components.beard.bits = BEARD_BITS[3]
 end
 
 local common_postinit = function(inst) 
@@ -98,11 +94,10 @@ local common_postinit = function(inst)
 	inst:AddTag("nowormholesanityloss")
 	inst:AddTag("cavedweller")
 	inst:AddTag("nightvision")
-	inst.MiniMapEntity:SetIcon( "wurrow.tex" )
 
-	inst:DoPeriodicTask(.3, CheckLight)
-	inst:ListenForEvent("enterdark", WurrowEnterDark)
-	inst:ListenForEvent("enterlight", WurrowEnterLight)
+	inst:AddTag("bearded")
+
+	inst.MiniMapEntity:SetIcon( "wurrow.tex" )
 end
 
 local master_postinit = function(inst)
@@ -110,10 +105,6 @@ local master_postinit = function(inst)
 
 	inst.components.combat.shouldavoidaggrofn = function(attacker, inst) return attacker.prefab ~= 'worm' end
 	inst.components.combat.shouldavoidaggrofn = function(attacker, inst) return attacker.prefab ~= 'worm_boss' end
-
-	inst:DoPeriodicTask(.3, CheckLight)
-	inst:ListenForEvent("enterdark", WurrowEnterDark)
-	inst:ListenForEvent("enterlight", WurrowEnterLight)
 
 	inst.soundsname = "wormwood"
 	
@@ -125,9 +116,8 @@ local master_postinit = function(inst)
 	
 	inst.components.hunger.hungerrate = 1.5 * TUNING.WILSON_HUNGER_RATE
 
-	inst.components.foodaffinity:AddPrefabAffinity("unagi", TUNING.AFFINITY_15_CALORIES_LARGE)
-
 	local foodaffinity = inst.components.foodaffinity
+	foodaffinity:AddPrefabAffinity  ("unagi",                1.5)
 	foodaffinity:AddFoodtypeAffinity(FOODTYPE.MEAT,        1.333)
 	foodaffinity:AddPrefabAffinity  ("wormlight",            1.0)
 	foodaffinity:AddPrefabAffinity  ("wormlight_lesser",     1.0)
@@ -138,6 +128,15 @@ local master_postinit = function(inst)
         inst.components.eater:SetStrongStomach(true)
         inst.components.eater:SetCanEatRawMeat(true)
     end
+
+	inst:AddComponent("beard")
+    inst.components.beard.insulation_factor = TUNING.WEBBER_BEARD_INSULATION_FACTOR
+    inst.components.beard.onreset = OnResetBeard
+    inst.components.beard.prize = "wormlight"
+    inst.components.beard.is_skinnable = true
+    inst.components.beard:AddCallback(BEARD_DAYS[1], OnGrowShortBeard)
+    inst.components.beard:AddCallback(BEARD_DAYS[2], OnGrowMediumBeard)
+    inst.components.beard:AddCallback(BEARD_DAYS[3], OnGrowLongBeard)
 	
 	inst.OnLoad = onload
     inst.OnNewSpawn = onload

@@ -1,0 +1,4 @@
+add 84 left
+add 84 right (168 both)
+add 152 top
+add 152 bottom (304 both)

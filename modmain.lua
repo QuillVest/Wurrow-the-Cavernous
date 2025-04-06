@@ -1,3 +1,4 @@
+---@diagnostic disable: undefined-global, syntax-error
 PrefabFiles = {
 	"wurrow",
 	"wurrow_none",
@@ -60,5 +61,34 @@ local skin_modes = {
         offset = { 0, -25 } 
     },
 }
+------------------------------------------------------------------------------------------------------------
+
+--- Courtesy of zhuyifei1999 ↓
+AddAction("BURROW", "Burrow", function(act)
+    if act.doer ~= nil and act.doer:HasTag("wurrow") then
+        return true
+    end
+end)
+
+AddComponentAction("BURROW_RCLICK", "Burrow", function(doer, actions, _right)
+    if doer.prefab == "wurrow" then
+        table.insert(actions, GLOBAL.ACTIONS.BURROW)
+    end
+end)
+
+------------------------------------------------------------------------------------------------------------
+
+--- Courtesy of Ilaskus
+AddPrefabPostInit("worm", function(inst)
+    
+    if not GLOBAL.TheWorld.ismastersim then
+        return
+    end
+
+    if inst.components.combat then
+        inst.components.combat:AddNoAggroTag("wurrow")
+    end
+
+end)
 
 AddModCharacter("wurrow", "MALE", skin_modes)

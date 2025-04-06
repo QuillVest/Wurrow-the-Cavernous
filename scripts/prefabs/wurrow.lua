@@ -1,23 +1,99 @@
+---@diagnostic disable: undefined-global, syntax-error
 local MakePlayerCharacter = require "prefabs/player_common"
 
 local assets = {
     Asset("SCRIPT", "scripts/prefabs/player_common.lua"),
-	Asset("ANIM", "anim/beard_silk.zip"),
+	Asset( "ANIM", "anim/beard_wurrow.zip" ),
 }
 
-SetSharedLootTable("wurrow",
+local prefabs =
 {
-    { "wormlight",  1.00 },
-})
+    "wormlight",
+    "wormlight_lesser",
+}
+
+------------------------------------------------------------------------------------------------------------
+
+local function OnResetBeard(inst)
+    inst.AnimState:ClearOverrideSymbol("beard")
+end
+
+local BEARD_DAYS = { 4, 8, 12 }
+local BEARD_BITS = { 1, 1, 1 }
+
+local function OnGrowShortBeard(inst, skinname)
+    if skinname == nil then
+        inst.AnimState:OverrideSymbol("beard", "beard_wurrow", "beard_short")
+    else
+        inst.AnimState:OverrideSkinSymbol("beard", skinname, "beard_short" )
+    end
+    inst.components.beard.bits = BEARD_BITS[1]
+end
+
+local function OnGrowMediumBeard(inst, skinname)
+    if skinname == nil then
+        inst.AnimState:OverrideSymbol("beard", "beard_wurrow", "beard_medium")
+    else
+        inst.AnimState:OverrideSkinSymbol("beard", skinname, "beard_medium" )
+    end
+    inst.components.beard.bits = BEARD_BITS[1]
+end
+
+local function OnGrowLongBeard(inst, skinname)
+    if skinname == nil then
+        inst.AnimState:OverrideSymbol("beard", "beard_wurrow", "beard_long")
+    else
+        inst.AnimState:OverrideSkinSymbol("beard", skinname, "beard_long" )
+    end
+    inst.components.beard.bits = BEARD_BITS[1]
+end
+
+------------------------------------------------------------------------------------------------------------
+
+local function CanDig(pt)
+    return TheWorld.Map:IsPassableAtPoint(pt:Get()) and not TheWorld.Map:IsGroundTargetBlocked(pt)
+end
+
+local function CanTunnelToCave(pt)
+    return true
+end
+
+local function ReticuleTargetFn(inst)
+    return ControllerReticle_Blink_GetPosition(inst, inst.CanDig)
+end
+
+local function CanBurrow(inst)
+    return true
+end
+
+local function GetPointSpecialActions(inst, pos, useitem, right)
+    if right and useitem == nil then
+        local candig
+        if inst.checkingmapactions then
+            candig = inst.CanTunnelToCave(inst:GetPosition())
+        else
+            candig = inst.CanDig(pos)
+        end
+        if candig then
+            return { ACTIONS.BURROW }
+        end
+    end
+    return {}
+end
+
+local function OnSetOwner(inst)
+    if inst.components.playeractionpicker ~= nil then
+        inst.components.playeractionpicker.pointspecialactionsfn = GetPointSpecialActions
+    end
+end
+
+------------------------------------------------------------------------------------------------------------
 
 TUNING.WURROW_HEALTH = 175
 TUNING.WURROW_HUNGER = 225
 TUNING.WURROW_SANITY = 125
 
 TUNING.GAMEMODE_STARTING_ITEMS.DEFAULT.WURROW = {
-	"wormlight_lesser",
-	"wormlight_lesser",
-	"wormlight_lesser",
 	"slurper_pelt",
 	"slurper_pelt",
 }
@@ -54,39 +130,7 @@ local function CustomSanityFn(inst, dt)
     return 0
 end
 
-local BEARD_DAYS = { 3, 6, 9 }
-local BEARD_BITS = { 1, 3, 6 }
-
-local function OnResetBeard(inst)
-    inst.AnimState:ClearOverrideSymbol("beard")
-end
-
-local function OnGrowShortBeard(inst, skinname)
-    if skinname == nil then
-        inst.AnimState:OverrideSymbol("beard", "beard_silk", "beardsilk_short")
-    else
-        inst.AnimState:OverrideSkinSymbol("beard", skinname, "beardsilk_short" )
-    end
-    inst.components.beard.bits = BEARD_BITS[1]
-end
-
-local function OnGrowMediumBeard(inst, skinname)
-    if skinname == nil then
-        inst.AnimState:OverrideSymbol("beard", "beard_silk", "beardsilk_medium")
-    else
-        inst.AnimState:OverrideSkinSymbol("beard", skinname, "beardsilk_medium" )
-    end
-    inst.components.beard.bits = BEARD_BITS[2]
-end
-
-local function OnGrowLongBeard(inst, skinname)
-    if skinname == nil then
-        inst.AnimState:OverrideSymbol("beard", "beard_silk", "beardsilk_long")
-    else
-        inst.AnimState:OverrideSkinSymbol("beard", skinname, "beardsilk_long" )
-    end
-    inst.components.beard.bits = BEARD_BITS[3]
-end
+------------------------------------------------------------------------------------------------------------
 
 local common_postinit = function(inst) 
 	inst:AddTag("monster")
@@ -94,17 +138,32 @@ local common_postinit = function(inst)
 	inst:AddTag("nowormholesanityloss")
 	inst:AddTag("cavedweller")
 	inst:AddTag("nightvision")
-
+    inst:AddTag("wurrow")
 	inst:AddTag("bearded")
+    inst:AddTag("acidrainimmune")
 
 	inst.MiniMapEntity:SetIcon( "wurrow.tex" )
+
+    inst.CanBurrow = CanBurrow
+    inst.CanDig = CanDig
+    inst.CanTunnelToCave = CanTunnelToCave
+
+    inst:AddComponent("reticule")
+    inst.components.reticule.targetfn = ReticuleTargetFn
+    inst.components.reticule.ease = true
 end
+
+------------------------------------------------------------------------------------------------------------
 
 local master_postinit = function(inst)
     inst.starting_inventory = start_inv[TheNet:GetServerGameMode()] or start_inv.default
 
 	inst.components.combat.shouldavoidaggrofn = function(attacker, inst) return attacker.prefab ~= 'worm' end
 	inst.components.combat.shouldavoidaggrofn = function(attacker, inst) return attacker.prefab ~= 'worm_boss' end
+
+    inst:AddComponent("acidinfusible")
+    inst.components.acidinfusible:SetFXLevel(1)
+    inst.components.acidinfusible:SetMultipliers(TUNING.ACID_INFUSION_MULT.BERSERKER)
 
 	inst.soundsname = "wormwood"
 	
@@ -116,9 +175,9 @@ local master_postinit = function(inst)
 	
 	inst.components.hunger.hungerrate = 1.5 * TUNING.WILSON_HUNGER_RATE
 
+	inst.components.foodaffinity:AddPrefabAffinity("unagi", TUNING.AFFINITY_15_CALORIES_LARGE)
+
 	local foodaffinity = inst.components.foodaffinity
-	foodaffinity:AddPrefabAffinity  ("unagi",                1.5)
-	foodaffinity:AddFoodtypeAffinity(FOODTYPE.MEAT,        1.333)
 	foodaffinity:AddPrefabAffinity  ("wormlight",            1.0)
 	foodaffinity:AddPrefabAffinity  ("wormlight_lesser",     1.0)
 	foodaffinity:AddPrefabAffinity  ("cutlichen",            1.0)
@@ -130,7 +189,6 @@ local master_postinit = function(inst)
     end
 
 	inst:AddComponent("beard")
-    inst.components.beard.insulation_factor = TUNING.WEBBER_BEARD_INSULATION_FACTOR
     inst.components.beard.onreset = OnResetBeard
     inst.components.beard.prize = "wormlight"
     inst.components.beard.is_skinnable = true

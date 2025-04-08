@@ -70,12 +70,12 @@ AddAction("BURROW", "Burrow", function(act)
     end
 end)
 
-AddStategraphActionHandlers {
-    ActionHandler(ACTIONS.BURROW,
+AddStategraphActionHandler {
+    GLOBAL.ActionHandler(GLOBAL.ACTIONS.BURROW,
         function(inst, action)
             return action.invobject == nil and inst:HasTag("wurrow") and "burrow_enter"
         end),
-    ActionHandler(ACTIONS.TUNNEL,
+    GLOBAL.ActionHandler(GLOBAL.ACTIONS.TUNNEL,
         function(inst, action)
             return action.invobject == nil and inst:HasTag("wurrow") and "burrowing"
         end),
@@ -87,7 +87,7 @@ AddComponentAction("BURROW_RCLICK", "Burrow", function(doer, actions, _right)
     end
 end)
 
-AddStategraphState {
+AddStategraphState ("wilson", GLOBAL.State{
     State{
         name = "burrow_pre",
         tags = {"busy"},
@@ -103,19 +103,19 @@ AddStategraphState {
         end,
 
         timeline = {
-            FrameEvent(10, function(inst)
+            GLOBAL.FrameEvent(10, function(inst)
                 SpawnAt("shovel_dirt", inst)
             end),
-            FrameEvent(30, function(inst)
+            GLOBAL.FrameEvent(30, function(inst)
                 SpawnAt("shovel_dirt", inst)
             end),
-            FrameEvent(40, function(inst)
+            GLOBAL.FrameEvent(40, function(inst)
                 inst.sg:RemoveStateTag("busy")
             end)
         },
 
         events = {
-            EventHandler("animover", 
+            GLOBAL.EventHandler("animover", 
                 function(inst)
                     if inst.AnimState:AnimDone() and not inst:PerformBufferedAction() then
                         inst.sg:GoToState("burrowing")
@@ -129,9 +129,9 @@ AddStategraphState {
             end
         end,
     },
-}
+})
 
-AddStategraphState {
+AddStategraphState ("wilson", GLOBAL.State{
     State{
         name = "burrowing",
         tags = { "moving", "canrotate", "dirt", "invisible" },
@@ -151,13 +151,13 @@ AddStategraphState {
          end,
     
         timeline = {
-            TimeEvent(0, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/worm/dirt") end),
-            TimeEvent(10 * FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/worm/dirt") end),
-            TimeEvent(20 * FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/worm/dirt") end),
+            GLOBAL.TimeEvent(0, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/worm/dirt") end),
+            GLOBAL.TimeEvent(10 * FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/worm/dirt") end),
+            GLOBAL.TimeEvent(20 * FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/worm/dirt") end),
          },
 
         events = {
-            EventHandler("animover", function(inst)
+            GLOBAL.EventHandler("animover", function(inst)
                 inst.sg.statemem.walking = true
                 inst.sg:GoToState("walk")
             end),
@@ -169,9 +169,9 @@ AddStategraphState {
             end
         end,
     },
-}
+})
 
-AddStategraphState {
+AddStategraphState ("wilson", GLOBAL.State{
     State{
         name = "burrow_out",
         tags = {"busy"},
@@ -189,14 +189,14 @@ AddStategraphState {
 
         events =
         {
-            EventHandler("animover", function(inst)
+            GLOBAL.EventHandler("animover", function(inst)
                 if inst.AnimState:AnimDone() and not inst:PerformBufferedAction() then
                     inst.sg:GoToState("idle")
                 end
             end),
         },
     },
-}
+})
 
 AddStategraphActionHandler("wilson", GLOBAL.ActionHandler(GLOBAL.ACTIONS.BURROW, "dolongaction"))
 AddStategraphActionHandler("wilson_client", GLOBAL.ActionHandler(GLOBAL.ACTIONS.BURROW, "dolongaction"))

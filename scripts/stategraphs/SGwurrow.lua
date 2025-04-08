@@ -29,119 +29,123 @@ local events = {
     end),
 }
 
-local states =
-{
+local actionhandlers = {
+    ActionHandler(ACTIONS.BURROW,
+        function(inst, action)
+            return action.invobject == nil and inst:HasTag("wurrow") and "burrow_enter"
+        end),
+    ActionHandler(ACTIONS.TUNNEL,
+        function(inst, action)
+            return action.invobject == nil and inst:HasTag("wurrow") and "burrowing"
+        end),
+}
+
+local states = {
     State{
-        name = "burrowaway",
+        name = "burrow_pre",
+        tags = {"busy"},
+
+        onenter = function(inst)
+            inst.components.locomotor:Stop()
+            inst.AnimState:PlayAnimation("jumpin")
+            inst.AnimState:PlayAnimation("despawn")
+            local buffaction = inst:GetBufferedAction()
+            if buffaction ~= nil and buffaction.pos ~= nil then
+                inst:ForceFacePoint(buffaction:GetActionPoint():Get())
+            end
+        end,
+
+        timeline = {
+            FrameEvent(10, function(inst)
+                SpawnAt("shovel_dirt", inst)
+            end),
+            FrameEvent(30, function(inst)
+                SpawnAt("shovel_dirt", inst)
+            end),
+            FrameEvent(40, function(inst)
+                inst.sg:RemoveStateTag("busy")
+            end)
+        },
+
+        onexit = function(inst)
+            if inst.sg:HasStateTag("busy") then
+                inst.SoundEmitter:KillSound("rumble_lp")
+            end
+        end,
+
+        events = {
+            EventHandler("animover", 
+                function(inst)
+                    if inst.AnimState:AnimDone() and not inst:PerformBufferedAction() then
+                        inst.sg:GoToState("burrowing")
+                    end
+                end)
+        },
+    },
+        State{
+            name = "burrowing",
+            tags = { "moving", "canrotate", "dirt", "invisible" },
+    
+            onenter = function(inst)
+                inst.components.health:SetInvincible(true)
+                inst.DynamicShadow:Enable(false)
+                inst.components.locomotor.walkspeed = 4
+                inst.components.locomotor:SetSlowMultiplier( 1 )
+                inst.components.locomotor:SetTriggersCreep(false)
+                inst.components.locomotor.pathcaps = { ignorecreep = true, ignorebridges = true, }
+                inst.components.locomotor:WalkForward()
+                inst.AnimState:PlayAnimation("walk_loop")
+                if not inst.SoundEmitter:PlayingSound("walkloop") then
+                    inst.SoundEmitter:PlaySound("dontstarve/creatures/worm/move", "walkloop")
+                end
+            end,
+    
+            timeline =
+            {
+                TimeEvent(0, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/worm/dirt") end),
+                TimeEvent(10 * FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/worm/dirt") end),
+                TimeEvent(20 * FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/worm/dirt") end),
+            },
+    
+            events =
+            {
+                EventHandler("animover", function(inst)
+                    inst.sg.statemem.walking = true
+                    inst.sg:GoToState("walk")
+                end),
+            },
+    
+            onexit = function(inst)
+                if not inst.sg.statemem.walking then
+                    inst.SoundEmitter:KillSound("walkloop")
+                end
+            end,
+        },
+
+    State{
+        name = "burrow_out",
         tags = {"busy"},
         onenter = function(inst)
-            inst.Physics:Stop()
-            inst.persists = false
-            inst.AnimState:PlayAnimation("despawn")
-            inst.SoundEmitter:PlaySound("dontstarve_DLC001/creatures/mole/move", "move")
-        end,
-        timeline =
-        {
-            TimeEvent(5 * FRAMES, function(inst)
-                inst.SoundEmitter:PlaySound("dontstarve_DLC001/creatures/mole/emerge")
-            end),
-        },
-        onexit = function(inst)
-            inst.SoundEmitter:KillSound("move")
-        end,
-        events = {
-            EventHandler("animover", function(inst)
-                if inst.AnimState:AnimDone() then
-                    inst:Remove()
+            inst.components.locomotor:Stop()
+            inst.AnimState:PlayAnimation("jumpout")
+            local buffaction = inst:GetBufferedAction()
+                if buffaction ~= nil and buffaction.pos ~= nil then
+                    inst:ForceFacePoint(buffaction:GetActionPoint():Get())
                 end
-            end),
-        },
-    },
-    State{
-        name = "burrowto",
-        tags = {"busy"},
-        onenter = function(inst, data)
-            inst.Physics:Stop()
-            inst.AnimState:PlayAnimation("despawn")
-            inst.SoundEmitter:PlaySound("dontstarve_DLC001/creatures/mole/move", "move")
-            inst.sg.statemem.data = data or inst.sg.mem.queued_burrowto_data
         end,
-        timeline =
-        {
-            TimeEvent(5 * FRAMES, function(inst)
-                inst.SoundEmitter:PlaySound("dontstarve_DLC001/creatures/mole/emerge")
-            end),
-        },
+        
         onexit = function(inst)
-            inst.SoundEmitter:KillSound("move")
-            if inst.sg.mem.forceteleporttask ~= nil then
-                inst.sg.mem.forceteleporttask:Cancel()
-                inst.sg.mem.forceteleporttask = nil
-            end
         end,
-        events = {
-            EventHandler("animover", function(inst)
-                if inst.AnimState:AnimDone() then
-                    inst.Physics:Teleport(inst.sg.statemem.data.destination:Get())
-                    inst.sg:GoToState("burrowarrive")
-                end
-            end),
-        },
-    },
-    State{
-        name = "burrowarrive",
-        tags = {"busy"},
-        onenter = function(inst, data)
-            inst.sg.mem.queued_burrowto_data = nil
-            inst.Physics:Stop()
 
-            inst.AnimState:PlayAnimation("spawn_pre")
-            for i = 0, math.random(3) - 1 do
-                inst.AnimState:PushAnimation("spawn_loop", false)
-            end
-            inst.SoundEmitter:PlaySound("dontstarve_DLC001/creatures/mole/move", "move")
-        end,
-        onexit = function(inst)
-            if not inst.sg.statemem.donotquietsound then
-                inst.SoundEmitter:KillSound("move")
-            end
-        end,
-        events = {
-            EventHandler("animover", function(inst)
-                if inst.AnimState:AnimDone() then
-                    inst.sg.statemem.donotquietsound = true
-                    inst.sg:GoToState("burrowarrive_pst")
-                end
-            end),
-        },
-    },
-    State{
-        name = "burrowarrive_pst",
-        tags = {"busy"},
-        onenter = function(inst, data)
-            inst.AnimState:PlayAnimation("spawn_pst")
-        end,
-        timeline =
+        events =
         {
-            TimeEvent(34 * FRAMES, function(inst)
-                inst.sg.statemem.donotquietsound = true
-                inst.SoundEmitter:KillSound("move")
-                inst.SoundEmitter:PlaySound("dontstarve_DLC001/creatures/mole/emerge")
-            end),
-        },
-        onexit = function(inst)
-            if not inst.sg.statemem.donotquietsound then
-                inst.SoundEmitter:KillSound("move")
-            end
-        end,
-        events = {
             EventHandler("animover", function(inst)
-                if inst.AnimState:AnimDone() then
+                if inst.AnimState:AnimDone() and not inst:PerformBufferedAction() then
                     inst.sg:GoToState("idle")
                 end
             end),
         },
-    }
+    },
 }
 
-return StateGraph("wurrow", states, events, "idle")
+return StateGraph("wurrow", states, events, "idle", actionhandlers)

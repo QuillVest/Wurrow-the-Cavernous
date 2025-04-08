@@ -63,7 +63,7 @@ local skin_modes = {
 }
 ------------------------------------------------------------------------------------------------------------
 
---- Courtesy of zhuyifei1999 ↓
+--- Courtesy of zhuyifei1999 & ClumsyPenny ↓
 AddAction("BURROW", "Burrow", function(act)
     if act.doer ~= nil and act.doer:HasTag("wurrow") then
         return true
@@ -75,6 +75,9 @@ AddComponentAction("BURROW_RCLICK", "Burrow", function(doer, actions, _right)
         table.insert(actions, GLOBAL.ACTIONS.BURROW)
     end
 end)
+
+AddStategraphActionHandler("wurrow", GLOBAL.ActionHandler(GLOBAL.ACTIONS.BURROW, "dolongaction"))
+AddStategraphActionHandler("wurrow_client", GLOBAL.ActionHandler(GLOBAL.ACTIONS.BURROW, "dolongaction"))
 
 ------------------------------------------------------------------------------------------------------------
 

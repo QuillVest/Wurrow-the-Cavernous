@@ -9,7 +9,6 @@ local assets = {
 local prefabs =
 {
     "wormlight",
-    "wormlight_lesser",
 }
 
 ------------------------------------------------------------------------------------------------------------
@@ -136,6 +135,7 @@ local common_postinit = function(inst)
 	inst:AddTag("monster")
 	inst:AddTag("worm")
 	inst:AddTag("nowormholesanityloss")
+    inst:AddTag("wet")
 	inst:AddTag("cavedweller")
 	inst:AddTag("nightvision")
     inst:AddTag("wurrow")
@@ -151,6 +151,8 @@ local common_postinit = function(inst)
     inst:AddComponent("reticule")
     inst.components.reticule.targetfn = ReticuleTargetFn
     inst.components.reticule.ease = true
+
+    inst:ListenForEvent("setowner", OnSetOwner)
 end
 
 ------------------------------------------------------------------------------------------------------------

@@ -92,15 +92,13 @@ AddStategraphState ("wilson", GLOBAL.State{
     tags = { "busy" },
 
     onenter = function(inst)
-        -- inst.components.locomotor:Stop()
+        inst.components.locomotor:Stop()
         inst.DynamicShadow:Enable(false)
         inst.AnimState:PlayAnimation("jump", false)
-        inst.SoundEmitter:PlaySound("dontstarve_DLC001/creatures/mole/jump")
         local buffaction = inst:GetBufferedAction()
             if buffaction ~= nil and buffaction.pos ~= nil then
                 inst:ForceFacePoint(buffaction:GetActionPoint():Get())
             end
-        inst.components.health:SetInvincible(true)
     end,
 
     timeline = {
@@ -114,10 +112,6 @@ AddStategraphState ("wilson", GLOBAL.State{
 
     events = {
         GLOBAL.EventHandler("animover", function(inst)
-            inst.components.locomotor.walkspeed = 4
-            inst.components.locomotor:SetSlowMultiplier( 1 )
-            inst.components.locomotor:SetTriggersCreep(false)
-            inst.components.locomotor.pathcaps = { ignorecreep = true, ignorebridges = true, }
             if inst.AnimState:AnimDone() and not inst:PerformBufferedAction() then
                 inst.sg:GoToState("tunneling")
             end
@@ -136,11 +130,6 @@ AddStategraphState ("wilson", GLOBAL.State{
     tags = { "busy" },
     
     onenter = function(inst)
-        inst.components.locomotor:WalkForward()
-            inst.AnimState:PlayAnimation("walk_loop")
-            if not inst.SoundEmitter:PlayingSound("walkloop") then
-                inst.SoundEmitter:PlaySound("dontstarve/creatures/worm/move", "walkloop")
-            end
         local buffaction = inst:GetBufferedAction()
             if buffaction ~= nil and buffaction.pos ~= nil then
                 inst:ForceFacePoint(buffaction:GetActionPoint():Get())

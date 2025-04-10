@@ -117,17 +117,11 @@ AddStategraphState ("wilson", GLOBAL.State{
             end
         end)
     },
-
-    onexit = function(inst)
-        if inst.AnimState:AnimDone() and not inst:PerformBufferedAction() then
-            inst.sg:GoToState("idle")
-        end
-    end,
 })
 
 AddStategraphState ("wilson", GLOBAL.State{
     name = "tunneling",
-    tags = { "busy" },
+    tags = {},
     
     onenter = function(inst)
         local buffaction = inst:GetBufferedAction()
@@ -146,12 +140,6 @@ AddStategraphState ("wilson", GLOBAL.State{
             end
         end),
     },
-    
-    onexit = function(inst)
-        if inst.AnimState:AnimDone() and not inst:PerformBufferedAction() then
-            inst.sg:GoToState("idle")
-        end
-    end,
 })
 
 AddStategraphState ("wilson", GLOBAL.State{
@@ -176,12 +164,6 @@ AddStategraphState ("wilson", GLOBAL.State{
             end
         end),
     },
-
-    onexit = function(inst)
-        if inst.AnimState:AnimDone() and not inst:PerformBufferedAction() then
-            inst.sg:GoToState("idle")
-        end
-    end,
 })
 
 AddStategraphState("wilson_client", GLOBAL.State{

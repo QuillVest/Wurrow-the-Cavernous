@@ -9,7 +9,18 @@ local assets = {
 local prefabs =
 {
     "wormlight",
+    -- "wormlight_light",
 }
+
+-- local lightprefabs =
+-- {
+--     "wormlight_light_fx",
+-- }
+
+-- local greaterlightprefabs =
+-- {
+--     "wormlight_light_fx_greater",
+-- }
 
 ------------------------------------------------------------------------------------------------------------
 
@@ -30,6 +41,7 @@ local function OnGrowShortBeard(inst, skinname)
 end
 
 local function OnGrowMediumBeard(inst, skinname)
+    light.components.spell:StartSpell()
     if skinname == nil then
         inst.AnimState:OverrideSymbol("beard", "beard_wurrow", "beard_medium")
     else
@@ -178,6 +190,9 @@ local master_postinit = function(inst)
 	inst.components.hunger.hungerrate = 1.5 * TUNING.WILSON_HUNGER_RATE
 
 	inst.components.foodaffinity:AddPrefabAffinity("unagi", TUNING.AFFINITY_15_CALORIES_LARGE)
+
+    inst:AddComponent("spell")
+    inst.components.spell.spellname = "wormlight"
 
 	local foodaffinity = inst.components.foodaffinity
 	foodaffinity:AddPrefabAffinity  ("wormlight",            1.0)

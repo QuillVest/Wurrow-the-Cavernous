@@ -63,7 +63,7 @@ local skin_modes = {
 }
 ------------------------------------------------------------------------------------------------------------
 
---- Courtesy of zhuyifei1999, ClumsyPenny & Luкaട ↓
+--- Courtesy of zhuyifei1999, ClumsyPenny & Lukaട ↓
 AddAction("BURROW", "Burrow", function(act)
     if act.doer ~= nil and act.doer:HasTag("wurrow") then
         return true
@@ -71,12 +71,15 @@ AddAction("BURROW", "Burrow", function(act)
 end)
 
 AddStategraphActionHandler("wilson", GLOBAL.ActionHandler(GLOBAL.ACTIONS.BURROW, function(inst, action)
-    return action.invobject == nil and inst:HasTag("wurrow") and "burrow_enter"
+    return action.invobject == nil and inst:HasTag("wurrow") and "burrow"
 end))
 
-AddStategraphActionHandler("wilson", GLOBAL.ActionHandler(GLOBAL.ACTIONS.TUNNEL, function(inst, action)
-    return action.invobject == nil and inst:HasTag("wurrow") and "burrowing"
-end))
+--For the tunneling skill later down the line
+-- AddStategraphActionHandler("wilson", GLOBAL.ActionHandler(GLOBAL.ACTIONS.TUNNEL, function(inst, action)
+--     return action.invobject == nil and inst:HasTag("wurrow") and "burrowing"
+-- end))
+
+AddStategraphActionHandler("wilson_client", GLOBAL.ActionHandler(GLOBAL.ACTIONS.BURROW, "burrow"))
 
 AddComponentAction("BURROW_RCLICK", "Burrow", function(doer, actions, _right)
     if doer.prefab == "wurrow" then
@@ -85,90 +88,88 @@ AddComponentAction("BURROW_RCLICK", "Burrow", function(doer, actions, _right)
 end)
 
 AddStategraphState ("wilson", GLOBAL.State{
-    name = "burrow_pre",
-    tags = {"busy"},
+    name = "burrow",
+    tags = { "busy" },
 
     onenter = function(inst)
-        inst.components.locomotor:Stop()
-        inst.AnimState:PlayAnimation("jumpin")
-        inst.AnimState:PlayAnimation("despawn")
+        -- inst.components.locomotor:Stop()
+        inst.DynamicShadow:Enable(false)
+        inst.AnimState:PlayAnimation("jump", false)
+        inst.SoundEmitter:PlaySound("dontstarve_DLC001/creatures/mole/jump")
         local buffaction = inst:GetBufferedAction()
-        if buffaction ~= nil and buffaction.pos ~= nil then
-            inst:ForceFacePoint(buffaction:GetActionPoint():Get())
-        end
+            if buffaction ~= nil and buffaction.pos ~= nil then
+                inst:ForceFacePoint(buffaction:GetActionPoint():Get())
+            end
+        inst.components.health:SetInvincible(true)
     end,
 
     timeline = {
         GLOBAL.FrameEvent(10, function(inst)
+            GLOBAL.SpawnAt("molehill", inst)
+        end),
+        GLOBAL.FrameEvent(20, function(inst)
             GLOBAL.SpawnAt("shovel_dirt", inst)
         end),
-        GLOBAL.FrameEvent(30, function(inst)
-            GLOBAL.SpawnAt("shovel_dirt", inst)
-        end),
-        GLOBAL.FrameEvent(40, function(inst)
-            inst.sg:RemoveStateTag("busy")
-        end)
-    },
-
-    events = {
-        GLOBAL.EventHandler("animover", 
-            function(inst)
-                if inst.AnimState:AnimDone() and not inst:PerformBufferedAction() then
-                    inst.sg:GoToState("burrowing")
-                end
-            end)
-    },
-
-    onexit = function(inst)
-        if inst.sg:HasStateTag("busy") then
-            inst.SoundEmitter:KillSound("rumble_lp")
-        end
-    end,
-})
-
-AddStategraphState ("wilson", GLOBAL.State{
-    name = "burrowing",
-    tags = { "moving", "canrotate", "dirt", "invisible" },
-    
-    onenter = function(inst)
-        inst.components.health:SetInvincible(true)
-        inst.DynamicShadow:Enable(false)
-         inst.components.locomotor.walkspeed = 4
-         inst.components.locomotor:SetSlowMultiplier( 1 )
-         inst.components.locomotor:SetTriggersCreep(false)
-         inst.components.locomotor.pathcaps = { ignorecreep = true, ignorebridges = true, }
-         inst.components.locomotor:WalkForward()
-         inst.AnimState:PlayAnimation("walk_loop")
-         if not inst.SoundEmitter:PlayingSound("walkloop") then
-            inst.SoundEmitter:PlaySound("dontstarve/creatures/worm/move", "walkloop")
-        end
-    end,
-    
-    timeline = {
-        GLOBAL.TimeEvent(0, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/worm/dirt") end),
-        GLOBAL.TimeEvent(10 * GLOBAL.FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/worm/dirt") end),
-        GLOBAL.TimeEvent(20 * GLOBAL.FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/worm/dirt") end),
     },
 
     events = {
         GLOBAL.EventHandler("animover", function(inst)
-            inst.sg.statemem.walking = true
-            inst.sg:GoToState("walk")
-        end),
+            inst.components.locomotor.walkspeed = 4
+            inst.components.locomotor:SetSlowMultiplier( 1 )
+            inst.components.locomotor:SetTriggersCreep(false)
+            inst.components.locomotor.pathcaps = { ignorecreep = true, ignorebridges = true, }
+            if inst.AnimState:AnimDone() and not inst:PerformBufferedAction() then
+                inst.sg:GoToState("tunneling")
+            end
+        end)
     },
-    
+
     onexit = function(inst)
-        if not inst.sg.statemem.walking then
-            inst.SoundEmitter:KillSound("walkloop")
+        if inst.AnimState:AnimDone() and not inst:PerformBufferedAction() then
+            inst.sg:GoToState("idle")
         end
     end,
 })
 
 AddStategraphState ("wilson", GLOBAL.State{
-    name = "burrow_out",
-    tags = {"busy"},
+    name = "tunneling",
+    tags = { "busy" },
+    
     onenter = function(inst)
-        inst.components.locomotor:Stop()
+        inst.components.locomotor:WalkForward()
+            inst.AnimState:PlayAnimation("walk_loop")
+            if not inst.SoundEmitter:PlayingSound("walkloop") then
+                inst.SoundEmitter:PlaySound("dontstarve/creatures/worm/move", "walkloop")
+            end
+        local buffaction = inst:GetBufferedAction()
+            if buffaction ~= nil and buffaction.pos ~= nil then
+                inst:ForceFacePoint(buffaction:GetActionPoint():Get())
+            end
+    end,
+    
+    timeline = {
+    },
+
+    events = {
+        GLOBAL.EventHandler("animover", function(inst)
+            if inst.AnimState:AnimDone() and not inst:PerformBufferedAction() then
+                inst.sg:GoToState("resurface")
+            end
+        end),
+    },
+    
+    onexit = function(inst)
+        if inst.AnimState:AnimDone() and not inst:PerformBufferedAction() then
+            inst.sg:GoToState("idle")
+        end
+    end,
+})
+
+AddStategraphState ("wilson", GLOBAL.State{
+    name = "resurface",
+    tags = { "busy" },
+
+    onenter = function(inst)
         inst.AnimState:PlayAnimation("jumpout")
         local buffaction = inst:GetBufferedAction()
             if buffaction ~= nil and buffaction.pos ~= nil then
@@ -176,8 +177,8 @@ AddStategraphState ("wilson", GLOBAL.State{
             end
     end,
         
-    onexit = function(inst)
-    end,
+    timeline = {
+    },
 
     events = {
     GLOBAL.EventHandler("animover", function(inst)
@@ -186,6 +187,41 @@ AddStategraphState ("wilson", GLOBAL.State{
             end
         end),
     },
+
+    onexit = function(inst)
+        if inst.AnimState:AnimDone() and not inst:PerformBufferedAction() then
+            inst.sg:GoToState("idle")
+        end
+    end,
+})
+
+AddStategraphState("wilson_client", GLOBAL.State{
+    name = "burrow",
+    tags = { "doing", "busy" },
+    server_states = { "burrow", "tunneling" },
+
+    onenter = function(inst)
+        inst.components.locomotor:Stop()
+        inst.AnimState:PlayAnimation("jump")
+
+        inst:PerformPreviewBufferedAction()
+        inst.sg:SetTimeout(2)
+    end,
+
+    onupdate = function(inst)
+        if inst.sg:ServerStateMatches() then
+            if inst.entity:FlattenMovementPrediction() then
+                inst.sg:GoToState("idle", "noanim")
+            end
+        elseif inst.bufferedaction == nil then
+            inst.sg:GoToState("idle")
+        end
+    end,
+
+    ontimeout = function(inst)
+        inst:ClearBufferedAction()
+        inst.sg:GoToState("idle")
+    end
 })
 
 ------------------------------------------------------------------------------------------------------------

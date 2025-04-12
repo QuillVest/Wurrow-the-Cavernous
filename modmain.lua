@@ -112,7 +112,7 @@ AddStategraphState ("wilson", GLOBAL.State{
 
     events = {
         GLOBAL.EventHandler("animover", function(inst)
-            if inst.AnimState:AnimDone() and not inst:PerformBufferedAction() then
+            if inst.AnimState:AnimDone() then
                 inst.sg:GoToState("tunneling")
             end
         end)
@@ -135,7 +135,7 @@ AddStategraphState ("wilson", GLOBAL.State{
 
     events = {
         GLOBAL.EventHandler("animover", function(inst)
-            if inst.AnimState:AnimDone() and not inst:PerformBufferedAction() then
+            if inst.AnimState:AnimDone() then
                 inst.sg:GoToState("resurface")
             end
         end),
@@ -159,7 +159,7 @@ AddStategraphState ("wilson", GLOBAL.State{
 
     events = {
     GLOBAL.EventHandler("animover", function(inst)
-            if inst.AnimState:AnimDone() and not inst:PerformBufferedAction() then
+            if inst.AnimState:AnimDone() then
                 inst.sg:GoToState("idle")
             end
         end),

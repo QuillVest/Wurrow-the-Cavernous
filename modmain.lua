@@ -112,18 +112,48 @@ AddStategraphState ("wilson", GLOBAL.State{
     events = {
         GLOBAL.EventHandler("animover", function(inst)
             if inst.AnimState:AnimDone() then
+<<<<<<< HEAD
 				inst.components.health:SetInvincible(true)
                 inst.AnimState:PlayAnimation("despawn")
 				inst.AnimState:SetBank("mole")
 				inst.AnimState:SetBuild("mole_build")
 				inst:SetStateGraph("SGwurrow")
                 inst.sg:GoToState("idle")
+=======
+                inst.sg:GoToState("tunneling")
+>>>>>>> 4eef73e5695bf143338712a2ea5fabbe5a15b4e6
             end
         end)
     },
 })
 
 AddStategraphState ("wilson", GLOBAL.State{
+<<<<<<< HEAD
+=======
+    name = "tunneling",
+    tags = {},
+    
+    onenter = function(inst)
+        local buffaction = inst:GetBufferedAction()
+            if buffaction ~= nil and buffaction.pos ~= nil then
+                inst:ForceFacePoint(buffaction:GetActionPoint():Get())
+            end
+    end,
+    
+    timeline = {
+    },
+
+    events = {
+        GLOBAL.EventHandler("animover", function(inst)
+            if inst.AnimState:AnimDone() then
+                inst.sg:GoToState("resurface")
+            end
+        end),
+    },
+})
+
+AddStategraphState ("wilson", GLOBAL.State{
+>>>>>>> 4eef73e5695bf143338712a2ea5fabbe5a15b4e6
     name = "resurface",
     tags = {},
 
@@ -143,6 +173,7 @@ AddStategraphState ("wilson", GLOBAL.State{
     },
 
     events = {
+<<<<<<< HEAD
     GLOBAL.EventHandler("animqueueover", function(inst)
         if inst.AnimState:AnimDone() then
             inst.components.health:SetInvincible(false)
@@ -150,6 +181,13 @@ AddStategraphState ("wilson", GLOBAL.State{
             inst.sg:GoToState("idle")
         end
     end),
+=======
+    GLOBAL.EventHandler("animover", function(inst)
+            if inst.AnimState:AnimDone() then
+                inst.sg:GoToState("idle")
+            end
+        end),
+>>>>>>> 4eef73e5695bf143338712a2ea5fabbe5a15b4e6
     },
 })
 

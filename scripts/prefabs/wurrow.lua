@@ -41,7 +41,7 @@ local function OnGrowShortBeard(inst, skinname)
 end
 
 local function OnGrowMediumBeard(inst, skinname)
-    light.components.spell:StartSpell()
+    -- light.components.spell:StartSpell()
     if skinname == nil then
         inst.AnimState:OverrideSymbol("beard", "beard_wurrow", "beard_medium")
     else
@@ -153,6 +153,7 @@ local common_postinit = function(inst)
     inst:AddTag("wurrow")
 	inst:AddTag("bearded")
     inst:AddTag("acidrainimmune")
+    -- inst:AddTag("canbetrapped")
 
 	inst.MiniMapEntity:SetIcon( "wurrow.tex" )
 

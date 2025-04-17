@@ -63,6 +63,10 @@ local skin_modes = {
 }
 ------------------------------------------------------------------------------------------------------------
 
+-- local function SpawnMoveFx(inst)
+--     SpawnPrefab("mole_move_fx").Transform:SetPosition(inst.Transform:GetWorldPosition())
+-- end
+
 --- Courtesy of zhuyifei1999, ClumsyPenny & Lukaട ↓
 AddAction("BURROW", "Burrow", function(act)
     if act.doer ~= nil and act.doer:HasTag("wurrow") then
@@ -74,11 +78,6 @@ AddStategraphActionHandler("wilson", GLOBAL.ActionHandler(GLOBAL.ACTIONS.BURROW,
     return action.invobject == nil and inst:HasTag("wurrow") and "burrow"
 end))
 
---For the tunneling skill later down the line
--- AddStategraphActionHandler("wilson", GLOBAL.ActionHandler(GLOBAL.ACTIONS.TUNNEL, function(inst, action)
---     return action.invobject == nil and inst:HasTag("wurrow") and "burrowing"
--- end))
-
 AddStategraphActionHandler("wilson_client", GLOBAL.ActionHandler(GLOBAL.ACTIONS.BURROW, "burrow"))
 
 AddComponentAction("BURROW_RCLICK", "Burrow", function(doer, actions, _right)
@@ -89,7 +88,7 @@ end)
 
 AddStategraphState ("wilson", GLOBAL.State{
     name = "burrow",
-    tags = { "busy" },
+    tags = {},
 
     onenter = function(inst)
         inst.components.locomotor:Stop()
@@ -102,67 +101,55 @@ AddStategraphState ("wilson", GLOBAL.State{
     end,
 
     timeline = {
-        GLOBAL.FrameEvent(10, function(inst)
-            GLOBAL.SpawnAt("molehill", inst)
+        GLOBAL.FrameEvent(15, function(inst)
+            GLOBAL.SpawnAt("mole_move_fx", inst)
         end),
-        GLOBAL.FrameEvent(20, function(inst)
-            GLOBAL.SpawnAt("shovel_dirt", inst)
+        GLOBAL.FrameEvent(17, function(inst)
+            GLOBAL.SpawnAt("dirt_puff", inst)
         end),
     },
 
     events = {
         GLOBAL.EventHandler("animover", function(inst)
-            if inst.AnimState:AnimDone() and not inst:PerformBufferedAction() then
-                inst.sg:GoToState("tunneling")
+            if inst.AnimState:AnimDone() then
+				inst.components.health:SetInvincible(true)
+                inst.AnimState:PlayAnimation("despawn")
+				inst.AnimState:SetBank("mole")
+				inst.AnimState:SetBuild("mole_build")
+				inst:SetStateGraph("SGwurrow")
+                inst.sg:GoToState("idle")
             end
         end)
     },
 })
 
 AddStategraphState ("wilson", GLOBAL.State{
-    name = "tunneling",
-    tags = {},
-    
-    onenter = function(inst)
-        local buffaction = inst:GetBufferedAction()
-            if buffaction ~= nil and buffaction.pos ~= nil then
-                inst:ForceFacePoint(buffaction:GetActionPoint():Get())
-            end
-    end,
-    
-    timeline = {
-    },
-
-    events = {
-        GLOBAL.EventHandler("animover", function(inst)
-            if inst.AnimState:AnimDone() and not inst:PerformBufferedAction() then
-                inst.sg:GoToState("resurface")
-            end
-        end),
-    },
-})
-
-AddStategraphState ("wilson", GLOBAL.State{
     name = "resurface",
-    tags = { "busy" },
+    tags = {},
 
     onenter = function(inst)
+        inst.components.health:SetInvincible(true)
+		inst.components.locomotor:StopMoving()
+        inst.AnimState:SetBank("wilson")
+		inst.AnimState:SetBuild("wurrow")
         inst.AnimState:PlayAnimation("jumpout")
         local buffaction = inst:GetBufferedAction()
             if buffaction ~= nil and buffaction.pos ~= nil then
                 inst:ForceFacePoint(buffaction:GetActionPoint():Get())
             end
     end,
-        
+
     timeline = {
     },
 
     events = {
-    GLOBAL.EventHandler("animover", function(inst)
-            if inst.AnimState:AnimDone() and not inst:PerformBufferedAction() then
-                inst.sg:GoToState("idle")
-            end
-        end),
+    GLOBAL.EventHandler("animqueueover", function(inst)
+        if inst.AnimState:AnimDone() then
+            inst.components.health:SetInvincible(false)
+            inst:SetStateGraph("SGwilson")
+            inst.sg:GoToState("idle")
+        end
+    end),
     },
 })
 

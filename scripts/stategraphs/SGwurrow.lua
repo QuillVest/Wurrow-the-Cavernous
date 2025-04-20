@@ -86,7 +86,6 @@ local states = {
             tags = { "moving", "canrotate", "noattack", "invisible" },
 
             onenter = function(inst)
-                inst.AnimState:PlayAnimation("despawn")
                 inst.AnimState:PlayAnimation("walk_pre")
                 inst.components.locomotor:WalkForward()
             end,
@@ -103,6 +102,7 @@ local states = {
             tags = { "moving", "canrotate", "noattack"},
 
             onenter = function(inst)
+                -- inst.AddTag("burrowed")
                 inst.components.locomotor.walkspeed = 4
                 inst.AnimState:PlayAnimation("walk_loop")
                 inst.components.locomotor:WalkForward()

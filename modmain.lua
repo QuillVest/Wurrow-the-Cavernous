@@ -63,10 +63,6 @@ local skin_modes = {
 }
 ------------------------------------------------------------------------------------------------------------
 
--- local function SpawnMoveFx(inst)
---     SpawnPrefab("mole_move_fx").Transform:SetPosition(inst.Transform:GetWorldPosition())
--- end
-
 --- Courtesy of zhuyifei1999, ClumsyPenny & Lukaട ↓
 AddAction("BURROW", "Burrow", function(act)
     if act.doer ~= nil and act.doer:HasTag("wurrow") then
@@ -86,12 +82,19 @@ AddComponentAction("BURROW_RCLICK", "Burrow", function(doer, actions, _right)
     end
 end)
 
+-- AddComponentAction("RESURFACE_RCLICK", "Resurface", function(doer, _actions, _right)
+--     if doer.prefab == "wurrow" and inst. then
+--         table.insert(actions. GLOBAL.ACTIONS.RESURFACE)
+--     end
+-- end)
+
 AddStategraphState ("wilson", GLOBAL.State{
     name = "burrow",
     tags = {},
 
     onenter = function(inst)
         inst.components.locomotor:Stop()
+        inst.components.health:SetInvincible(true)
         inst.DynamicShadow:Enable(false)
         inst.AnimState:PlayAnimation("jump", false)
         local buffaction = inst:GetBufferedAction()
@@ -101,6 +104,9 @@ AddStategraphState ("wilson", GLOBAL.State{
     end,
 
     timeline = {
+        GLOBAL.TimeEvent(15 * GLOBAL.FRAMES, function(inst)
+				inst.Physics:Stop()    
+            end),
         GLOBAL.FrameEvent(15, function(inst)
             GLOBAL.SpawnAt("mole_move_fx", inst)
         end),
@@ -112,54 +118,25 @@ AddStategraphState ("wilson", GLOBAL.State{
     events = {
         GLOBAL.EventHandler("animover", function(inst)
             if inst.AnimState:AnimDone() then
-<<<<<<< HEAD
-				inst.components.health:SetInvincible(true)
+				inst.components.health:SetInvincible(false)
                 inst.AnimState:PlayAnimation("despawn")
 				inst.AnimState:SetBank("mole")
 				inst.AnimState:SetBuild("mole_build")
 				inst:SetStateGraph("SGwurrow")
                 inst.sg:GoToState("idle")
-=======
-                inst.sg:GoToState("tunneling")
->>>>>>> 4eef73e5695bf143338712a2ea5fabbe5a15b4e6
             end
         end)
     },
 })
 
 AddStategraphState ("wilson", GLOBAL.State{
-<<<<<<< HEAD
-=======
-    name = "tunneling",
-    tags = {},
-    
-    onenter = function(inst)
-        local buffaction = inst:GetBufferedAction()
-            if buffaction ~= nil and buffaction.pos ~= nil then
-                inst:ForceFacePoint(buffaction:GetActionPoint():Get())
-            end
-    end,
-    
-    timeline = {
-    },
-
-    events = {
-        GLOBAL.EventHandler("animover", function(inst)
-            if inst.AnimState:AnimDone() then
-                inst.sg:GoToState("resurface")
-            end
-        end),
-    },
-})
-
-AddStategraphState ("wilson", GLOBAL.State{
->>>>>>> 4eef73e5695bf143338712a2ea5fabbe5a15b4e6
     name = "resurface",
     tags = {},
 
     onenter = function(inst)
         inst.components.health:SetInvincible(true)
 		inst.components.locomotor:StopMoving()
+        inst.sg.statemem.cb = cb
         inst.AnimState:SetBank("wilson")
 		inst.AnimState:SetBuild("wurrow")
         inst.AnimState:PlayAnimation("jumpout")
@@ -170,10 +147,33 @@ AddStategraphState ("wilson", GLOBAL.State{
     end,
 
     timeline = {
+        GLOBAL.TimeEvent(10 * GLOBAL.FRAMES, function(inst)
+            if not inst.sg.statemem.heavy then
+                inst.Physics:SetMotorVel(3, 0, 0)
+            end
+        end),
+        GLOBAL.TimeEvent(15 * GLOBAL.FRAMES, function(inst)
+            if not inst.sg.statemem.heavy then
+                inst.Physics:SetMotorVel(2, 0, 0)
+            end
+        end),
+        GLOBAL.TimeEvent(15.2 * GLOBAL.FRAMES, function(inst)
+            if not inst.sg.statemem.heavy then
+                if inst.sg.statemem.isphysicstoggle then
+                    ToggleOnPhysics(inst)
+                end
+                inst.SoundEmitter:PlaySound("dontstarve/movement/bodyfall_dirt")
+            end
+        end),
+        GLOBAL.TimeEvent(17 * GLOBAL.FRAMES, function(inst)
+            inst.Physics:SetMotorVel(inst.sg.statemem.heavy and .5 or 1, 0, 0)
+        end),
+        GLOBAL.TimeEvent(18 * GLOBAL.FRAMES, function(inst)
+            inst.Physics:Stop()
+        end),
     },
 
     events = {
-<<<<<<< HEAD
     GLOBAL.EventHandler("animqueueover", function(inst)
         if inst.AnimState:AnimDone() then
             inst.components.health:SetInvincible(false)
@@ -181,20 +181,13 @@ AddStategraphState ("wilson", GLOBAL.State{
             inst.sg:GoToState("idle")
         end
     end),
-=======
-    GLOBAL.EventHandler("animover", function(inst)
-            if inst.AnimState:AnimDone() then
-                inst.sg:GoToState("idle")
-            end
-        end),
->>>>>>> 4eef73e5695bf143338712a2ea5fabbe5a15b4e6
     },
 })
 
 AddStategraphState("wilson_client", GLOBAL.State{
     name = "burrow",
     tags = { "doing", "busy" },
-    server_states = { "burrow", "tunneling" },
+    server_states = { "burrow", "resurface" },
 
     onenter = function(inst)
         inst.components.locomotor:Stop()

@@ -6,21 +6,9 @@ local assets = {
 	Asset( "ANIM", "anim/beard_wurrow.zip" ),
 }
 
-local prefabs =
-{
+local prefabs = {
     "wormlight",
-    -- "wormlight_light",
 }
-
--- local lightprefabs =
--- {
---     "wormlight_light_fx",
--- }
-
--- local greaterlightprefabs =
--- {
---     "wormlight_light_fx_greater",
--- }
 
 ------------------------------------------------------------------------------------------------------------
 
@@ -63,10 +51,6 @@ end
 
 local function CanDig(pt)
     return TheWorld.Map:IsPassableAtPoint(pt:Get()) and not TheWorld.Map:IsGroundTargetBlocked(pt)
-end
-
-local function CanTunnelToCave(pt)
-    return true
 end
 
 local function ReticuleTargetFn(inst)
@@ -159,7 +143,6 @@ local common_postinit = function(inst)
 
     inst.CanBurrow = CanBurrow
     inst.CanDig = CanDig
-    inst.CanTunnelToCave = CanTunnelToCave
 
     inst:AddComponent("reticule")
     inst.components.reticule.targetfn = ReticuleTargetFn

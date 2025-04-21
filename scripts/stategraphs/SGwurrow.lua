@@ -32,7 +32,7 @@ end
 local states = {
     State{
         name = "death",
-        tags = {"busy", "pausepredict", "nomorph" },
+        tags = { "busy", "pausepredict", "nomorph" },
         
         onenter = function(inst)
 			assert(inst.deathcause ~= nil, "Entered death state without cause.")
@@ -72,7 +72,7 @@ local states = {
 
     State {
         name = "idle",
-        tags = { "idle", "canrotate", "noattack" },
+        tags = { "idle", "canrotate", "noattack", "burrowed" },
 
         onenter = function(inst, playanim)
             inst.Physics:Stop()
@@ -83,7 +83,7 @@ local states = {
 
     State {
         name = "burrow_pre",
-            tags = { "moving", "canrotate", "noattack", "invisible" },
+            tags = { "moving", "canrotate", "noattack", "invisible", "burrowed" },
 
             onenter = function(inst)
                 inst.AnimState:PlayAnimation("walk_pre")
@@ -99,7 +99,7 @@ local states = {
 
     State {
         name = "burrowing",
-            tags = { "moving", "canrotate", "noattack"},
+            tags = { "moving", "canrotate", "noattack", "burrowed" },
 
             onenter = function(inst)
                 -- inst.AddTag("burrowed")
@@ -126,7 +126,7 @@ local states = {
 
     State {
         name = "burrow_post",
-            tags = { "canrotate", "noattack" },
+            tags = { "canrotate", "noattack", "burrowed" },
 
             onenter = function(inst)
                 inst.components.locomotor:StopMoving()
@@ -135,7 +135,7 @@ local states = {
 
             events = {
                 EventHandler("animover", function(inst)
-                    inst.sg:GoToState("idle")               
+                    inst.sg:GoToState("resurface")               
                 end),
             },
     },

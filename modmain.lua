@@ -65,13 +65,23 @@ local skin_modes = {
 
 --- Courtesy of zhuyifei1999, ClumsyPenny & Lukaട ↓
 AddAction("BURROW", "Burrow", function(act)
-    if act.doer ~= nil and act.doer:HasTag("wurrow") then
+    if act.doer ~= nil and act.doer:HasTag("wurrow") and not act.doer:HasTag("burrowed") then
+        return true
+    end
+end)
+
+AddAction("RESURFACE", "Resurface", function(act)
+    if act.doer ~= nil and act.doer:HasTag("wurrow") and act.doer:HasTag("burrowed") then
         return true
     end
 end)
 
 AddStategraphActionHandler("wilson", GLOBAL.ActionHandler(GLOBAL.ACTIONS.BURROW, function(inst, action)
     return action.invobject == nil and inst:HasTag("wurrow") and "burrow"
+end))
+
+AddStategraphActionHandler("wilson", GLOBAL.ActionHandler(GLOBAL.ACTIONS.RESURFACE, function(inst, action)
+    return action.invobject == nil and inst:HasTag("wurrow") and "resurface"
 end))
 
 AddStategraphActionHandler("wilson_client", GLOBAL.ActionHandler(GLOBAL.ACTIONS.BURROW, "burrow"))
@@ -82,7 +92,7 @@ AddComponentAction("BURROW_RCLICK", "Burrow", function(doer, actions, _right)
     end
 end)
 
--- AddComponentAction("RESURFACE_RCLICK", "Resurface", function(doer, _actions, _right)
+-- AddComponentAction("RESURFACE_RCLICK", "Resurface", function(doer, actions, _right)
 --     if doer.prefab == "wurrow" and inst. then
 --         table.insert(actions. GLOBAL.ACTIONS.RESURFACE)
 --     end

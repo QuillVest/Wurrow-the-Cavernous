@@ -14,12 +14,14 @@ local prefabs = {
 
 local function OnResetBeard(inst)
     inst.AnimState:ClearOverrideSymbol("beard")
+    inst.Light:Enable(false)
 end
 
 local BEARD_DAYS = { 4, 8, 12 }
 local BEARD_BITS = { 1, 1, 1 }
 
 local function OnGrowShortBeard(inst, skinname)
+    inst.Light:Enable(false)
     if skinname == nil then
         inst.AnimState:OverrideSymbol("beard", "beard_wurrow", "beard_short")
     else
@@ -29,7 +31,11 @@ local function OnGrowShortBeard(inst, skinname)
 end
 
 local function OnGrowMediumBeard(inst, skinname)
-    -- light.components.spell:StartSpell()
+    inst.Light:Enable(true)
+	inst.Light:SetRadius(4)
+	inst.Light:SetFalloff(.5)
+	inst.Light:SetIntensity(0.9)
+	inst.Light:SetColour(128/255,255/255,255/255)
     if skinname == nil then
         inst.AnimState:OverrideSymbol("beard", "beard_wurrow", "beard_medium")
     else
@@ -39,6 +45,7 @@ local function OnGrowMediumBeard(inst, skinname)
 end
 
 local function OnGrowLongBeard(inst, skinname)
+    inst.Light:Enable(false)
     if skinname == nil then
         inst.AnimState:OverrideSymbol("beard", "beard_wurrow", "beard_long")
     else
@@ -64,13 +71,11 @@ end
 local function GetPointSpecialActions(inst, pos, useitem, right)
     if right and useitem == nil then
         local candig
-        if inst.checkingmapactions then
-            candig = inst.CanTunnelToCave(inst:GetPosition())
+        candig = inst.CanDig(pos)
+        if candig and inst.sg:HasStateTag("burrowed") then
+            return { ACTIONS.RESURFACE }
         else
-            candig = inst.CanDig(pos)
-        end
-        if candig then
-            return { ACTIONS.BURROW }
+        return { ACTIONS.BURROW }
         end
     end
     return {}
@@ -131,13 +136,13 @@ local common_postinit = function(inst)
 	inst:AddTag("monster")
 	inst:AddTag("worm")
 	inst:AddTag("nowormholesanityloss")
-    inst:AddTag("wet")
-	inst:AddTag("cavedweller")
-	inst:AddTag("nightvision")
-    inst:AddTag("wurrow")
+    inst:AddTag("wet") --Doesn't currently do anything
+	inst:AddTag("cavedweller") --Don't actually know what this does but the mod works with it
+	inst:AddTag("nightvision") --Not going to be used until I code the burrowing vision
+    inst:AddTag("wurrow") --Might try to reduce the amount of tags by changing the depth worm aggro tag
 	inst:AddTag("bearded")
     inst:AddTag("acidrainimmune")
-    -- inst:AddTag("canbetrapped")
+    inst:AddTag("canbetrapped") --Will be used later for Wurrow to trigger traps and get stunned
 
 	inst.MiniMapEntity:SetIcon( "wurrow.tex" )
 
@@ -196,6 +201,15 @@ local master_postinit = function(inst)
     inst.components.beard:AddCallback(BEARD_DAYS[1], OnGrowShortBeard)
     inst.components.beard:AddCallback(BEARD_DAYS[2], OnGrowMediumBeard)
     inst.components.beard:AddCallback(BEARD_DAYS[3], OnGrowLongBeard)
+
+    -- inst:ListenForEvent("ms_respawnedfromghost", Glowybre)
+
+    inst.entity:AddLight()
+	inst.Light:Enable(true)
+	inst.Light:SetRadius(4)
+	inst.Light:SetFalloff(.5)
+	inst.Light:SetIntensity(0.9)
+	inst.Light:SetColour(128/255,255/255,255/255)
 	
 	inst.OnLoad = onload
     inst.OnNewSpawn = onload

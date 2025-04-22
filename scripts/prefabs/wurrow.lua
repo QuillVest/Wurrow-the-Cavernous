@@ -70,14 +70,15 @@ end
 
 local function GetPointSpecialActions(inst, pos, useitem, right)
     if right and useitem == nil then
-        local candig
-        candig = inst.CanDig(pos)
-        if candig and inst.sg:HasStateTag("burrowed") then
+        local candig = inst.CanDig(pos)
+
+        if candig and inst:HasTag("burrowed") then
             return { ACTIONS.RESURFACE }
-        else
-        return { ACTIONS.BURROW }
+        elseif candig then
+            return { ACTIONS.BURROW }
         end
     end
+
     return {}
 end
 
@@ -132,7 +133,7 @@ end
 
 ------------------------------------------------------------------------------------------------------------
 
-local common_postinit = function(inst) 
+local common_postinit = function(inst)
 	inst:AddTag("monster")
 	inst:AddTag("worm")
 	inst:AddTag("nowormholesanityloss")
@@ -161,21 +162,18 @@ end
 local master_postinit = function(inst)
     inst.starting_inventory = start_inv[TheNet:GetServerGameMode()] or start_inv.default
 
-	inst.components.combat.shouldavoidaggrofn = function(attacker, inst) return attacker.prefab ~= 'worm' end
-	inst.components.combat.shouldavoidaggrofn = function(attacker, inst) return attacker.prefab ~= 'worm_boss' end
-
     inst:AddComponent("acidinfusible")
     inst.components.acidinfusible:SetFXLevel(1)
     inst.components.acidinfusible:SetMultipliers(TUNING.ACID_INFUSION_MULT.BERSERKER)
 
 	inst.soundsname = "wormwood"
-	
+
 	inst.components.health:SetMaxHealth(TUNING.WURROW_HEALTH)
 	inst.components.hunger:SetMax(TUNING.WURROW_HUNGER)
 	inst.components.sanity:SetMax(TUNING.WURROW_SANITY)
-	
+
     inst.components.combat.damagemultiplier = 1
-	
+
 	inst.components.hunger.hungerrate = 1.5 * TUNING.WILSON_HUNGER_RATE
 
 	inst.components.foodaffinity:AddPrefabAffinity("unagi", TUNING.AFFINITY_15_CALORIES_LARGE)
@@ -210,16 +208,16 @@ local master_postinit = function(inst)
 	inst.Light:SetFalloff(.5)
 	inst.Light:SetIntensity(0.9)
 	inst.Light:SetColour(128/255,255/255,255/255)
-	
+
 	inst.OnLoad = onload
     inst.OnNewSpawn = onload
 
 	inst.components.sanity.custom_rate_fn = CustomSanityFn
-    
+
 	inst.components.sanity:SetLightDrainImmune(true)
-	
+
 	inst.components.sanity.no_moisture_penalty = true
-	
+
 	inst.components.sanity:AddSanityAuraImmunity("worm")
 	inst.components.sanity:AddSanityAuraImmunity("worm_boss")
 end

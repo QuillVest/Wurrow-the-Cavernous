@@ -194,24 +194,24 @@ AddStategraphState("wilson_client", GLOBAL.State{
 
 ------------------------------------------------------------------------------------------------------------
 
-AddAction("CUSTOMDIG", "Dig", function(act)
-	local val = GLOBAL.ACTIONS.DIG.fn(act)
-	if val then
-		return true
-	end
-end)
+-- AddAction("CUSTOMDIG", "Dig", function(act)
+-- 	local val = GLOBAL.ACTIONS.DIG.fn(act)
+-- 	if val then
+-- 		return true
+-- 	end
+-- end)
 
-AddStategraphActionHandler("wilson", GLOBAL.ActionHandler(GLOBAL.ACTIONS.CUSTOMDIG, function(inst)
-	inst.AnimState:ClearOverrideSymbol("swap_object")
-	inst.AnimState:Hide("swap_object")
-	inst:DoTaskInTime(50 * GLOBAL.FRAMES, function()
-		local handitem = inst.replica.inventory:GetEquippedItem(GLOBAL.EQUIPSLOTS.HANDS)
-		if handitem then
-			handitem.components.equippable.onequipfn(handitem, inst)
-		end
-	end)
-	return "dig_start"
-end))
+-- AddStategraphActionHandler("wilson", GLOBAL.ActionHandler(GLOBAL.ACTIONS.CUSTOMDIG, function(inst)
+-- 	inst.AnimState:ClearOverrideSymbol("swap_object")
+-- 	inst.AnimState:Hide("swap_object")
+-- 	inst:DoTaskInTime(50 * GLOBAL.FRAMES, function()
+-- 		local handitem = inst.replica.inventory:GetEquippedItem(GLOBAL.EQUIPSLOTS.HANDS)
+-- 		if handitem then
+-- 			handitem.components.equippable.onequipfn(handitem, inst)
+-- 		end
+-- 	end)
+-- 	return "dig_start"
+-- end))
 
 AddComponentPostInit("playeractionpicker", function(self)
 	if self.inst.prefab == "wurrow" then --and GLOBAL.inst:HasTag("burrowed") then
@@ -225,6 +225,8 @@ AddComponentPostInit("playeractionpicker", function(self)
 		end
 	end
 end)
+
+------------------------------------------------------------------------------------------------------------
 
 local function OnEntityDeath(inst, data)
     inst.Light:Enable(false)

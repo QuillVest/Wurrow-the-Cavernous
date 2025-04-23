@@ -4,6 +4,13 @@ require("stategraphs/commonstates")
 local WALK_SPEED = 4
 local RUN_SPEED = 6
 
+local actionhandlers = {
+    ActionHandler(ACTIONS.DIG, "action"),
+    ActionHandler(ACTIONS.PICKUP, "action"),
+	ActionHandler(ACTIONS.PICK, "action"),
+	ActionHandler(ACTIONS.DROP, "action"),
+}
+
 local events = {
     EventHandler("death", function(inst)
 		inst.sg:GoToState("death")
@@ -28,6 +35,7 @@ local events = {
         if inst:HasTag("burrowed") then
             inst:RemoveTag("burrowed")
         end
+
         inst.SoundEmitter:KillSound("move")
 		inst.AnimState:SetBank("wilson")
 		inst.AnimState:SetBuild("wurrow")
@@ -209,45 +217,54 @@ local states = {
         },
 
         events = {
-        EventHandler("animqueueover", function(inst)
-            if inst.AnimState:AnimDone() then
-                inst.components.health:SetInvincible(false)
-                inst.components.moisture.inherentWaterproofness = 0
-                inst:SetStateGraph("SGwilson")
-                inst.sg:GoToState("idle")
-            end
-        end),
+            EventHandler("animqueueover", function(inst)
+                if inst.AnimState:AnimDone() then
+                    inst.components.health:SetInvincible(false)
+                    inst.components.moisture.inherentWaterproofness = 0
+                    inst:SetStateGraph("SGwilson")
+                    inst.sg:GoToState("idle")
+                end
+            end),
         },
     },
-    -- State = {
-    --     name = "resurface",
-    --     tags = { "doing", "busy" },
-    --     server_states = { "burrow", "resurface" },
-    
-    --     onenter = function(inst)
-    --         inst.components.locomotor:StopMoving()
-    --         inst.AnimState:SetBank("wilson")
-    --         inst.AnimState:SetBuild("wurrow")
-    --         inst.AnimState:PlayAnimation("jumpout")
-    
-    --         inst:PerformPreviewBufferedAction()
-    --         inst.sg:SetTimeout(2)
-    --     end,
-    
-    --     onupdate = function(inst)
-    --         if inst.sg:ServerStateMatches() then
-    --             if inst.entity:FlattenMovementPrediction() then
-    --                 inst.sg:GoToState("idle", "noanim")
-    --             end
-    --         elseif inst.bufferedaction == nil then
-    --             inst.sg:GoToState("idle")
-    --         end
-    --     end,
-    
-    --     ontimeout = function(inst)
-    --         inst:ClearBufferedAction()
-    --         inst.sg:GoToState("idle")
-    --     end
-    -- },
+
+    State
+    {
+        name = "action",
+        tags = { "doing", "busy", "noattack" },
+
+        onenter = function(inst)
+            inst.components.locomotor:Stop()
+			inst.SoundEmitter:KillSound("move")
+			inst.sg.statemem.action = inst.bufferedaction
+            inst.sg:SetTimeout(10 * FRAMES)
+        end,
+		
+		timeline =
+		{
+			TimeEvent(4 * FRAMES, function(inst)
+                inst.sg:RemoveStateTag("busy")
+            end),
+            TimeEvent(4 * FRAMES, function(inst)
+                inst.AnimState:PlayAnimation("jumpout")
+            end),
+            -- TimeEvent(6 * FRAMES, function(inst)
+            --     inst.SoundEmitter:PlaySound("")
+            -- end),
+            TimeEvent(6 * FRAMES, function(inst)
+                inst:PerformBufferedAction()
+            end),
+		},
+		
+		ontimeout = function(inst)
+            inst.sg:GoToState("idle", true)
+        end,
+
+        onexit = function(inst)
+            if inst.bufferedaction == inst.sg.statemem.action then
+                inst:ClearBufferedAction()
+            end
+        end,
+    },
 }
-return StateGraph("wurrow", states, events, "idle")
+return StateGraph("wurrow", states, events, "idle", actionhandlers)

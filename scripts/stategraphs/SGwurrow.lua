@@ -56,6 +56,7 @@ local states = {
 			inst:SetStateGraph("SGwilson")
 			inst.sg:GoToState("death")
 
+            inst.Light:Enable(false)
             inst.Physics:Stop()
             RemovePhysicsColliders(inst)
 
@@ -106,44 +107,45 @@ local states = {
 
     State {
         name = "burrowing",
-            tags = { "moving", "canrotate", "noattack" },
+        tags = { "moving", "canrotate", "noattack" },
 
-            onenter = function(inst)
-                inst.components.locomotor.walkspeed = 4
-                inst.AnimState:PlayAnimation("walk_loop")
-                inst.components.locomotor:WalkForward()
-            end,
+        onenter = function(inst)
+            inst.components.locomotor.walkspeed = 4
+            inst.AnimState:PlayAnimation("walk_loop")
+            inst.components.locomotor:WalkForward()
+        end,
 
-            timeline = {
-                TimeEvent(0*FRAMES,  SpawnMoveFx),
-                TimeEvent(5*FRAMES,  SpawnMoveFx),
-                TimeEvent(10*FRAMES, SpawnMoveFx),
-                TimeEvent(15*FRAMES, SpawnMoveFx),
-                TimeEvent(20*FRAMES, SpawnMoveFx),
-                TimeEvent(25*FRAMES, SpawnMoveFx),
-            },
+        timeline = {
+            TimeEvent(0*FRAMES,  SpawnMoveFx),
+            TimeEvent(5*FRAMES,  SpawnMoveFx),
+            TimeEvent(10*FRAMES, SpawnMoveFx),
+            TimeEvent(15*FRAMES, SpawnMoveFx),
+            TimeEvent(20*FRAMES, SpawnMoveFx),
+            TimeEvent(25*FRAMES, SpawnMoveFx),
+        },
 
-            events = {
-                EventHandler("animover", function(inst)
-                    inst.sg:GoToState("burrowing")
-                end),
-            }
+        events = {
+            EventHandler("animover", function(inst)
+                inst.sg:GoToState("burrowing")
+            end),
+        }
     },
 
     State {
         name = "burrow_post",
-            tags = { "canrotate", "noattack" },
+        tags = { "canrotate", "noattack" },
 
-            onenter = function(inst)
-                inst.components.locomotor:StopMoving()
-                inst.AnimState:PlayAnimation("walk_pst")
-            end,
+        onenter = function(inst)
+            inst.components.locomotor:StopMoving()
+            inst.AnimState:PlayAnimation("walk_pst")
+            inst.SoundEmitter:KillSound("move")
+        end,
 
-            events = {
-                EventHandler("animover", function(inst)
-                    inst.sg:GoToState("idle")
-                end),
-            },
+        events = {
+            EventHandler("animover", function(inst)
+                inst.sg:GoToState("idle")
+            end),
+         },
     },
 
     State {
@@ -151,7 +153,6 @@ local states = {
         tags = { "doing", "busy" },
 
         onenter = function(inst)
-            inst.components.health:SetInvincible(true)
             inst.components.locomotor:StopMoving()
             inst.AnimState:SetBank("wilson")
             inst.AnimState:SetBuild("wurrow")
@@ -161,6 +162,10 @@ local states = {
                 inst:RemoveTag("burrowed")
             end
 
+            if not inst:HasTag("scarytoprey") then
+                inst:AddTag("scarytoprey")
+            end
+
             local buffaction = inst:GetBufferedAction()
                 if buffaction ~= nil and buffaction.pos ~= nil then
                     inst:ForceFacePoint(buffaction:GetActionPoint():Get())
@@ -168,6 +173,11 @@ local states = {
         end,
 
         timeline = {
+            -- TimeEvent(10 * FRAMES, function(inst)
+            --     if inst.components.beard then
+            --         inst.Light:Enable(true)
+            --     end
+            -- end),
             TimeEvent(10 * FRAMES, function(inst)
                 if not inst.sg.statemem.heavy then
                     inst.Physics:SetMotorVel(3, 0, 0)
@@ -198,11 +208,42 @@ local states = {
         EventHandler("animqueueover", function(inst)
             if inst.AnimState:AnimDone() then
                 inst.components.health:SetInvincible(false)
+                inst.components.moisture.inherentWaterproofness = 0
                 inst:SetStateGraph("SGwilson")
                 inst.sg:GoToState("idle")
             end
         end),
         },
-    }
+    },
+    -- State = {
+    --     name = "resurface",
+    --     tags = { "doing", "busy" },
+    --     server_states = { "burrow", "resurface" },
+    
+    --     onenter = function(inst)
+    --         inst.components.locomotor:StopMoving()
+    --         inst.AnimState:SetBank("wilson")
+    --         inst.AnimState:SetBuild("wurrow")
+    --         inst.AnimState:PlayAnimation("jumpout")
+    
+    --         inst:PerformPreviewBufferedAction()
+    --         inst.sg:SetTimeout(2)
+    --     end,
+    
+    --     onupdate = function(inst)
+    --         if inst.sg:ServerStateMatches() then
+    --             if inst.entity:FlattenMovementPrediction() then
+    --                 inst.sg:GoToState("idle", "noanim")
+    --             end
+    --         elseif inst.bufferedaction == nil then
+    --             inst.sg:GoToState("idle")
+    --         end
+    --     end,
+    
+    --     ontimeout = function(inst)
+    --         inst:ClearBufferedAction()
+    --         inst.sg:GoToState("idle")
+    --     end
+    -- },
 }
 return StateGraph("wurrow", states, events, "idle")

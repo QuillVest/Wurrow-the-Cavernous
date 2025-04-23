@@ -41,6 +41,19 @@ AddMinimapAtlas("images/map_icons/wurrow.xml")
 local require = GLOBAL.require
 local STRINGS = GLOBAL.STRINGS
 
+TUNING.CHARACTER_PREFAB_MODCONFIGDATA = {}
+--Stat Settings
+TUNING.CHARACTER_PREFAB_MODCONFIGDATA["Health"] = GetModConfigData("Health")
+TUNING.CHARACTER_PREFAB_MODCONFIGDATA["Hunger"] = GetModConfigData("Hunger")
+TUNING.CHARACTER_PREFAB_MODCONFIGDATA["Sanity"] = GetModConfigData("Sanity")
+--Burrowing Settings
+TUNING.CHARACTER_PREFAB_MODCONFIGDATA["Burrow_Drain_Move"] = GetModConfigData("Burrow_Drain_Move")
+TUNING.CHARACTER_PREFAB_MODCONFIGDATA["Burrow_Drain_Still"] = GetModConfigData("Burrow_Drain_Still")
+--Treasure Settings
+TUNING.CHARACTER_PREFAB_MODCONFIGDATA["Burrow_Treasure"] = GetModConfigData("Burrow_Treasure")
+TUNING.CHARACTER_PREFAB_MODCONFIGDATA["Treasure_Frequency"] = GetModConfigData("Treasure_Frequency")
+TUNING.CHARACTER_PREFAB_MODCONFIGDATA["Treasure_Amount"] = GetModConfigData("Treasure_Amount")
+
 STRINGS.CHARACTER_TITLES.wurrow = "The Cavernous"
 STRINGS.CHARACTER_NAMES.wurrow = "Wurrow"
 STRINGS.CHARACTER_DESCRIPTIONS.wurrow = "*Loves the caves, hates the surface\n*Insatiable appetite for anything\n*No stranger to getting dirty\n*Blinded by bright things"
@@ -103,8 +116,10 @@ AddStategraphState ("wilson", GLOBAL.State{
     tags = { "doing", "busy" },
 
     onenter = function(inst)
+        if inst:HasTag("scarytoprey") then
+            inst:RemoveTag("scarytoprey")
+        end
         inst.components.locomotor:Stop()
-        inst.components.health:SetInvincible(true)
         inst.DynamicShadow:Enable(false)
         inst.AnimState:PlayAnimation("jump", false)
         local buffaction = inst:GetBufferedAction()
@@ -123,12 +138,16 @@ AddStategraphState ("wilson", GLOBAL.State{
         GLOBAL.FrameEvent(17, function(inst)
             GLOBAL.SpawnAt("dirt_puff", inst)
         end),
+        -- GLOBAL.TimeEvent(18 * GLOBAL.FRAMES, function(inst)
+        --     inst.Light:Enable(false)
+        -- end),
     },
 
     events = {
         GLOBAL.EventHandler("animover", function(inst)
             if inst.AnimState:AnimDone() then
-				inst.components.health:SetInvincible(false)
+				inst.components.health:SetInvincible(true)
+                inst.components.moisture.inherentWaterproofness = 1000
 
                 if not inst:HasTag("burrowed") then
                     inst:AddTag("burrowed")
@@ -175,9 +194,44 @@ AddStategraphState("wilson_client", GLOBAL.State{
 
 ------------------------------------------------------------------------------------------------------------
 
+AddAction("CUSTOMDIG", "Dig", function(act)
+	local val = GLOBAL.ACTIONS.DIG.fn(act)
+	if val then
+		return true
+	end
+end)
+
+AddStategraphActionHandler("wilson", GLOBAL.ActionHandler(GLOBAL.ACTIONS.CUSTOMDIG, function(inst)
+	inst.AnimState:ClearOverrideSymbol("swap_object")
+	inst.AnimState:Hide("swap_object")
+	inst:DoTaskInTime(50 * GLOBAL.FRAMES, function()
+		local handitem = inst.replica.inventory:GetEquippedItem(GLOBAL.EQUIPSLOTS.HANDS)
+		if handitem then
+			handitem.components.equippable.onequipfn(handitem, inst)
+		end
+	end)
+	return "dig_start"
+end))
+
+AddComponentPostInit("playeractionpicker", function(self)
+	if self.inst.prefab == "wurrow" then --and GLOBAL.inst:HasTag("burrowed") then
+		local old = self.GetRightClickActions
+		self.GetRightClickActions = function(self, position, target)
+			local bodyitem = self.inst.replica.inventory:GetEquippedItem(GLOBAL.EQUIPSLOTS.BODY)
+				if target and target:HasTag(GLOBAL.ACTIONS.DIG.id.."_workable") then
+					return self:SortActionList({ GLOBAL.ACTIONS.DIG }, target)
+				end
+			return old(self, position, target)
+		end
+	end
+end)
+
+local function OnEntityDeath(inst, data)
+    inst.Light:Enable(false)
+end
+
 --- Courtesy of Ilaskus
 AddPrefabPostInit("worm", function(inst)
-
     if not GLOBAL.TheWorld.ismastersim then
         return
     end
@@ -185,11 +239,9 @@ AddPrefabPostInit("worm", function(inst)
     if inst.components.combat then
         inst.components.combat:AddNoAggroTag("wurrow")
     end
-
 end)
 
 AddPrefabPostInit("worm_boss", function(inst)
-
     if not GLOBAL.TheWorld.ismastersim then
         return
     end
@@ -197,7 +249,6 @@ AddPrefabPostInit("worm_boss", function(inst)
     if inst.components.combat then
         inst.components.combat:AddNoAggroTag("wurrow")
     end
-
 end)
 
 AddModCharacter("wurrow", "MALE", skin_modes)

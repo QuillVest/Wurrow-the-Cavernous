@@ -32,7 +32,7 @@ end
 
 local function OnGrowMediumBeard(inst, skinname)
     inst.Light:Enable(true)
-	inst.Light:SetRadius(4)
+	inst.Light:SetRadius(2)
 	inst.Light:SetFalloff(.5)
 	inst.Light:SetIntensity(0.9)
 	inst.Light:SetColour(128/255,255/255,255/255)
@@ -107,10 +107,12 @@ local prefabs = FlattenTree(start_inv, true)
 
 local function onbecamehuman(inst)
 	inst.components.locomotor:SetExternalSpeedMultiplier(inst, "wurrow_speed_mod", 1)
+    inst.Light:Enable(false)
 end
 
 local function onbecameghost(inst)
    inst.components.locomotor:RemoveExternalSpeedMultiplier(inst, "wurrow_speed_mod")
+   inst.Light:Enable(false)
 end
 
 local function onload(inst)
@@ -133,17 +135,74 @@ end
 
 ------------------------------------------------------------------------------------------------------------
 
+local function burrow_treasure(inst)
+	inst.components.lootdropper:PickRandomLoot()
+	inst.components.lootdropper:DropLoot()
+end
+
+local function burrow(inst)
+    local move_hunger_config = TUNING.CHARACTER_PREFAB_MODCONFIGDATA["Burrow_Drain_Move"]
+	local still_hunger_config = TUNING.CHARACTER_PREFAB_MODCONFIGDATA["Burrow_Drain_Still"]
+    local treasure_config = TUNING.CHARACTER_PREFAB_MODCONFIGDATA["Burrow_Treasure"]
+
+    if inst:HasTag("burrowed") then
+        --Burrow Treasure
+        if treasure_config == 1 then
+			local frequency = TUNING.CHARACTER_PREFAB_MODCONFIGDATA["Treasure_Frequency"]
+			inst.components.timer:StartTimer("treasure_drop", frequency)
+		end
+        --Burrow Hunger Drain
+        if inst.sg:HasStateTag("burrowing") then
+            inst.components.hunger:SetRate(move_hunger_config * TUNING.WILSON_HUNGER_RATE)
+        else
+            inst.components.hunger:SetRate(still_hunger_config * TUNING.WILSON_HUNGER_RATE)
+        end
+        --Burrow Exit
+        if inst.components.hunger.current <= 0 and burrow_exit == 1 and inst.prefab == "wurrow" then
+            SendModRPCToServer(GetModRPC("Wurrow", "Wurrow_Handler") )
+            inst.components.talker:Say("I'm too hungry to burrow...")
+        end
+            --Burrow Temperature
+            
+            -- local insulation = {
+            -- 	TUNING.INSULATION_SMALL,--60
+            -- 	TUNING.INSULATION_MED,--120
+            -- 	TUNING.INSULATION_MED_LARGE,--180
+            -- 	TUNING.INSULATION_LARGE,--240
+            -- }
+        
+            -- if inst.components.temperature ~= nil and temperature_config == 5 then
+            -- 	inst.components.temperature.inherentinsulation = 0
+            -- 	inst.components.temperature.inherentsummerinsulation = 0
+                
+            -- 	if inst.burrow_temperature ~= nil and inst.components.temperature:GetCurrent() < inst.burrow_temperature then
+            -- 		inst.components.temperature:SetTemperature(inst.components.temperature:GetCurrent() + 2)
+            -- 	elseif inst.burrow_temperature ~= nil and inst.components.temperature:GetCurrent() > inst.burrow_temperature then
+            -- 		inst.components.temperature:SetTemperature(inst.components.temperature:GetCurrent() - 2)
+            -- 	end
+                
+            -- elseif inst.components.temperature ~= nil and temperature_config ~= 0 then
+            -- 	inst.components.temperature.inherentinsulation = insulation[temperature_config]
+            -- 	inst.components.temperature.inherentsummerinsulation = insulation[temperature_config]
+            -- else
+            -- 	inst.components.temperature.inherentinsulation = 0
+            -- 	inst.components.temperature.inherentsummerinsulation = 0
+            -- end		
+    end
+end
+------------------------------------------------------------------------------------------------------------
+
 local common_postinit = function(inst)
 	inst:AddTag("monster")
 	inst:AddTag("worm")
 	inst:AddTag("nowormholesanityloss")
-    inst:AddTag("wet") --Doesn't currently do anything
-	inst:AddTag("cavedweller") --Don't actually know what this does but the mod works with it
-	inst:AddTag("nightvision") --Not going to be used until I code the burrowing vision
+    -- inst:AddTag("wet") --Doesn't currently do anything
+	-- inst:AddTag("cavedweller")
+	-- inst:AddTag("nightvision") --Not going to be used until I code the burrowing vision
     inst:AddTag("wurrow") --Might try to reduce the amount of tags by changing the depth worm aggro tag
 	inst:AddTag("bearded")
     inst:AddTag("acidrainimmune")
-    inst:AddTag("canbetrapped") --Will be used later for Wurrow to trigger traps and get stunned
+    -- inst:AddTag("canbetrapped") --Will be used later for Wurrow to trigger traps and get stunned
 
 	inst.MiniMapEntity:SetIcon( "wurrow.tex" )
 
@@ -200,8 +259,6 @@ local master_postinit = function(inst)
     inst.components.beard:AddCallback(BEARD_DAYS[2], OnGrowMediumBeard)
     inst.components.beard:AddCallback(BEARD_DAYS[3], OnGrowLongBeard)
 
-    -- inst:ListenForEvent("ms_respawnedfromghost", Glowybre)
-
     inst.entity:AddLight()
 	inst.Light:Enable(true)
 	inst.Light:SetRadius(4)
@@ -220,6 +277,24 @@ local master_postinit = function(inst)
 
 	inst.components.sanity:AddSanityAuraImmunity("worm")
 	inst.components.sanity:AddSanityAuraImmunity("worm_boss")
+
+    inst.count = 0
+
+    inst:AddComponent("lootdropper")
+    inst.components.lootdropper:AddRandomLoot("rocks", .75)
+    inst.components.lootdropper:AddRandomLoot("flint", .75)
+	inst.components.lootdropper:AddRandomLoot("goldnugget", .20)
+	inst.components.lootdropper:AddRandomLoot("carrot", .20)
+	inst.components.lootdropper:AddRandomLoot("nitre", .20)
+	inst.components.lootdropper:AddRandomLoot("marble", .05)
+	inst.components.lootdropper:AddRandomLoot("redgem", .01)
+	inst.components.lootdropper:AddRandomLoot("bluegem", .01)
+	
+	local treasure_amount = TUNING.CHARACTER_PREFAB_MODCONFIGDATA["Treasure_Amount"]
+    inst.components.lootdropper.numrandomloot = treasure_amount
+
+    inst:AddComponent("timer")
+    inst:ListenForEvent("timerdone", burrow_treasure)
 end
 
 return MakePlayerCharacter("wurrow", prefabs, assets, common_postinit, master_postinit, prefabs)

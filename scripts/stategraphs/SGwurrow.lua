@@ -41,7 +41,12 @@ local events = {
 		inst.AnimState:SetBuild("wurrow")
         inst:SetStateGraph("SGwilson")
         inst.sg:GoToState((data.forcelanded or inst.components.inventory:EquipHasTag("heavyarmor") or inst:HasTag("heavybody")) and "knockbacklanded" or "knockback", data)
-    end)
+    end),
+
+    EventHandler("startstarving", function(inst)
+        inst.sg:GoToState("resurface")
+        inst.components.talker:Say("me hungy :(")
+    end),
 }
 
 local function SpawnMoveFx(inst)
@@ -92,7 +97,7 @@ local states = {
 
     State {
         name = "idle",
-        tags = { "idle", "canrotate", "noattack" },
+        tags = { "idle", "canrotate", "hiding", "nomorph" },
 
         onenter = function(inst, playanim)
             inst.Physics:Stop()
@@ -103,7 +108,7 @@ local states = {
 
     State {
         name = "burrow_pre",
-            tags = { "moving", "canrotate", "noattack", "invisible" },
+            tags = { "moving", "canrotate", "hiding", "nomorph" },
 
             onenter = function(inst)
                 inst.AnimState:PlayAnimation("walk_pre")
@@ -119,7 +124,7 @@ local states = {
 
     State {
         name = "burrowing",
-        tags = { "moving", "canrotate", "noattack" },
+            tags = { "moving", "canrotate", "hiding", "nomorph" },
 
         onenter = function(inst)
             inst.components.locomotor.walkspeed = 4
@@ -145,7 +150,7 @@ local states = {
 
     State {
         name = "burrow_post",
-        tags = { "canrotate", "noattack" },
+            tags = { "canrotate", "hiding", "nomorph" },
 
         onenter = function(inst)
             inst.components.locomotor:StopMoving()
@@ -217,19 +222,22 @@ local states = {
         },
 
         events = {
-            EventHandler("animqueueover", function(inst)
-                if inst.AnimState:AnimDone() then
-                    inst.components.health:SetInvincible(false)
-                    inst.components.moisture.inherentWaterproofness = 0
-                    inst:SetStateGraph("SGwilson")
-                    inst.sg:GoToState("idle")
-                end
-            end),
+        EventHandler("animqueueover", function(inst)
+            if inst.AnimState:AnimDone() then
+                inst.components.health:SetInvincible(false)
+                inst.components.moisture.inherentWaterproofness = 0
+                inst:SetStateGraph("SGwilson")
+                inst.sg:GoToState("idle")
+                inst.components.hunger.burnratemodifiers:RemoveModifier(inst, "burrowingpenalty")
+
+                inst.components.temperature.mintemp = TUNING.MIN_ENTITY_TEMP
+                inst.components.temperature.maxtemp = TUNING.MAX_ENTITY_TEMP
+            end
+        end),
         },
     },
 
-    State
-    {
+    State {
         name = "action",
         tags = { "doing", "busy", "noattack" },
 

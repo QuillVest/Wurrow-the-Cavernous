@@ -158,6 +158,10 @@ AddStategraphState ("wilson", GLOBAL.State{
 				inst.AnimState:SetBuild("mole_build")
 				inst:SetStateGraph("SGwurrow")
                 inst.sg:GoToState("idle")
+
+                inst.components.hunger.burnratemodifiers:SetModifier(inst, 4, "burrowingpenalty")
+                inst.components.temperature.mintemp = 6
+                inst.components.temperature.maxtemp = 63
             end
         end)
     },

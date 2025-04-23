@@ -25,10 +25,14 @@ local events = {
     end),
 
     EventHandler("knockback", function(inst, data)
-        if data then
-            inst:SetStateGraph("SGwilson")
-            inst.sg:GoToState((data.forcelanded or inst.components.inventory:EquipHasTag("heavyarmor") or inst:HasTag("heavybody")) and "knockbacklanded" or "knockback", data)
+        if inst:HasTag("burrowed") then
+            inst:RemoveTag("burrowed")
         end
+        inst.SoundEmitter:KillSound("move")
+		inst.AnimState:SetBank("wilson")
+		inst.AnimState:SetBuild("wurrow")
+        inst:SetStateGraph("SGwilson")
+        inst.sg:GoToState((data.forcelanded or inst.components.inventory:EquipHasTag("heavyarmor") or inst:HasTag("heavybody")) and "knockbacklanded" or "knockback", data)
     end)
 }
 

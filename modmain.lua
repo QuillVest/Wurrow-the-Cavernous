@@ -78,7 +78,8 @@ local skin_modes = {
 
 --- Courtesy of zhuyifei1999, ClumsyPenny & Lukaട ↓
 AddAction("BURROW", "Burrow", function(act)
-    if act.doer ~= nil and act.doer:HasTag("wurrow") and not act.doer:HasTag("burrowed") then
+    if act.doer ~= nil and act.doer:HasTag("wurrow")
+        and not act.doer:HasTag("burrowed") and inst.components.hunger:GetPercent() >= 0.2 then
         return true
     end
 end)

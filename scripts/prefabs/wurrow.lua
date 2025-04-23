@@ -74,7 +74,7 @@ local function GetPointSpecialActions(inst, pos, useitem, right)
 
         if candig and inst:HasTag("burrowed") then
             return { ACTIONS.RESURFACE }
-        elseif candig then
+        elseif candig and inst.replica.hunger:GetPercent() >= 0.2 then
             return { ACTIONS.BURROW }
         end
     end

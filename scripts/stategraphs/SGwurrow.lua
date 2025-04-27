@@ -231,6 +231,15 @@ local states = {
                 inst:SetStateGraph("SGwilson")
                 inst.sg:GoToState("idle")
                 inst.components.hunger.burnratemodifiers:RemoveModifier(inst, "burrowingpenalty")
+
+                if inst.components.timer:TimerExists("treasure_drop") and not inst.components.timer:IsPaused("treasure_drop") then
+                    inst.components.timer:PauseTimer("treasure_drop")
+                end
+
+                if inst.components.sandstormwatcher then
+                    inst.components.sandstormwatcher:SetSandstormSpeedMultiplier(TUNING.SANDSTORM_SPEED_MOD)
+                end
+
                 inst.components.temperature.mintemp = TUNING.MIN_ENTITY_TEMP
                 inst.components.temperature.maxtemp = TUNING.MAX_ENTITY_TEMP
             end
@@ -248,7 +257,7 @@ local states = {
 			inst.sg.statemem.action = inst.bufferedaction
             inst.sg:SetTimeout(15 * FRAMES)
         end,
-		
+
 		timeline = {
 			TimeEvent(4 * FRAMES, function(inst)
                 inst.sg:RemoveStateTag("busy")
@@ -263,7 +272,7 @@ local states = {
                 inst:PerformBufferedAction()
             end),
 		},
-		
+
 		ontimeout = function(inst)
             inst.sg:GoToState("idle", true)
         end,
@@ -285,7 +294,7 @@ local states = {
 			inst.sg.statemem.action = inst.bufferedaction
             inst.sg:SetTimeout(25 * FRAMES)
         end,
-		
+
 		timeline = {
 			TimeEvent(4 * FRAMES, function(inst)
                 inst.sg:RemoveStateTag("busy")
@@ -300,7 +309,7 @@ local states = {
                 inst:PerformBufferedAction()
             end),
 		},
-		
+
 		ontimeout = function(inst)
             inst.sg:GoToState("idle", true)
         end,
@@ -324,7 +333,7 @@ local states = {
             inst.sg.statemem.action = inst.bufferedaction
             inst.sg:SetTimeout(60 * FRAMES)
         end,
-        
+
         timeline = {
             TimeEvent(4 * FRAMES, function(inst)
                 inst.sg:RemoveStateTag("busy")
@@ -342,7 +351,7 @@ local states = {
                 inst:PerformBufferedAction()
             end),
         },
-        
+
         ontimeout = function(inst)
             inst.AnimState:SetBank("mole")
             inst.AnimState:SetBuild("mole_build")

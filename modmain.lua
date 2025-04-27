@@ -126,7 +126,7 @@ AddStategraphState ("wilson", GLOBAL.State{
     tags = { "doing", "busy" },
 
     onenter = function(inst)
-        
+
         if inst:HasTag("scarytoprey") then
             inst:RemoveTag("scarytoprey")
         end
@@ -165,6 +165,21 @@ AddStategraphState ("wilson", GLOBAL.State{
 				inst.AnimState:SetBuild("mole_build")
 				inst:SetStateGraph("SGwurrow")
                 inst.sg:GoToState("idle")
+
+                local treasure_config = TUNING.CHARACTER_PREFAB_MODCONFIGDATA["Burrow_Treasure"]
+                local frequency = TUNING.CHARACTER_PREFAB_MODCONFIGDATA["Treasure_Frequency"]
+
+                if treasure_config == 1 then
+                    if not inst.components.timer:TimerExists("treasure_drop") then
+                        inst.components.timer:StartTimer("treasure_drop", frequency)
+                    else
+                        inst.components.timer:ResumeTimer("treasure_drop")
+                    end
+                end
+
+                if inst.components.sandstormwatcher then
+                    inst.components.sandstormwatcher:SetSandstormSpeedMultiplier(1)
+                end
 
                 inst.components.hunger.burnratemodifiers:SetModifier(inst, 4, "burrowingpenalty")
                 inst.components.temperature.mintemp = 6

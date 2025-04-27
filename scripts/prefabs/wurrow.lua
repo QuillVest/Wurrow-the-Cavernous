@@ -96,30 +96,30 @@ local function OnSetOwner(inst)
     end
 end
 
-local function Wurrow_OnStormLevelChanged(inst, data)
-    local in_sandstorm = data ~= nil and data.stormtype == STORM_TYPES.SANDSTORM and data.level > 0
-    if in_sandstorm then 
-        if not inst:HasTag("wurrow_insandstorm") then 
-            inst:AddTag("wurrow_insandstorm")
-        end
-        if inst.components.locomotor ~= nil then
-            inst.components.locomotor:SetExternalSpeedMultiplier(inst, "wurrow_sandstorm", 1.25)
-        end
-        if inst.components.combat ~= nil then 
-            inst.components.combat.externaldamagetakenmultipliers:SetModifier("wurrow_sandstorm", 0.8)
-        end
-    else
-        if inst:HasTag("wurrow_insandstorm") then 
-            inst:RemoveTag("wurrow_insandstorm")
-        end
-        if inst.components.locomotor ~= nil then
-            inst.components.locomotor:RemoveExternalSpeedMultiplier(inst, "wurrow_sandstorm")
-        end
-        if inst.components.combat ~= nil then 
-            inst.components.combat.externaldamagetakenmultipliers:RemoveModifier("wurrow_sandstorm")
-        end
-    end
-end
+-- local function Wurrow_OnStormLevelChanged(inst, data)
+--     local in_sandstorm = data ~= nil and data.stormtype == STORM_TYPES.SANDSTORM and data.level > 0
+--     if in_sandstorm then 
+--         if not inst:HasTag("wurrow_insandstorm") then 
+--             inst:AddTag("wurrow_insandstorm")
+--         end
+--         if inst.components.locomotor ~= nil then
+--             inst.components.locomotor:SetExternalSpeedMultiplier(inst, "wurrow_sandstorm", 1.25)
+--         end
+--         if inst.components.combat ~= nil then 
+--             inst.components.combat.externaldamagetakenmultipliers:SetModifier("wurrow_sandstorm", 0.8)
+--         end
+--     else
+--         if inst:HasTag("wurrow_insandstorm") then 
+--             inst:RemoveTag("wurrow_insandstorm")
+--         end
+--         if inst.components.locomotor ~= nil then
+--             inst.components.locomotor:RemoveExternalSpeedMultiplier(inst, "wurrow_sandstorm")
+--         end
+--         if inst.components.combat ~= nil then 
+--             inst.components.combat.externaldamagetakenmultipliers:RemoveModifier("wurrow_sandstorm")
+--         end
+--     end
+-- end
 
 ------------------------------------------------------------------------------------------------------------
 
@@ -149,12 +149,11 @@ local function onload(inst)
     end
 end
 
-local function shaved (inst)
-    inst:ListenForEvent("shave")
-    if inst.components.beard then
-        inst.components.beard:Reset()
-    end
-end
+-- local function shaved (inst)
+--     if inst.components.beard then
+--         inst.components.beard:Reset()
+--     end
+-- end
 
 local function CustomSanityFn(inst, dt)
     if TheWorld.state.isday and not TheWorld:HasTag("cave") then
@@ -249,6 +248,8 @@ local master_postinit = function(inst)
     inst.components.beard:AddCallback(BEARD_DAYS[2], OnGrowMediumBeard)
     inst.components.beard:AddCallback(BEARD_DAYS[3], OnGrowLongBeard)
 
+    -- inst:ListenForEvent("shave") = shaved
+
     inst.entity:AddLight()
 	inst.Light:Enable(true)
 	inst.Light:SetRadius(4)
@@ -270,7 +271,9 @@ local master_postinit = function(inst)
 
     inst.count = 0
 
-    inst:AddComponent("lootdropper")
+    -- if inst.HasTag:("burrowed") then
+        inst:AddComponent("lootdropper")
+    -- end
     inst.components.lootdropper:AddRandomLoot("farm_soil_debris", .80)
     inst.components.lootdropper:AddRandomLoot("flint", .20)
     inst.components.lootdropper:AddRandomLoot("rocks", .20)
@@ -288,28 +291,28 @@ local master_postinit = function(inst)
     inst:AddComponent("timer")
     inst:ListenForEvent("timerdone", burrow_treasure)
 
-    inst:ListenForEvent("stormlevel", Wurrow_OnStormLevelChanged)
+    -- inst:ListenForEvent("stormlevel", Wurrow_OnStormLevelChanged)
 
-    if inst.components.moisture and inst.stackmoisture == false then 
-		local oldmt = inst.components.moisture.OnUpdate
-		inst.components.moisture.OnUpdate = function(s, dt, ...)
-			if oldmt ~= nil then 
-				oldmt(s,dt,...)
-			end
-			if s.inst:HasTag("wurrow_insandstorm") and s.rate < 0 then 
-				s:DoDelta(s.rate * 3 * dt)
-				s.ratescale =
-				(s.rate * 4 > .3 and RATE_SCALE.INCREASE_HIGH) or
-				(s.rate * 4 > .15 and RATE_SCALE.INCREASE_MED) or
-				(s.rate * 4 > .001 and RATE_SCALE.INCREASE_LOW) or
-				(s.rate * 4 < -3 and RATE_SCALE.DECREASE_HIGH) or
-				(s.rate * 4 < -1.5 and RATE_SCALE.DECREASE_MED) or
-				(s.rate * 4 < -.001 and RATE_SCALE.DECREASE_LOW) or
-				RATE_SCALE.NEUTRAL
-			end
-		end
-		inst.stackmoisture = true
-	end
+    -- if inst.components.moisture and inst.stackmoisture == false then 
+	-- 	local oldmt = inst.components.moisture.OnUpdate
+	-- 	inst.components.moisture.OnUpdate = function(s, dt, ...)
+	-- 		if oldmt ~= nil then 
+	-- 			oldmt(s,dt,...)
+	-- 		end
+	-- 		if s.inst:HasTag("wurrow_insandstorm") and s.rate < 0 then 
+	-- 			s:DoDelta(s.rate * 3 * dt)
+	-- 			s.ratescale =
+	-- 			(s.rate * 4 > .3 and RATE_SCALE.INCREASE_HIGH) or
+	-- 			(s.rate * 4 > .15 and RATE_SCALE.INCREASE_MED) or
+	-- 			(s.rate * 4 > .001 and RATE_SCALE.INCREASE_LOW) or
+	-- 			(s.rate * 4 < -3 and RATE_SCALE.DECREASE_HIGH) or
+	-- 			(s.rate * 4 < -1.5 and RATE_SCALE.DECREASE_MED) or
+	-- 			(s.rate * 4 < -.001 and RATE_SCALE.DECREASE_LOW) or
+	-- 			RATE_SCALE.NEUTRAL
+	-- 		end
+	-- 	end
+	-- 	inst.stackmoisture = true
+	-- end
 end
 
 return MakePlayerCharacter("wurrow", prefabs, assets, common_postinit, master_postinit, prefabs)

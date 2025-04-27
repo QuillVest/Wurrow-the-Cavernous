@@ -161,7 +161,6 @@ AddStategraphState ("wilson", GLOBAL.State{
                     inst:AddTag("burrowed")
                 end
 
-                inst.components.combat.min_attack_period = 2.0
 				inst.AnimState:SetBank("mole")
 				inst.AnimState:SetBuild("mole_build")
 				inst:SetStateGraph("SGwurrow")

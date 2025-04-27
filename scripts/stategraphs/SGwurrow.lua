@@ -5,10 +5,10 @@ local WALK_SPEED = 4
 local RUN_SPEED = 6
 
 local actionhandlers = {
-    ActionHandler(ACTIONS.DIG, "burrow_grabbing"),
+    ActionHandler(ACTIONS.DIG, "burrow_harvesting"),
+    ActionHandler(ACTIONS.PICK, "burrow_harvesting"),
+    ActionHandler(ACTIONS.DROP, "burrow_grabbing"),
     ActionHandler(ACTIONS.PICKUP, "burrow_grabbing"),
-	ActionHandler(ACTIONS.PICK, "burrow_harvesting"),
-	ActionHandler(ACTIONS.DROP, "burrow_grabbing"),
     ActionHandler(ACTIONS.ATTACK, "burrow_attack"),
 }
 
@@ -231,7 +231,6 @@ local states = {
                 inst:SetStateGraph("SGwilson")
                 inst.sg:GoToState("idle")
                 inst.components.hunger.burnratemodifiers:RemoveModifier(inst, "burrowingpenalty")
-                inst.components.combat.min_attack_period = 1.0
                 inst.components.temperature.mintemp = TUNING.MIN_ENTITY_TEMP
                 inst.components.temperature.maxtemp = TUNING.MAX_ENTITY_TEMP
             end
@@ -323,19 +322,22 @@ local states = {
             inst.AnimState:SetBuild("wurrow")
             inst.SoundEmitter:KillSound("move")
             inst.sg.statemem.action = inst.bufferedaction
-            inst.sg:SetTimeout(50 * FRAMES)
+            inst.sg:SetTimeout(60 * FRAMES)
         end,
         
         timeline = {
             TimeEvent(4 * FRAMES, function(inst)
                 inst.sg:RemoveStateTag("busy")
             end),
-            TimeEvent(12 * FRAMES, function(inst)
+            TimeEvent(11 * FRAMES, function(inst)
                 inst.AnimState:PlayAnimation("jumpout")
             end),
             -- TimeEvent(6 * FRAMES, function(inst)
             --     inst.SoundEmitter:PlaySound("")
             -- end),
+            TimeEvent(16 * FRAMES, function(inst)
+                inst.AnimState:PushAnimation("spearjab", false)
+            end),
             TimeEvent(35 * FRAMES, function(inst)
                 inst:PerformBufferedAction()
             end),

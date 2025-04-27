@@ -161,33 +161,7 @@ local function burrow(inst)
         if inst.components.hunger.current <= 0 and burrow_exit == 1 and inst.prefab == "wurrow" then
             SendModRPCToServer(GetModRPC("Wurrow", "Wurrow_Handler") )
             inst.components.talker:Say("I'm too hungry to burrow...")
-        end
-            --Burrow Temperature
-            
-            -- local insulation = {
-            -- 	TUNING.INSULATION_SMALL,--60
-            -- 	TUNING.INSULATION_MED,--120
-            -- 	TUNING.INSULATION_MED_LARGE,--180
-            -- 	TUNING.INSULATION_LARGE,--240
-            -- }
-        
-            -- if inst.components.temperature ~= nil and temperature_config == 5 then
-            -- 	inst.components.temperature.inherentinsulation = 0
-            -- 	inst.components.temperature.inherentsummerinsulation = 0
-                
-            -- 	if inst.burrow_temperature ~= nil and inst.components.temperature:GetCurrent() < inst.burrow_temperature then
-            -- 		inst.components.temperature:SetTemperature(inst.components.temperature:GetCurrent() + 2)
-            -- 	elseif inst.burrow_temperature ~= nil and inst.components.temperature:GetCurrent() > inst.burrow_temperature then
-            -- 		inst.components.temperature:SetTemperature(inst.components.temperature:GetCurrent() - 2)
-            -- 	end
-                
-            -- elseif inst.components.temperature ~= nil and temperature_config ~= 0 then
-            -- 	inst.components.temperature.inherentinsulation = insulation[temperature_config]
-            -- 	inst.components.temperature.inherentsummerinsulation = insulation[temperature_config]
-            -- else
-            -- 	inst.components.temperature.inherentinsulation = 0
-            -- 	inst.components.temperature.inherentsummerinsulation = 0
-            -- end		
+        end	
     end
 end
 ------------------------------------------------------------------------------------------------------------

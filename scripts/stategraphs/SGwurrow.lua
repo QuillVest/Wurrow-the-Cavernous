@@ -5,11 +5,11 @@ local WALK_SPEED = 4
 local RUN_SPEED = 6
 
 local actionhandlers = {
-    ActionHandler(ACTIONS.DIG, "action"),
-    ActionHandler(ACTIONS.PICKUP, "action"),
-	ActionHandler(ACTIONS.PICK, "action"),
-	ActionHandler(ACTIONS.DROP, "action"),
-    ActionHandler(ACTIONS.ATTACK, "action_attack"),
+    ActionHandler(ACTIONS.DIG, "burrow_grabbing"),
+    ActionHandler(ACTIONS.PICKUP, "burrow_grabbing"),
+	ActionHandler(ACTIONS.PICK, "burrow_harvesting"),
+	ActionHandler(ACTIONS.DROP, "burrow_grabbing"),
+    ActionHandler(ACTIONS.ATTACK, "burrow_attack"),
 }
 
 local events = {
@@ -240,14 +240,14 @@ local states = {
     },
 
     State {
-        name = "action",
+        name = "burrow_grabbing",
         tags = { "doing", "busy", "noattack" },
 
         onenter = function(inst)
             inst.components.locomotor:Stop()
 			inst.SoundEmitter:KillSound("move")
 			inst.sg.statemem.action = inst.bufferedaction
-            inst.sg:SetTimeout(10 * FRAMES)
+            inst.sg:SetTimeout(15 * FRAMES)
         end,
 		
 		timeline = {
@@ -260,7 +260,7 @@ local states = {
             -- TimeEvent(6 * FRAMES, function(inst)
             --     inst.SoundEmitter:PlaySound("")
             -- end),
-            TimeEvent(6 * FRAMES, function(inst)
+            TimeEvent(8 * FRAMES, function(inst)
                 inst:PerformBufferedAction()
             end),
 		},
@@ -277,21 +277,18 @@ local states = {
     },
 
     State {
-        name = "action_attack",
+        name = "burrow_harvesting",
         tags = { "doing", "busy", "noattack" },
 
         onenter = function(inst)
             inst.components.locomotor:Stop()
-            inst.AnimState:SetBank("wilson")
-            inst.AnimState:SetBuild("wurrow")
-            -- inst.AnimState:PlayAnimation("jumpout")
-            inst.SoundEmitter:KillSound("move")
-            inst.sg.statemem.action = inst.bufferedaction
-            inst.sg:SetTimeout(10 * FRAMES)
+			inst.SoundEmitter:KillSound("move")
+			inst.sg.statemem.action = inst.bufferedaction
+            inst.sg:SetTimeout(25 * FRAMES)
         end,
-        
-        timeline = {
-            TimeEvent(4 * FRAMES, function(inst)
+		
+		timeline = {
+			TimeEvent(4 * FRAMES, function(inst)
                 inst.sg:RemoveStateTag("busy")
             end),
             TimeEvent(4 * FRAMES, function(inst)
@@ -300,7 +297,46 @@ local states = {
             -- TimeEvent(6 * FRAMES, function(inst)
             --     inst.SoundEmitter:PlaySound("")
             -- end),
-            TimeEvent(8 * FRAMES, function(inst)
+            TimeEvent(20 * FRAMES, function(inst)
+                inst:PerformBufferedAction()
+            end),
+		},
+		
+		ontimeout = function(inst)
+            inst.sg:GoToState("idle", true)
+        end,
+
+        onexit = function(inst)
+            if inst.bufferedaction == inst.sg.statemem.action then
+                inst:ClearBufferedAction()
+            end
+        end,
+    },
+
+    State {
+        name = "burrow_attack",
+        tags = { "doing", "busy", "noattack" },
+
+        onenter = function(inst)
+            inst.components.locomotor:Stop()
+            inst.AnimState:SetBank("wilson")
+            inst.AnimState:SetBuild("wurrow")
+            inst.SoundEmitter:KillSound("move")
+            inst.sg.statemem.action = inst.bufferedaction
+            inst.sg:SetTimeout(50 * FRAMES)
+        end,
+        
+        timeline = {
+            TimeEvent(4 * FRAMES, function(inst)
+                inst.sg:RemoveStateTag("busy")
+            end),
+            TimeEvent(12 * FRAMES, function(inst)
+                inst.AnimState:PlayAnimation("jumpout")
+            end),
+            -- TimeEvent(6 * FRAMES, function(inst)
+            --     inst.SoundEmitter:PlaySound("")
+            -- end),
+            TimeEvent(35 * FRAMES, function(inst)
                 inst:PerformBufferedAction()
             end),
         },

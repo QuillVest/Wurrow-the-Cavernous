@@ -10,6 +10,15 @@ local prefabs = {
     "wormlight",
 }
 
+TUNING.WURROW_HEALTH = 175
+TUNING.WURROW_HUNGER = 225
+TUNING.WURROW_SANITY = 125
+
+TUNING.GAMEMODE_STARTING_ITEMS.DEFAULT.WURROW = {
+	"slurper_pelt",
+	"slurper_pelt",
+}
+
 ------------------------------------------------------------------------------------------------------------
 
 local function OnResetBeard(inst)
@@ -71,14 +80,12 @@ end
 local function GetPointSpecialActions(inst, pos, useitem, right)
     if right and useitem == nil then
         local candig = inst.CanDig(pos)
-
         if candig and inst:HasTag("burrowed") then
             return { ACTIONS.RESURFACE }
         elseif candig and inst.replica.hunger:GetPercent() >= 0.2 then
             return { ACTIONS.BURROW }
         end
     end
-
     return {}
 end
 
@@ -88,16 +95,32 @@ local function OnSetOwner(inst)
     end
 end
 
+local function Wurrow_OnStormLevelChanged(inst, data)
+    local in_sandstorm = data ~= nil and data.stormtype == STORM_TYPES.SANDSTORM and data.level > 0
+    if in_sandstorm then 
+        if not inst:HasTag("wurrow_insandstorm") then 
+            inst:AddTag("wurrow_insandstorm")
+        end
+        if inst.components.locomotor ~= nil then
+            inst.components.locomotor:SetExternalSpeedMultiplier(inst, "wurrow_sandstorm", 1.25)
+        end
+        if inst.components.combat ~= nil then 
+            inst.components.combat.externaldamagetakenmultipliers:SetModifier("wurrow_sandstorm", 0.8)
+        end
+    else
+        if inst:HasTag("wurrow_insandstorm") then 
+            inst:RemoveTag("wurrow_insandstorm")
+        end
+        if inst.components.locomotor ~= nil then
+            inst.components.locomotor:RemoveExternalSpeedMultiplier(inst, "wurrow_sandstorm")
+        end
+        if inst.components.combat ~= nil then 
+            inst.components.combat.externaldamagetakenmultipliers:RemoveModifier("wurrow_sandstorm")
+        end
+    end
+end
+
 ------------------------------------------------------------------------------------------------------------
-
-TUNING.WURROW_HEALTH = 175
-TUNING.WURROW_HUNGER = 225
-TUNING.WURROW_SANITY = 125
-
-TUNING.GAMEMODE_STARTING_ITEMS.DEFAULT.WURROW = {
-	"slurper_pelt",
-	"slurper_pelt",
-}
 
 local start_inv = {}
 for k, v in pairs(TUNING.GAMEMODE_STARTING_ITEMS) do
@@ -118,11 +141,17 @@ end
 local function onload(inst)
     inst:ListenForEvent("ms_respawnedfromghost", onbecamehuman)
     inst:ListenForEvent("ms_becameghost", onbecameghost)
-
     if inst:HasTag("playerghost") then
         onbecameghost(inst)
     else
         onbecamehuman(inst)
+    end
+end
+
+local function shaved (inst)
+    inst:ListenForEvent("shave")
+    if inst.components.beard then
+        inst.components.beard:Reset()
     end
 end
 
@@ -141,29 +170,16 @@ local function burrow_treasure(inst)
 end
 
 local function burrow(inst)
-    local move_hunger_config = TUNING.CHARACTER_PREFAB_MODCONFIGDATA["Burrow_Drain_Move"]
-	local still_hunger_config = TUNING.CHARACTER_PREFAB_MODCONFIGDATA["Burrow_Drain_Still"]
     local treasure_config = TUNING.CHARACTER_PREFAB_MODCONFIGDATA["Burrow_Treasure"]
 
     if inst:HasTag("burrowed") then
-        --Burrow Treasure
         if treasure_config == 1 then
 			local frequency = TUNING.CHARACTER_PREFAB_MODCONFIGDATA["Treasure_Frequency"]
 			inst.components.timer:StartTimer("treasure_drop", frequency)
 		end
-        --Burrow Hunger Drain
-        if inst.sg:HasStateTag("burrowing") then
-            inst.components.hunger:SetRate(move_hunger_config * TUNING.WILSON_HUNGER_RATE)
-        else
-            inst.components.hunger:SetRate(still_hunger_config * TUNING.WILSON_HUNGER_RATE)
-        end
-        --Burrow Exit
-        if inst.components.hunger.current <= 0 and burrow_exit == 1 and inst.prefab == "wurrow" then
-            SendModRPCToServer(GetModRPC("Wurrow", "Wurrow_Handler") )
-            inst.components.talker:Say("I'm too hungry to burrow...")
-        end	
     end
 end
+
 ------------------------------------------------------------------------------------------------------------
 
 local common_postinit = function(inst)
@@ -177,6 +193,8 @@ local common_postinit = function(inst)
 	inst:AddTag("bearded")
     inst:AddTag("acidrainimmune")
     -- inst:AddTag("canbetrapped") --Will be used later for Wurrow to trigger traps and get stunned
+
+    inst.stackmoisture = false
 
 	inst.MiniMapEntity:SetIcon( "wurrow.tex" )
 
@@ -210,9 +228,6 @@ local master_postinit = function(inst)
 	inst.components.hunger.hungerrate = 1.5 * TUNING.WILSON_HUNGER_RATE
 
 	inst.components.foodaffinity:AddPrefabAffinity("unagi", TUNING.AFFINITY_15_CALORIES_LARGE)
-
-    inst:AddComponent("spell")
-    inst.components.spell.spellname = "wormlight"
 
 	local foodaffinity = inst.components.foodaffinity
 	foodaffinity:AddPrefabAffinity  ("wormlight",            1.0)
@@ -255,20 +270,45 @@ local master_postinit = function(inst)
     inst.count = 0
 
     inst:AddComponent("lootdropper")
-    inst.components.lootdropper:AddRandomLoot("rocks", .75)
-    inst.components.lootdropper:AddRandomLoot("flint", .75)
-	inst.components.lootdropper:AddRandomLoot("goldnugget", .20)
-	inst.components.lootdropper:AddRandomLoot("carrot", .20)
-	inst.components.lootdropper:AddRandomLoot("nitre", .20)
-	inst.components.lootdropper:AddRandomLoot("marble", .05)
+    inst.components.lootdropper:AddRandomLoot("farm_soil_debris", .80)
+    inst.components.lootdropper:AddRandomLoot("flint", .20)
+    inst.components.lootdropper:AddRandomLoot("rocks", .20)
+	inst.components.lootdropper:AddRandomLoot("nitre", .10)
+	inst.components.lootdropper:AddRandomLoot("marble", .075)
+    inst.components.lootdropper:AddRandomLoot("goldnugget", .5)
 	inst.components.lootdropper:AddRandomLoot("redgem", .01)
 	inst.components.lootdropper:AddRandomLoot("bluegem", .01)
+
+    inst:ListenForEvent("hungerdelta", burrow)
 	
 	local treasure_amount = TUNING.CHARACTER_PREFAB_MODCONFIGDATA["Treasure_Amount"]
     inst.components.lootdropper.numrandomloot = treasure_amount
 
     inst:AddComponent("timer")
     inst:ListenForEvent("timerdone", burrow_treasure)
+
+    inst:ListenForEvent("stormlevel", Wurrow_OnStormLevelChanged)
+
+    if inst.components.moisture and inst.stackmoisture == false then 
+		local oldmt = inst.components.moisture.OnUpdate
+		inst.components.moisture.OnUpdate = function(s, dt, ...)
+			if oldmt ~= nil then 
+				oldmt(s,dt,...)
+			end
+			if s.inst:HasTag("wurrow_insandstorm") and s.rate < 0 then 
+				s:DoDelta(s.rate * 3 * dt)
+				s.ratescale =
+				(s.rate * 4 > .3 and RATE_SCALE.INCREASE_HIGH) or
+				(s.rate * 4 > .15 and RATE_SCALE.INCREASE_MED) or
+				(s.rate * 4 > .001 and RATE_SCALE.INCREASE_LOW) or
+				(s.rate * 4 < -3 and RATE_SCALE.DECREASE_HIGH) or
+				(s.rate * 4 < -1.5 and RATE_SCALE.DECREASE_MED) or
+				(s.rate * 4 < -.001 and RATE_SCALE.DECREASE_LOW) or
+				RATE_SCALE.NEUTRAL
+			end
+		end
+		inst.stackmoisture = true
+	end
 end
 
 return MakePlayerCharacter("wurrow", prefabs, assets, common_postinit, master_postinit, prefabs)

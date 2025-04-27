@@ -9,6 +9,7 @@ local actionhandlers = {
     ActionHandler(ACTIONS.PICKUP, "action"),
 	ActionHandler(ACTIONS.PICK, "action"),
 	ActionHandler(ACTIONS.DROP, "action"),
+    ActionHandler(ACTIONS.ATTACK, "action_attack"),
 }
 
 local events = {
@@ -45,7 +46,7 @@ local events = {
 
     EventHandler("startstarving", function(inst)
         inst.sg:GoToState("resurface")
-        inst.components.talker:Say("me hungy :(")
+        inst.components.talker:Say("Me hungy :(")
     end),
 }
 
@@ -133,12 +134,11 @@ local states = {
         end,
 
         timeline = {
-            TimeEvent(0*FRAMES,  SpawnMoveFx),
-            TimeEvent(5*FRAMES,  SpawnMoveFx),
-            TimeEvent(10*FRAMES, SpawnMoveFx),
+            TimeEvent(3*FRAMES,  SpawnMoveFx),
+            TimeEvent(9*FRAMES, SpawnMoveFx),
             TimeEvent(15*FRAMES, SpawnMoveFx),
-            TimeEvent(20*FRAMES, SpawnMoveFx),
-            TimeEvent(25*FRAMES, SpawnMoveFx),
+            TimeEvent(21*FRAMES, SpawnMoveFx),
+            TimeEvent(27*FRAMES, SpawnMoveFx),
         },
 
         events = {
@@ -195,6 +195,9 @@ local states = {
             --         inst.Light:Enable(true)
             --     end
             -- end),
+            FrameEvent(3, function(inst)
+                SpawnAt("shovel_dirt", inst)
+            end),
             TimeEvent(10 * FRAMES, function(inst)
                 if not inst.sg.statemem.heavy then
                     inst.Physics:SetMotorVel(3, 0, 0)
@@ -224,12 +227,11 @@ local states = {
         events = {
         EventHandler("animqueueover", function(inst)
             if inst.AnimState:AnimDone() then
-                inst.components.health:SetInvincible(false)
                 inst.components.moisture.inherentWaterproofness = 0
                 inst:SetStateGraph("SGwilson")
                 inst.sg:GoToState("idle")
                 inst.components.hunger.burnratemodifiers:RemoveModifier(inst, "burrowingpenalty")
-
+                inst.components.combat.min_attack_period = 1.0
                 inst.components.temperature.mintemp = TUNING.MIN_ENTITY_TEMP
                 inst.components.temperature.maxtemp = TUNING.MAX_ENTITY_TEMP
             end
@@ -248,8 +250,7 @@ local states = {
             inst.sg:SetTimeout(10 * FRAMES)
         end,
 		
-		timeline =
-		{
+		timeline = {
 			TimeEvent(4 * FRAMES, function(inst)
                 inst.sg:RemoveStateTag("busy")
             end),
@@ -274,5 +275,59 @@ local states = {
             end
         end,
     },
+
+    State {
+        name = "action_attack",
+        tags = { "doing", "busy", "noattack" },
+
+        onenter = function(inst)
+            inst.components.locomotor:Stop()
+            inst.AnimState:SetBank("wilson")
+            inst.AnimState:SetBuild("wurrow")
+            -- inst.AnimState:PlayAnimation("jumpout")
+            inst.SoundEmitter:KillSound("move")
+            inst.sg.statemem.action = inst.bufferedaction
+            inst.sg:SetTimeout(10 * FRAMES)
+        end,
+        
+        timeline = {
+            TimeEvent(4 * FRAMES, function(inst)
+                inst.sg:RemoveStateTag("busy")
+            end),
+            TimeEvent(4 * FRAMES, function(inst)
+                inst.AnimState:PlayAnimation("jumpout")
+            end),
+            -- TimeEvent(6 * FRAMES, function(inst)
+            --     inst.SoundEmitter:PlaySound("")
+            -- end),
+            TimeEvent(8 * FRAMES, function(inst)
+                inst:PerformBufferedAction()
+            end),
+        },
+        
+        ontimeout = function(inst)
+            inst.AnimState:SetBank("mole")
+            inst.AnimState:SetBuild("mole_build")
+            inst.sg:GoToState("idle", true)
+        end,
+
+        onexit = function(inst)
+            if inst.bufferedaction == inst.sg.statemem.action then
+                inst:ClearBufferedAction()
+                inst.AnimState:SetBank("mole")
+                inst.AnimState:SetBuild("mole_build")
+                inst.sg:GoToState("idle")
+            end
+        end,
+
+        events = {
+            EventHandler("animover", function(inst)
+                inst.AnimState:SetBank("mole")
+                inst.AnimState:SetBuild("mole_build")
+                inst.sg:GoToState("idle")
+            end),
+        },
+    },
 }
+
 return StateGraph("wurrow", states, events, "idle", actionhandlers)

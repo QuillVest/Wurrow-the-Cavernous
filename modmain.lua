@@ -2,6 +2,8 @@
 PrefabFiles = {
 	"wurrow",
 	"wurrow_none",
+    "tooth_kit",
+    -- "wormden",
 }
 
 Assets = {
@@ -34,9 +36,16 @@ Assets = {
 
 	Asset( "IMAGE", "images/names_gold_wurrow.tex" ),
     Asset( "ATLAS", "images/names_gold_wurrow.xml" ),
+
+    Asset("ATLAS", "images/tooth_kit.xml"),
+    Asset("IMAGE", "images/tooth_kit.tex"),
+
+    -- Asset("ATLAS", "images/wormden.xml"),
+    -- Asset("IMAGE", "images/wormden.tex"),
 }
 
 AddMinimapAtlas("images/map_icons/wurrow.xml")
+-- AddMinimapAtlas("images/wormden.xml")
 
 local require = GLOBAL.require
 local STRINGS = GLOBAL.STRINGS
@@ -76,7 +85,7 @@ local skin_modes = {
 }
 ------------------------------------------------------------------------------------------------------------
 
---- Courtesy of zhuyifei1999, ClumsyPenny & Lukaട ↓
+--- Courtesy of ClumsyPenny & Lukaട ↓
 AddAction("BURROW", "Burrow", function(act)
     if act.doer ~= nil and act.doer:HasTag("wurrow")
         and not act.doer:HasTag("burrowed") and inst.components.hunger:GetPercent() >= 0.2 then
@@ -117,9 +126,11 @@ AddStategraphState ("wilson", GLOBAL.State{
     tags = { "doing", "busy" },
 
     onenter = function(inst)
+        
         if inst:HasTag("scarytoprey") then
             inst:RemoveTag("scarytoprey")
         end
+
         inst.components.locomotor:Stop()
         inst.DynamicShadow:Enable(false)
         inst.AnimState:PlayAnimation("jump", false)
@@ -133,9 +144,6 @@ AddStategraphState ("wilson", GLOBAL.State{
         GLOBAL.TimeEvent(15 * GLOBAL.FRAMES, function(inst)
 				inst.Physics:Stop()
             end),
-        GLOBAL.FrameEvent(15, function(inst)
-            GLOBAL.SpawnAt("mole_move_fx", inst)
-        end),
         GLOBAL.FrameEvent(17, function(inst)
             GLOBAL.SpawnAt("dirt_puff", inst)
         end),
@@ -147,14 +155,13 @@ AddStategraphState ("wilson", GLOBAL.State{
     events = {
         GLOBAL.EventHandler("animover", function(inst)
             if inst.AnimState:AnimDone() then
-				inst.components.health:SetInvincible(true)
                 inst.components.moisture.inherentWaterproofness = 1000
 
                 if not inst:HasTag("burrowed") then
                     inst:AddTag("burrowed")
                 end
-
-                inst.AnimState:PlayAnimation("despawn")
+                
+                inst.components.combat.min_attack_period = 1.5
 				inst.AnimState:SetBank("mole")
 				inst.AnimState:SetBuild("mole_build")
 				inst:SetStateGraph("SGwurrow")
@@ -219,7 +226,7 @@ AddStategraphState("wilson_client", GLOBAL.State{
 -- end))
 
 AddComponentPostInit("playeractionpicker", function(self)
-	if self.inst.prefab == "wurrow" then --and GLOBAL.inst:HasTag("burrowed") then
+	if self.inst.prefab == "wurrow" then --and self.inst:HasTag("burrowed") then
 		local old = self.GetRightClickActions
 		self.GetRightClickActions = function(self, position, target)
 			local bodyitem = self.inst.replica.inventory:GetEquippedItem(GLOBAL.EQUIPSLOTS.BODY)
@@ -233,9 +240,10 @@ end)
 
 ------------------------------------------------------------------------------------------------------------
 
-local function OnEntityDeath(inst, data)
-    inst.Light:Enable(false)
-end
+-- inst.ListenForEvent("death", OnEntityDeath)
+-- local function OnEntityDeath(inst, data)
+--     inst.Light:Enable(false)
+-- end
 
 --- Courtesy of Ilaskus
 AddPrefabPostInit("worm", function(inst)
@@ -257,5 +265,26 @@ AddPrefabPostInit("worm_boss", function(inst)
         inst.components.combat:AddNoAggroTag("wurrow")
     end
 end)
+
+------------------------------------------------------------------------------------------------------------
+
+-- local wormdenrecipe = AddCharacterRecipe("wormden",
+-- 	{
+-- 		GLOBAL.Ingredient("slurpler_pelt", 6), GLOBAL.Ingredient("boneshard", 4), GLOBAL.Ingredient("wormlight", 1)
+-- 	},
+-- 	GLOBAL.TECH.SCIENCE_TWO,
+-- 	{
+-- 		min_spacing = 1.5,
+-- 	},
+--     {
+--     }
+-- )
+
+-- local newrecipes = {
+--     {"wormden", {GLOBAL.CRAFTING_FILTERS.CONTAINERS}, 13},
+-- }
+
+-- GLOBAL.STRINGS.NAMES.MYPREFAB = "Worm Den"
+-- GLOBAL.STRINGS.RECIPE_DESC.MYPREFAB = "I can make new friends!"
 
 AddModCharacter("wurrow", "MALE", skin_modes)

@@ -16,8 +16,7 @@ TUNING.WURROW_HUNGER = 225
 TUNING.WURROW_SANITY = 125
 
 TUNING.GAMEMODE_STARTING_ITEMS.DEFAULT.WURROW = {
-	"slurper_pelt",
-	"slurper_pelt",
+	"tooth_kit",
 }
 
 ------------------------------------------------------------------------------------------------------------
@@ -25,6 +24,12 @@ TUNING.GAMEMODE_STARTING_ITEMS.DEFAULT.WURROW = {
 local function OnResetBeard(inst)
     inst.AnimState:ClearOverrideSymbol("beard")
     inst.Light:Enable(false)
+end
+
+local function OnShaveBerry(inst)
+    if inst.components.beard then
+        inst.components.beard:Reset()
+    end
 end
 
 local BEARD_DAYS = { 4, 8, 12 }
@@ -121,12 +126,6 @@ local function onload(inst)
         onbecameghost(inst)
     else
         onbecamehuman(inst)
-    end
-end
-
-local function OnShaveBerry(inst)
-    if inst.components.beard then
-        inst.components.beard:Reset()
     end
 end
 
@@ -242,9 +241,7 @@ local master_postinit = function(inst)
 
     inst.count = 0
 
-    -- if inst.HasTag:("burrowed") then
-        inst:AddComponent("lootdropper")
-    -- end
+    inst:AddComponent("lootdropper")
     inst.components.lootdropper:AddRandomLoot("farm_soil_debris", .80)
     inst.components.lootdropper:AddRandomLoot("flint", .20)
     inst.components.lootdropper:AddRandomLoot("rocks", .20)

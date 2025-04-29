@@ -37,9 +37,6 @@ Assets = {
 	Asset( "IMAGE", "images/names_gold_wurrow.tex" ),
     Asset( "ATLAS", "images/names_gold_wurrow.xml" ),
 
-    Asset("ATLAS", "images/tooth_kit.xml"),
-    Asset("IMAGE", "images/tooth_kit.tex"),
-
     -- Asset("ATLAS", "images/wormden.xml"),
     -- Asset("IMAGE", "images/wormden.tex"),
 }

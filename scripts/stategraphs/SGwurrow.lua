@@ -291,6 +291,7 @@ local states = {
         onenter = function(inst)
             inst.components.locomotor:Stop()
 			inst.SoundEmitter:KillSound("move")
+            inst.AnimState:PlayAnimation("jumpout")
 			inst.sg.statemem.action = inst.bufferedaction
             inst.sg:SetTimeout(25 * FRAMES)
         end,
@@ -299,9 +300,9 @@ local states = {
 			TimeEvent(4 * FRAMES, function(inst)
                 inst.sg:RemoveStateTag("busy")
             end),
-            TimeEvent(4 * FRAMES, function(inst)
-                inst.AnimState:PlayAnimation("jumpout")
-            end),
+            -- TimeEvent(8 * FRAMES, function(inst)
+            --     inst.AnimState:PlayAnimation("jumpout")
+            -- end),
             -- TimeEvent(6 * FRAMES, function(inst)
             --     inst.SoundEmitter:PlaySound("")
             -- end),
@@ -344,9 +345,9 @@ local states = {
             -- TimeEvent(6 * FRAMES, function(inst)
             --     inst.SoundEmitter:PlaySound("")
             -- end),
-            TimeEvent(16 * FRAMES, function(inst)
-                inst.AnimState:PushAnimation("spearjab", false)
-            end),
+            -- TimeEvent(16 * FRAMES, function(inst)
+            --     inst.AnimState:PushAnimation("spearjab", false)
+            -- end),
             TimeEvent(35 * FRAMES, function(inst)
                 inst:PerformBufferedAction()
             end),

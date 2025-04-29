@@ -194,7 +194,9 @@ AddStategraphState("wilson_client", GLOBAL.State{
     onenter = function(inst)
         inst.components.locomotor:Stop()
         inst.AnimState:PlayAnimation("jump")
-
+        
+        self.inst.components.hunger:DoDelta(-5)
+        
         inst:PerformPreviewBufferedAction()
         inst.sg:SetTimeout(2)
     end,

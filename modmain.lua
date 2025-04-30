@@ -37,6 +37,14 @@ Assets = {
 	Asset( "IMAGE", "images/names_gold_wurrow.tex" ),
     Asset( "ATLAS", "images/names_gold_wurrow.xml" ),
 
+    Asset("IMAGE", "images/colour_cubes/bat_vision_on_cc.tex"),
+
+    Asset("ATLAS", "images/fx_batsonar.xml"),
+    Asset("IMAGE", "images/fx_batsonar.tex"),
+
+    Asset("SOUNDPACKAGE", "sound/dontstarve_DLC003.fev"),
+    Asset("SOUND", "sound/DLC003_sfx.fsb"),
+
     -- Asset("ATLAS", "images/wormden.xml"),
     -- Asset("IMAGE", "images/wormden.tex"),
 }
@@ -139,11 +147,14 @@ AddStategraphState ("wilson", GLOBAL.State{
 
     timeline = {
         GLOBAL.TimeEvent(15 * GLOBAL.FRAMES, function(inst)
-				inst.Physics:Stop()
-            end),
+			inst.Physics:Stop()
+        end),
         GLOBAL.FrameEvent(17, function(inst)
             GLOBAL.SpawnAt("dirt_puff", inst)
         end),
+        GLOBAL.TimeEvent(17 * GLOBAL.FRAMES, function(inst)
+            inst.components.hunger:DoDelta(-5)
+        end)
         -- GLOBAL.TimeEvent(18 * GLOBAL.FRAMES, function(inst)
         --     inst.Light:Enable(false)
         -- end),
@@ -156,6 +167,12 @@ AddStategraphState ("wilson", GLOBAL.State{
 
                 if not inst:HasTag("burrowed") then
                     inst:AddTag("burrowed")
+                end
+                if not inst:HasTag("bat") then
+                    inst:AddTag("bat")
+                end
+                if not inst:HasTag("batvision") then
+                    inst:AddTag("batvision")
                 end
 
 				inst.AnimState:SetBank("mole")
@@ -194,8 +211,6 @@ AddStategraphState("wilson_client", GLOBAL.State{
     onenter = function(inst)
         inst.components.locomotor:Stop()
         inst.AnimState:PlayAnimation("jump")
-        
-        self.inst.components.hunger:DoDelta(-5)
         
         inst:PerformPreviewBufferedAction()
         inst.sg:SetTimeout(2)
@@ -251,6 +266,30 @@ AddComponentPostInit("playeractionpicker", function(self)
 	end
 end)
 
+AddComponentPostInit("playeractionpicker", function(self)
+	if self.inst:HasTag("mosslingwhisperer") then
+		local LEAPACTION = ACTIONS.LEAP
+		local DIGID = ACTIONS.DIG.id
+		local _GetRightClickActions = self.GetRightClickActions
+		self.GetRightClickActions = function(self, position, target)
+			local actions = _GetRightClickActions(self, position, target)
+			local iscrazyandalive = not self.inst.replica.sanity:IsSane() and not self.inst:HasTag("playerghost")
+			if iscrazyandalive then
+				if #actions == 0 and position then
+					local ishungry = self.inst.replica.hunger:GetCurrent() < 10
+					local ispassable = self.map:IsPassableAtPoint(position:Get())
+					if ispassable and not ishungry then
+						actions = self:SortActionList({LEAPACTION}, position)
+					end
+				elseif target and target:HasTag(DIGID.."_workable") then
+					actions = self:SortActionList({MYDIGACTION}, target)
+				end
+			end
+			return actions
+		end
+	end
+end)
+
 ------------------------------------------------------------------------------------------------------------
 
 -- inst.ListenForEvent("death", OnEntityDeath)
@@ -300,4 +339,5 @@ end)
 -- GLOBAL.STRINGS.NAMES.MYPREFAB = "Worm Den"
 -- GLOBAL.STRINGS.RECIPE_DESC.MYPREFAB = "I can make new friends!"
 
+modimport("scripts/AddPostInit")
 AddModCharacter("wurrow", "MALE", skin_modes)

@@ -1,7 +1,7 @@
 name = "Wurrow, the Cavernous"
 description = "A friendly depths worm mutated by the miasma lingering in the caverns below."
 author = "QuillVest"
-version = "0.1.2.5"
+version = "0.1.2.8"
 
 forumthread = ""
 

@@ -178,7 +178,12 @@ local states = {
             if inst:HasTag("burrowed") then
                 inst:RemoveTag("burrowed")
             end
-
+            if inst:HasTag("bat") then
+                inst:RemoveTag("bat")
+            end
+            if inst:HasTag("batvision") then
+                inst:RemoveTag("batvision")
+            end
             if not inst:HasTag("scarytoprey") then
                 inst:AddTag("scarytoprey")
             end
@@ -344,9 +349,6 @@ local states = {
             end),
             -- TimeEvent(6 * FRAMES, function(inst)
             --     inst.SoundEmitter:PlaySound("")
-            -- end),
-            -- TimeEvent(16 * FRAMES, function(inst)
-            --     inst.AnimState:PushAnimation("spearjab", false)
             -- end),
             TimeEvent(35 * FRAMES, function(inst)
                 inst:PerformBufferedAction()

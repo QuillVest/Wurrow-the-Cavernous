@@ -1,23 +1,24 @@
--- -@diagnostic disable: undefined-global, syntax-error
 local MakePlayerCharacter = require "prefabs/player_common"
 
 local assets = {
     Asset("SCRIPT", "scripts/prefabs/player_common.lua"),
+
+    Asset( "ANIM", "anim/wurrow.zip"),
+    Asset( "ANIM", "anim/ghost_wurrow_build.zip"),
 	Asset( "ANIM", "anim/beard_wurrow.zip" ),
-    --Asset( "ANIM", "anim/harvest.zip" ),
+    Asset( "ANIM", "anim/wurrow_action.zip" ),
 }
 
 local prefabs = {
     "wormlight",
 }
 
-TUNING.WURROW_HEALTH = 175
-TUNING.WURROW_HUNGER = 225
-TUNING.WURROW_SANITY = 125
+local start_inv = {}
+for k, v in pairs(TUNING.GAMEMODE_STARTING_ITEMS) do
+    start_inv[string.lower(k)] = v.WURROW
+end
 
-TUNING.GAMEMODE_STARTING_ITEMS.DEFAULT.WURROW = {
-	"tooth_kit",
-}
+prefabs = FlattenTree({ prefabs, start_inv }, true)
 
 ------------------------------------------------------------------------------------------------------------
 
@@ -103,19 +104,11 @@ end
 
 ------------------------------------------------------------------------------------------------------------
 
-local start_inv = {}
-for k, v in pairs(TUNING.GAMEMODE_STARTING_ITEMS) do
-    start_inv[string.lower(k)] = v.WURROW
-end
-local prefabs = FlattenTree(start_inv, true)
-
 local function onbecamehuman(inst)
-	inst.components.locomotor:SetExternalSpeedMultiplier(inst, "wurrow_speed_mod", 1)
     inst.Light:Enable(false)
 end
 
 local function onbecameghost(inst)
-   inst.components.locomotor:RemoveExternalSpeedMultiplier(inst, "wurrow_speed_mod")
    inst.Light:Enable(false)
 end
 
@@ -156,8 +149,8 @@ local common_postinit = function(inst)
 	inst:AddTag("monster")
 	inst:AddTag("worm")
 	inst:AddTag("nowormholesanityloss")
-    -- inst:AddTag("wet") --Doesn't currently do anything
-	-- inst:AddTag("cavedweller")
+    inst:AddTag("wet") --Doesn't currently do anything
+	inst:AddTag("cavedweller")
 	-- inst:AddTag("nightvision") --Not going to be used until I code the burrowing vision
     inst:AddTag("wurrow") --Might try to reduce the amount of tags by changing the depth worm aggro tag
 	inst:AddTag("bearded")
@@ -176,6 +169,10 @@ local common_postinit = function(inst)
     inst.components.reticule.ease = true
 
     inst:ListenForEvent("setowner", OnSetOwner)
+
+    if TheNet:GetServerGameMode() == "quagmire" then
+		inst:AddTag("quagmire_shopper")
+	end
 end
 
 ------------------------------------------------------------------------------------------------------------
@@ -193,22 +190,18 @@ local master_postinit = function(inst)
 	inst.components.hunger:SetMax(TUNING.WURROW_HUNGER)
 	inst.components.sanity:SetMax(TUNING.WURROW_SANITY)
 
-    inst.components.combat.damagemultiplier = 1
+	if inst.components.eater ~= nil then
+        inst.components.eater:SetDiet({ FOODTYPE.VEGGIE, FOODTYPE.BERRY, FOODTYPE.SEEDS, FOODTYPE.MEAT })
+        inst.components.eater:SetStrongStomach(true)
+        inst.components.eater:SetCanEatRawMeat(true)
+    end
 
-	inst.components.hunger.hungerrate = 1.5 * TUNING.WILSON_HUNGER_RATE
-
-	inst.components.foodaffinity:AddPrefabAffinity("unagi", TUNING.AFFINITY_15_CALORIES_LARGE)
+    inst.components.foodaffinity:AddPrefabAffinity("unagi", TUNING.AFFINITY_15_CALORIES_LARGE)
 
 	local foodaffinity = inst.components.foodaffinity
 	foodaffinity:AddPrefabAffinity  ("wormlight",            1.0)
 	foodaffinity:AddPrefabAffinity  ("wormlight_lesser",     1.0)
 	foodaffinity:AddPrefabAffinity  ("cutlichen",            1.0)
-
-	inst.components.eater:SetDiet({ FOODTYPE.VEGGIE, FOODTYPE.BERRY, FOODTYPE.SEEDS, FOODTYPE.MEAT })
-	if inst.components.eater ~= nil then
-        inst.components.eater:SetStrongStomach(true)
-        inst.components.eater:SetCanEatRawMeat(true)
-    end
 
 	inst:AddComponent("beard")
     inst.components.beard.onreset = OnResetBeard
@@ -237,7 +230,7 @@ local master_postinit = function(inst)
 	inst.components.sanity.no_moisture_penalty = true
 
 	inst.components.sanity:AddSanityAuraImmunity("worm")
-	inst.components.sanity:AddSanityAuraImmunity("worm_boss")
+	inst.components.sanity:AddSanityAuraImmunity("worm_boss_head")
 
     inst.count = 0
 
@@ -258,4 +251,4 @@ local master_postinit = function(inst)
     inst:ListenForEvent("timerdone", burrow_treasure)
 end
 
-return MakePlayerCharacter("wurrow", prefabs, assets, common_postinit, master_postinit, prefabs)
+return MakePlayerCharacter("wurrow", prefabs, assets, common_postinit, master_postinit)

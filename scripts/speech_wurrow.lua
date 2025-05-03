@@ -252,7 +252,7 @@ return {
 
 	ANNOUNCE_EAT =
 	{
-		GENERIC = "Yum!",
+		GENERIC = "*distinct crunching noises*",
 		PAINFUL = "I don't feel so good.",
 		SPOILED = "Yuck! That was terrible!",
 		STALE = "I think that was starting to turn.",
@@ -1602,7 +1602,7 @@ return {
             UNWRITTEN = "The sign is currently blank.",
 			BURNT = "\"Don't play with matches.\"",
 		},
-		HONEY = "Looks delicious!",
+		HONEY = "I don't want cavities!",
 		HONEYCOMB = "Bees used to live in this.",
 		HONEYHAM = "Sweet and savory.",
 		HONEYNUGGETS = "Tastes like chicken, but I don't think it is.",

@@ -25,9 +25,9 @@ local events = {
         local should_move = inst.components.locomotor:WantsToMoveForward()
 
         if is_moving and not should_move then
-            inst.sg:GoToState("burrow_post")
+            inst.sg:GoToState("burrow_pst")
         elseif not is_moving and should_move then
-            inst.sg:GoToState("burrowing")
+            inst.sg:GoToState("burrow_loop")
         elseif data.force_idle_state and not (is_moving or should_move or inst.sg:HasStateTag("idle")) then
             inst.sg:GoToState("idle")
 		end
@@ -39,7 +39,6 @@ local events = {
         end
 
         inst.SoundEmitter:KillSound("move")
-        inst:SetStateGraph("SGwilson")
         inst.sg:GoToState((data.forcelanded or inst.components.inventory:EquipHasTag("heavyarmor") or inst:HasTag("heavybody")) and "knockbacklanded" or "knockback", data)
     end),
 
@@ -68,7 +67,6 @@ local states = {
             inst.SoundEmitter:KillSound("move")
 
 			inst.SoundEmitter:KillSound("move")
-			inst:SetStateGraph("SGwilson")
 			inst.sg:GoToState("death")
 
             inst.Light:Enable(false)
@@ -109,6 +107,7 @@ local states = {
             tags = { "moving", "canrotate", "hiding", "nomorph" },
 
             onenter = function(inst)
+                inst.components.hunger.burnratemodifiers:SetModifier(inst, 4, "burrowingpenalty")
                 inst.AnimState:PlayAnimation("walk_pre")
                 inst.components.locomotor:WalkForward()
             end,
@@ -121,7 +120,7 @@ local states = {
     },
 
     State {
-        name = "burrowing",
+        name = "burrow_loop",
             tags = { "moving", "canrotate", "hiding", "nomorph" },
 
         onenter = function(inst)
@@ -140,13 +139,13 @@ local states = {
 
         events = {
             EventHandler("animover", function(inst)
-                inst.sg:GoToState("burrowing")
+                inst.sg:GoToState("burrow_loop")
             end),
         }
     },
 
     State {
-        name = "burrow_post",
+        name = "burrow_pst",
             tags = { "canrotate", "hiding", "nomorph" },
 
         onenter = function(inst)
@@ -157,6 +156,7 @@ local states = {
 
         events = {
             EventHandler("animover", function(inst)
+            inst.components.hunger.burnratemodifiers:SetModifier(inst, 2, "burrowingpenalty")
                 inst.sg:GoToState("idle")
             end),
          },
@@ -170,18 +170,10 @@ local states = {
             inst.components.locomotor:StopMoving()
             inst.AnimState:PlayAnimation("jumpout")
 
-            if inst:HasTag("burrowed") then
-                inst:RemoveTag("burrowed")
-            end
-            if inst:HasTag("bat") then
-                inst:RemoveTag("bat")
-            end
-            if inst:HasTag("batvision") then
-                inst:RemoveTag("batvision")
-            end
-            if not inst:HasTag("scarytoprey") then
-                inst:AddTag("scarytoprey")
-            end
+            inst:RemoveTag("burrowed")
+            inst:RemoveTag("bear_trap_immune")
+            inst:RemoveTag("bat")
+            inst:RemoveTag("batvision")
 
             local buffaction = inst:GetBufferedAction()
                 if buffaction ~= nil and buffaction.pos ~= nil then
@@ -229,8 +221,6 @@ local states = {
             if inst.AnimState:AnimDone() then
                 inst.components.moisture.inherentWaterproofness = 0
                 inst.components.combat.damagemultiplier = 1.0
-                inst:RemoveTag("bear_trap_immune")
-                inst:SetStateGraph("SGwilson")
                 inst.sg:GoToState("idle")
                 inst.components.hunger.burnratemodifiers:RemoveModifier(inst, "burrowingpenalty")
 
@@ -492,30 +482,31 @@ AddStategraphPostInit("wilson", function(sg)
         end
 
 --- BURROWING ---
-
-    local burrowing_pre = sg.states["run_start"].onupdate
+    local burrow_pre = sg.states["run_start"].onupdate
         sg.states["run_start"].onupdate = function(inst, ...)
-            burrowing_pre(inst, ...)
+            burrow_pre(inst, ...)
+
             if inst:HasTag("burrowed") and inst.AnimState:IsCurrentAnimation("run_pre") then
-                inst.AnimState:PlayAnimation("burrowing_pre")
+                inst.AnimState:PushAnimation("burrow_pre")
             end
         end
 	
-	local burrowing = sg.states["run"].onenter
+	local burrow_loop = sg.states["run"].onenter
         sg.states["run"].onenter = function(inst, ...)
-            burrowing(inst, ...)
-            if inst:HasTag("burrowed") then
-                inst.sg:GoToState("burrowing")
+            burrow_loop(inst, ...)
+
+            if inst:HasTag("burrowed") and inst.AnimState:IsCurrentAnimation("run_loop") then
                 inst.components.locomotor:SetTriggersCreep(false)
+                inst.AnimState:PushAnimation("burrow_loop")
             end
         end
 	
-	local burrowing_post = sg.states["run_stop"].onenter
+	local burrow_post = sg.states["run_stop"].onenter
         sg.states["run_stop"].onenter = function(inst, ...)
-            burrowing_post(inst, ...)
-            
+            burrow_post(inst, ...)
+
             if inst:HasTag("burrowed") and inst.AnimState:IsCurrentAnimation("run_pst") then
-                inst.AnimState:PlayAnimation("burrowing_post")
+                inst.AnimState:PushAnimation("burrow_pst")
                 inst.components.locomotor:SetTriggersCreep(true)
             end
         end

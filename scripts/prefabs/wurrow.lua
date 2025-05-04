@@ -240,7 +240,7 @@ local master_postinit = function(inst)
     inst.components.lootdropper:AddRandomLoot("rocks", .20)
 	inst.components.lootdropper:AddRandomLoot("nitre", .10)
 	inst.components.lootdropper:AddRandomLoot("marble", .075)
-    inst.components.lootdropper:AddRandomLoot("goldnugget", .5)
+    inst.components.lootdropper:AddRandomLoot("goldnugget", .25)
 	inst.components.lootdropper:AddRandomLoot("redgem", .01)
 	inst.components.lootdropper:AddRandomLoot("bluegem", .01)
 	

@@ -72,18 +72,10 @@ AddStategraphState ("wilson", GLOBAL.State{
             if inst.AnimState:AnimDone() then
                 inst.components.moisture.inherentWaterproofness = 1000
 
-                if not inst:HasTag("bear_trap_immune") then
-                    inst:AddTag("bear_trap_immune")
-                end
-                if not inst:HasTag("burrowed") then
-                    inst:AddTag("burrowed")
-                end
-                if not inst:HasTag("bat") then
-                    inst:AddTag("bat")
-                end
-                if not inst:HasTag("batvision") then
-                    inst:AddTag("batvision")
-                end
+                inst:AddTag("burrowed")
+                inst:AddTag("bear_trap_immune")
+                inst:AddTag("bat")
+                inst:AddTag("batvision")
 
                 inst.components.combat.damagemultiplier = 8.16
                 inst.sg:GoToState("idle")
@@ -103,7 +95,7 @@ AddStategraphState ("wilson", GLOBAL.State{
                     inst.components.sandstormwatcher:SetSandstormSpeedMultiplier(1)
                 end
 
-                inst.components.hunger.burnratemodifiers:SetModifier(inst, 4, "burrowingpenalty")
+                inst.components.hunger.burnratemodifiers:SetModifier(inst, 2, "burrowingpenalty")
                 inst.components.temperature.mintemp = 6
                 inst.components.temperature.maxtemp = 63
             end

@@ -1,5 +1,5 @@
 local assets = {
-    Asset("ANIM", "anim/toothkit_flint.zip"),
+    Asset("ANIM", "anim/sewing_kit.zip"),
     Asset("ATLAS", "images/inventoryimages/toothkit_flint.xml"),
     Asset("IMAGE", "images/inventoryimages/toothkit_flint.tex"),
 }
@@ -13,8 +13,8 @@ local function fn(inst)
 
     MakeInventoryPhysics(inst)
 
-    inst.AnimState:SetBank("toothkit_flint")
-    inst.AnimState:SetBuild("toothkit_flint")
+    inst.AnimState:SetBank("sewing_kit")
+    inst.AnimState:SetBuild("sewing_kit")
     inst.AnimState:PlayAnimation("idle")
 
     MakeInventoryFloatable(inst, "small", 0.05, {0.75, 0.4, 0.75})

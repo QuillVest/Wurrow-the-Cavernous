@@ -191,7 +191,7 @@ local master_postinit = function(inst)
 	inst.components.sanity:SetMax(TUNING.WURROW_SANITY)
 
 	if inst.components.eater ~= nil then
-        inst.components.eater:SetDiet({ FOODTYPE.VEGGIE, FOODTYPE.BERRY, FOODTYPE.SEEDS, FOODTYPE.MEAT })
+        inst.components.eater:SetDiet({ FOODGROUP.OMNI }, { FOODTYPE.VEGGIE, FOODTYPE.BERRY, FOODTYPE.SEEDS, FOODTYPE.MEAT })
         inst.components.eater:SetStrongStomach(true)
         inst.components.eater:SetCanEatRawMeat(true)
     end

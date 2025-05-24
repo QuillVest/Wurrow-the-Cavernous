@@ -9,8 +9,24 @@ local inits = {
 	"init_recipes",
 }
 
+local stategraphs = {
+    "wilson",
+}
+
+local components = {
+	"carefulwalker",
+}
+
 for _, v in pairs(inits) do
 	modimport("init/"..v)
+end
+
+for _, v in pairs(stategraphs) do
+    modimport("postinit/stategraphs/"..v)
+end
+
+for _, v in pairs(components) do
+    modimport("postinit/components/"..v)
 end
 
 TUNING.WURROW_HEALTH = 175
@@ -35,14 +51,36 @@ TUNING.CHARACTER_PREFAB_MODCONFIGDATA["Treasure_Frequency"] = GetModConfigData("
 TUNING.CHARACTER_PREFAB_MODCONFIGDATA["Treasure_Amount"] = GetModConfigData("Treasure_Amount")
 
 ------------------------------------------------------------------------------------------------------------
---- MISCELLANEOUS FUNCTIONS ---
+--- Courtesy of ADM ---
+local WURROW_BURROWED_ACTIONS = {
+    "BURROW",
+    "RESURFACE",
+    "WALKTO",
+    "ATTACK",
+    "DIG",
+    "DROP",
+    "PICK",
+    "PICKUP",
+}
 
+local LocoMotor = require("components/locomotor")
+
+local OldPushAction = LocoMotor.PushAction
+function LocoMotor:PushAction(bufferedaction, ...)
+    if self.inst.prefab == "wurrow" and self.inst:HasTag("burrowed") and bufferedaction and not table.contains(WURROW_BURROWED_ACTIONS, bufferedaction.action.id) then
+        self.inst.sg:GoToState("resurface", bufferedaction)
+        return
+    end
+    
+    return OldPushAction(self, bufferedaction, ...)
+end
+
+--- MISCELLANEOUS FUNCTIONS ---
 AddComponentPostInit("playeractionpicker", function(self)
 	if self.inst.prefab == "wurrow" then
 		local old = self.GetRightClickActions
 		self.GetRightClickActions = function(self, position, target)
-			local bodyitem = self.inst.replica.inventory:GetEquippedItem(GLOBAL.EQUIPSLOTS.BODY)
-				if target and target:HasTag(GLOBAL.ACTIONS.DIG.id.."_workable") then
+				if target and self.inst:HasTag("burrowed") and target:HasTag(GLOBAL.ACTIONS.DIG.id.."_workable") then
 					return self:SortActionList({ GLOBAL.ACTIONS.DIG }, target)
 				end
 			return old(self, position, target)

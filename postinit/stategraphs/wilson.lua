@@ -316,34 +316,18 @@ local states = {
 		end,
 		
 		timeline = {
+			TimeEvent(2 * FRAMES, 	SpawnMoveFx),
 			TimeEvent(4 * FRAMES, function(inst)
 				inst.sg:RemoveStateTag("busy")
+			end),
+			FrameEvent(3, function(inst)
+				SpawnAt("shovel_dirt", inst)
 			end),
 			-- TimeEvent(6 * FRAMES, function(inst)
 			--	 inst.SoundEmitter:PlaySound("")
 			-- end),
-			TimeEvent(6 * FRAMES, function(inst)
-				inst.AnimState:PlayAnimation("jumpout")
-			end),
-			FrameEvent(7, function(inst)
-				SpawnAt("dirt_puff", inst)
-			end),
 			TimeEvent(8 * FRAMES, function(inst)
-				inst:Show()
-			end),
-			TimeEvent(12 * FRAMES, function(inst)
 				inst:PerformBufferedAction()
-			end),
-			TimeEvent(20 * FRAMES, 	SpawnMoveFx),
-			FrameEvent(22, function(inst)
-				SpawnAt("shovel_dirt", inst)
-			end),
-		},
-
-		events = {
-			EventHandler("animover", function(inst)
-				inst:Hide()
-				inst.sg:GoToState("idle")
 			end),
 		},
 		

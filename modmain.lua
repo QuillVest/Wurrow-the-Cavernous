@@ -5,7 +5,6 @@ local inits = {
 	"init_assets",
 	"init_prefabs",
 	"init_wurrow",
-	"init_widgets",
 	"init_recipes",
 }
 
@@ -34,7 +33,9 @@ TUNING.WURROW_HUNGER = 225
 TUNING.WURROW_SANITY = 125
 
 TUNING.GAMEMODE_STARTING_ITEMS.DEFAULT.WURROW = {
-	"toothkit_flint",
+	"slurper_pelt",
+    "slurper_pelt",
+    "slurper_pelt",
 }
 
 TUNING.CHARACTER_PREFAB_MODCONFIGDATA = {}

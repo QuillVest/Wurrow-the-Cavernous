@@ -1,5 +1,5 @@
 PrefabFiles = {
 	"wurrow",
-	"wurrow_skins",
+	"wurrow_none",
     "toothkit_flint",
 }

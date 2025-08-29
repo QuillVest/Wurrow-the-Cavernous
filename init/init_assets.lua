@@ -8,8 +8,10 @@ Assets = {
     Asset( "IMAGE", "images/selectscreen_portraits/wurrow_silho.tex" ),
     Asset( "ATLAS", "images/selectscreen_portraits/wurrow_silho.xml" ),
 
-    Asset( "IMAGE", "images/bigportraits/wurrow.tex" ),
-    Asset( "ATLAS", "images/bigportraits/wurrow.xml" ),
+    Asset( "IMAGE", "bigportraits/wurrow.tex" ),
+    Asset( "ATLAS", "bigportraits/wurrow.xml" ),
+    Asset( "IMAGE", "bigportraits/wurrow_none.tex"),
+    Asset( "ATLAS", "bigportraits/wurrow_none.xml"),
 
 	Asset( "IMAGE", "images/map_icons/wurrow.tex" ),
 	Asset( "ATLAS", "images/map_icons/wurrow.xml" ),
@@ -23,11 +25,11 @@ Assets = {
 	Asset( "IMAGE", "images/avatars/self_inspect_wurrow.tex" ),
     Asset( "ATLAS", "images/avatars/self_inspect_wurrow.xml" ),
 
-	Asset( "IMAGE", "images/nameplates/names_wurrow.tex" ),
-    Asset( "ATLAS", "images/nameplates/names_wurrow.xml" ),
+	Asset( "IMAGE", "images/names_wurrow.tex" ),
+    Asset( "ATLAS", "images/names_wurrow.xml" ),
 
-	Asset( "IMAGE", "images/nameplates/names_gold_wurrow.tex" ),
-    Asset( "ATLAS", "images/nameplates/names_gold_wurrow.xml" ),
+	Asset( "IMAGE", "images/names_gold_wurrow.tex" ),
+    Asset( "ATLAS", "images/names_gold_wurrow.xml" ),
 
     Asset( "ANIM", "anim/wurrow_action.zip" ),
 

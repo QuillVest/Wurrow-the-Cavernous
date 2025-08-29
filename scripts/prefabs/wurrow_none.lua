@@ -5,8 +5,10 @@ table.insert(prefabs, CreatePrefabSkin("wurrow_none", {
 		Asset( "ANIM", "anim/wurrow.zip" ),
 		Asset( "ANIM", "anim/ghost_wurrow_build.zip" ),
 		
-		Asset( "IMAGE", "images/bigportraits/wurrow.tex" ),
-		Asset( "ATLAS", "images/bigportraits/wurrow.xml" ),
+		Asset( "IMAGE", "bigportraits/wurrow.tex" ),
+		Asset( "ATLAS", "bigportraits/wurrow.xml" ),
+    	Asset( "IMAGE", "bigportraits/wurrow_none.tex"),
+    	Asset( "ATLAS", "bigportraits/wurrow_none.xml"),
 	},
 	
 	rarity = "Character",

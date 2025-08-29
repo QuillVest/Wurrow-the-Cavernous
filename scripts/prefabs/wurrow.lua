@@ -33,7 +33,7 @@ local function OnShaveBerry(inst)
     end
 end
 
-local BEARD_DAYS = { 4, 8, 12 }
+local BEARD_DAYS = { 2, 4, 6 }
 local BEARD_BITS = { 1, 1, 1 }
 
 local function OnGrowShortBeard(inst, skinname)
@@ -124,7 +124,7 @@ end
 
 local function CustomSanityFn(inst, dt)
     if TheWorld.state.isday and not TheWorld:HasTag("cave") then
-        return -(5 / (TUNING.SEG_TIME * 2))
+        return -(7.5 / (TUNING.SEG_TIME * 2))
     end
     return 0
 end
@@ -178,6 +178,10 @@ end
 ------------------------------------------------------------------------------------------------------------
 
 local master_postinit = function(inst)
+
+    local lure = SpawnPrefab("wurrow_lure")
+    lure.Transform:SetPosition(inst:GetPosition():Get())
+
     inst.starting_inventory = start_inv[TheNet:GetServerGameMode()] or start_inv.default
 
     inst:AddComponent("acidinfusible")
@@ -236,11 +240,11 @@ local master_postinit = function(inst)
 
     inst:AddComponent("lootdropper")
     inst.components.lootdropper:AddRandomLoot("farm_soil_debris", .80)
-    inst.components.lootdropper:AddRandomLoot("flint", .20)
-    inst.components.lootdropper:AddRandomLoot("rocks", .20)
-	inst.components.lootdropper:AddRandomLoot("nitre", .10)
-	inst.components.lootdropper:AddRandomLoot("marble", .075)
-    inst.components.lootdropper:AddRandomLoot("goldnugget", .25)
+    inst.components.lootdropper:AddRandomLoot("flint", .25)
+    inst.components.lootdropper:AddRandomLoot("rocks", .25)
+	inst.components.lootdropper:AddRandomLoot("nitre", .20)
+	inst.components.lootdropper:AddRandomLoot("marble", .10)
+    inst.components.lootdropper:AddRandomLoot("goldnugget", .15)
 	inst.components.lootdropper:AddRandomLoot("redgem", .01)
 	inst.components.lootdropper:AddRandomLoot("bluegem", .01)
 	

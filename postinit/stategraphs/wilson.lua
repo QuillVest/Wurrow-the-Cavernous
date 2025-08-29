@@ -50,15 +50,16 @@ local states = {
 
 			inst.AnimState:PlayAnimation("walk_loop")
 			inst.components.locomotor:WalkForward()
-			inst.components.locomotor.walkspeed = 5
+			inst.components.locomotor.walkspeed = 6
 		end,
 		
 		timeline = {
-			TimeEvent(3 * FRAMES, 	SpawnMoveFx),
-			TimeEvent(9 * FRAMES, 	SpawnMoveFx),
-			TimeEvent(15 * FRAMES, 	SpawnMoveFx),
+			TimeEvent(1 * FRAMES, 	SpawnMoveFx),
+			TimeEvent(6 * FRAMES, 	SpawnMoveFx),
+			TimeEvent(11 * FRAMES, 	SpawnMoveFx),
+			TimeEvent(16 * FRAMES, 	SpawnMoveFx),
 			TimeEvent(21 * FRAMES, 	SpawnMoveFx),
-			TimeEvent(27 * FRAMES, 	SpawnMoveFx),
+			TimeEvent(26 * FRAMES, 	SpawnMoveFx),
 		},
 		
 		events = {
@@ -190,6 +191,7 @@ local states = {
 			inst:RemoveTag("bear_trap_immune")
 			inst:RemoveTag("bat")
 			inst:RemoveTag("batvision")
+			inst:AddTag("scarytoprey")
 			
 			local buffaction = ba or inst:GetBufferedAction()
 			inst.sg.statemem.retry_ba = ba
@@ -274,7 +276,7 @@ local states = {
 			inst.components.locomotor:Stop()
 			inst.SoundEmitter:KillSound("move")
 			inst.sg.statemem.action = inst.bufferedaction
-			inst.sg:SetTimeout(15 * FRAMES)
+			inst.sg:SetTimeout(10 * FRAMES)
 		end,
 		
 		timeline = {
@@ -312,7 +314,7 @@ local states = {
 			inst.components.locomotor:Stop()
 			inst.SoundEmitter:KillSound("move")
 			inst.sg.statemem.action = inst.bufferedaction
-			inst.sg:SetTimeout(25 * FRAMES)
+			inst.sg:SetTimeout(10 * FRAMES)
 		end,
 		
 		timeline = {
@@ -354,7 +356,7 @@ local states = {
 			inst.AnimState:PlayAnimation("wurrow_harvesting")
 			inst.AnimState:PushAnimation("wurrow_harvesting")
 			inst.sg.statemem.action = inst.bufferedaction
-			inst.sg:SetTimeout(20 * FRAMES)
+			inst.sg:SetTimeout(15 * FRAMES)
 		end,
 		
 		timeline = {
@@ -364,7 +366,7 @@ local states = {
 			-- TimeEvent(6 * FRAMES, function(inst)
 			--	 inst.SoundEmitter:PlaySound("")
 			-- end),
-			TimeEvent(15 * FRAMES, function(inst)
+			TimeEvent(12 * FRAMES, function(inst)
 				inst:PerformBufferedAction()
 			end),
 		},

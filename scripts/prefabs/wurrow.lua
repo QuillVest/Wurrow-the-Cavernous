@@ -28,9 +28,9 @@ local function OnResetBeard(inst)
 end
 
 local function OnShaveBerry(inst)
-    if inst.components.beard then
-        inst.components.beard:Reset()
-    end
+    -- if inst.components.beard then
+    --     inst.components.beard:Reset()
+    -- end
 end
 
 local BEARD_DAYS = { 2, 4, 6 }
@@ -50,7 +50,7 @@ local function OnGrowMediumBeard(inst, skinname)
     inst.Light:Enable(true)
 	inst.Light:SetRadius(2)
 	inst.Light:SetFalloff(.5)
-	inst.Light:SetIntensity(0.9)
+	inst.Light:SetIntensity(0.8)
 	inst.Light:SetColour(128/255,255/255,255/255)
     if skinname == nil then
         inst.AnimState:OverrideSymbol("beard", "beard_wurrow", "beard_medium")
@@ -89,7 +89,7 @@ local function GetPointSpecialActions(inst, pos, useitem, right)
         local candig = inst.CanDig(pos)
         if candig and inst:HasTag("burrowed") then
             return { ACTIONS.RESURFACE }
-        elseif candig and inst.replica.hunger:GetPercent() >= 0.2 then
+        elseif candig and inst.replica.hunger:GetPercent() >= 0.1 then
             return { ACTIONS.BURROW }
         end
     end
@@ -221,7 +221,7 @@ local master_postinit = function(inst)
 	inst.Light:Enable(true)
 	inst.Light:SetRadius(4)
 	inst.Light:SetFalloff(.5)
-	inst.Light:SetIntensity(0.9)
+	inst.Light:SetIntensity(0.8)
 	inst.Light:SetColour(128/255,255/255,255/255)
 
 	inst.OnLoad = onload
@@ -240,11 +240,11 @@ local master_postinit = function(inst)
 
     inst:AddComponent("lootdropper")
     inst.components.lootdropper:AddRandomLoot("farm_soil_debris", .80)
-    inst.components.lootdropper:AddRandomLoot("flint", .25)
-    inst.components.lootdropper:AddRandomLoot("rocks", .25)
-	inst.components.lootdropper:AddRandomLoot("nitre", .20)
-	inst.components.lootdropper:AddRandomLoot("marble", .10)
-    inst.components.lootdropper:AddRandomLoot("goldnugget", .15)
+    inst.components.lootdropper:AddRandomLoot("flint", .40)
+    inst.components.lootdropper:AddRandomLoot("rocks", .40)
+	inst.components.lootdropper:AddRandomLoot("nitre", .25)
+	inst.components.lootdropper:AddRandomLoot("marble", .15)
+    inst.components.lootdropper:AddRandomLoot("goldnugget", .1)
 	inst.components.lootdropper:AddRandomLoot("redgem", .01)
 	inst.components.lootdropper:AddRandomLoot("bluegem", .01)
 	

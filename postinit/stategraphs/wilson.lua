@@ -3,18 +3,20 @@ GLOBAL.setfenv(1, GLOBAL)
 
 local events = {
 	EventHandler("startstarving", function(inst)
-		inst.sg:GoToState("resurface")
-		inst.components.talker:Say("Me hungy :(")
+		if inst:HasTag("burrowed") then
+			inst.sg:GoToState("resurface")
+			inst.components.talker:Say("Me hungy :(")
+		end
 	end),
 }
 
 local function SpawnMoveFx(inst)
-	SpawnPrefab("mole_move_fx").Transform:SetPosition(inst.Transform:GetWorldPosition())
+	local x, y, z = inst.Transform:GetWorldPosition()
+    SpawnPrefab("mole_move_fx").Transform:SetPosition(x, y, z)
 end
 
 local states = {
 	--	Movement
-	
 	State{
 		name = "burrow_pre",
 		tags = {"moving", "canrotate", "hiding", "nomorph"},
@@ -27,7 +29,12 @@ local states = {
 		
 		events = {
 			EventHandler("animover", function(inst)
+				local x, y, z = inst.Transform:GetWorldPosition()
+    			if TheWorld.Map:GetTileAtPoint(x, y, z) == WORLD_TILES.FARMING_SOIL then
+					inst.sg:GoToState("burrow_loop_till")
+				else
 				inst.sg:GoToState("burrow_loop")
+				end
 			end),
 		}
 	},
@@ -50,7 +57,7 @@ local states = {
 
 			inst.AnimState:PlayAnimation("walk_loop")
 			inst.components.locomotor:WalkForward()
-			inst.components.locomotor.walkspeed = 6
+			inst.components.locomotor.walkspeed = 6.6
 		end,
 		
 		timeline = {
@@ -64,7 +71,54 @@ local states = {
 		
 		events = {
 			EventHandler("animover", function(inst)
+				local x, y, z = inst.Transform:GetWorldPosition()
+    			if TheWorld.Map:GetTileAtPoint(x, y, z) == WORLD_TILES.FARMING_SOIL then
+					inst.sg:GoToState("burrow_loop_till")
+				else
 				inst.sg:GoToState("burrow_loop")
+				end
+			end),
+		}
+	},
+
+	State{
+		name = "burrow_loop_till",
+		tags = {"moving", "canrotate", "hiding", "nomorph"},
+		
+		onenter = function(inst)
+			local treasure_config = TUNING.CHARACTER_PREFAB_MODCONFIGDATA["Burrow_Treasure"]
+			local frequency = TUNING.CHARACTER_PREFAB_MODCONFIGDATA["Treasure_Frequency"]
+
+			if treasure_config == 1 then
+				if not inst.components.timer:TimerExists("treasure_drop") then
+					inst.components.timer:StartTimer("treasure_drop", frequency)
+				else
+					inst.components.timer:ResumeTimer("treasure_drop")
+				end
+			end
+
+			inst.AnimState:PlayAnimation("walk_loop")
+			inst.components.locomotor:WalkForward()
+			inst.components.locomotor.walkspeed = 4
+		end,
+		
+		timeline = {
+			FrameEvent(0, function(inst)
+				SpawnAt("farm_soil", inst)
+			end),
+			FrameEvent(11, function(inst)
+				SpawnAt("farm_soil", inst)
+			end),
+		},
+		
+		events = {
+			EventHandler("animover", function(inst)
+				local x, y, z = inst.Transform:GetWorldPosition()
+    			if TheWorld.Map:GetTileAtPoint(x, y, z) == WORLD_TILES.FARMING_SOIL then
+					inst.sg:GoToState("burrow_loop_till")
+				else
+				inst.sg:GoToState("burrow_loop")
+				end
 			end),
 		}
 	},
@@ -121,7 +175,6 @@ local states = {
 	},
 	
 	-- Enter / Exit
-	
 	State{
 		name = "burrow",
 		tags = {"doing", "busy"},
@@ -131,6 +184,7 @@ local states = {
 			inst.DynamicShadow:Enable(false)
 			inst.components.locomotor:Stop()
 			inst:RemoveTag("scarytoprey")
+			inst.components.locomotor:SetTriggersCreep(false)
 			
 			local buffaction = inst:GetBufferedAction()
 			if buffaction and buffaction.pos then
@@ -146,7 +200,7 @@ local states = {
 				SpawnAt("dirt_puff", inst)
 			end),
 			TimeEvent(17 * FRAMES, function(inst)
-				inst.components.hunger:DoDelta(-3)
+				inst.components.hunger:DoDelta(-2.5)
 			end)
 			-- TimeEvent(18 * FRAMES, function(inst)
 			--	 inst.Light:Enable(false)
@@ -157,6 +211,7 @@ local states = {
 			EventHandler("animover", function(inst)
 				if inst.AnimState:AnimDone() then
 					inst:Hide()
+					inst:PushEvent("dropallaggro")
 					
 					inst.components.moisture.inherentWaterproofness = 1000
 					inst.components.combat.damagemultiplier = 8.16
@@ -187,11 +242,12 @@ local states = {
 			
 			inst.AnimState:PlayAnimation("jumpout")
 			inst.components.locomotor:StopMoving()
+			inst.components.locomotor:SetTriggersCreep(true)
+			inst:AddTag("scarytoprey")
 			inst:RemoveTag("burrowed")
 			inst:RemoveTag("bear_trap_immune")
 			inst:RemoveTag("bat")
 			inst:RemoveTag("batvision")
-			inst:AddTag("scarytoprey")
 			
 			local buffaction = ba or inst:GetBufferedAction()
 			inst.sg.statemem.retry_ba = ba
@@ -280,17 +336,13 @@ local states = {
 		end,
 		
 		timeline = {
-			TimeEvent(2 * FRAMES, 	SpawnMoveFx),
 			TimeEvent(4 * FRAMES, function(inst)
 				inst.sg:RemoveStateTag("busy")
 			end),
 			FrameEvent(3, function(inst)
 				SpawnAt("shovel_dirt", inst)
 			end),
-			-- TimeEvent(6 * FRAMES, function(inst)
-			--	 inst.SoundEmitter:PlaySound("")
-			-- end),
-			TimeEvent(8 * FRAMES, function(inst)
+			TimeEvent(6 * FRAMES, function(inst)
 				inst:PerformBufferedAction()
 			end),
 		},
@@ -318,17 +370,13 @@ local states = {
 		end,
 		
 		timeline = {
-			TimeEvent(2 * FRAMES, 	SpawnMoveFx),
 			TimeEvent(4 * FRAMES, function(inst)
 				inst.sg:RemoveStateTag("busy")
 			end),
 			FrameEvent(3, function(inst)
 				SpawnAt("shovel_dirt", inst)
 			end),
-			-- TimeEvent(6 * FRAMES, function(inst)
-			--	 inst.SoundEmitter:PlaySound("")
-			-- end),
-			TimeEvent(8 * FRAMES, function(inst)
+			TimeEvent(6 * FRAMES, function(inst)
 				inst:PerformBufferedAction()
 			end),
 		},
@@ -363,9 +411,6 @@ local states = {
 			TimeEvent(4 * FRAMES, function(inst)
 				inst.sg:RemoveStateTag("busy")
 			end),
-			-- TimeEvent(6 * FRAMES, function(inst)
-			--	 inst.SoundEmitter:PlaySound("")
-			-- end),
 			TimeEvent(12 * FRAMES, function(inst)
 				inst:PerformBufferedAction()
 			end),
@@ -458,14 +503,21 @@ local states = {
 			-- TimeEvent(6 * FRAMES, function(inst)
 			--	 inst.SoundEmitter:PlaySound("")
 			-- end),
-			TimeEvent(5 * FRAMES, function(inst)
-				inst:Show()
-			end),
 			TimeEvent(6 * FRAMES, function(inst)
 				inst.AnimState:PlayAnimation("jumpout")
 			end),
-			TimeEvent(25 * FRAMES, function(inst)
+			TimeEvent(6 * FRAMES, 	SpawnMoveFx),
+			FrameEvent(7, function(inst)
+				SpawnAt("dirt_puff", inst)
+			end),
+			TimeEvent(8 * FRAMES, function(inst)
+				inst:Show()
+			end),
+			TimeEvent(17 * FRAMES, function(inst)
 				inst:PerformBufferedAction()
+			end),
+			FrameEvent(20, function(inst)
+				SpawnAt("shovel_dirt", inst)
 			end),
 			TimeEvent(26 * FRAMES, function(inst)
 				inst:Hide()

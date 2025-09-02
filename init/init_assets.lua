@@ -31,8 +31,6 @@ Assets = {
 	Asset( "IMAGE", "images/names_gold_wurrow.tex" ),
     Asset( "ATLAS", "images/names_gold_wurrow.xml" ),
 
-    Asset( "ANIM", "anim/wurrow_action.zip" ),
-
     --- TOOTH KITS ---
     Asset("ATLAS", "images/inventoryimages/toothkit_flint.xml"),
     Asset("IMAGE", "images/inventoryimages/toothkit_flint.tex"),

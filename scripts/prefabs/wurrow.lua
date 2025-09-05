@@ -189,6 +189,13 @@ local function CheckLight(inst)
     end
 end
 
+local function DisallowBoatHopping(inst, speedmult)
+    if inst:HasTag("burrowed") then
+        return 0
+    end
+    return nil
+end
+
 ------------------------------------------------------------------------------------------------------------
 
 local common_postinit = function(inst)
@@ -285,7 +292,7 @@ local master_postinit = function(inst)
 	inst.components.sanity.no_moisture_penalty = true
 
 	inst.components.sanity:AddSanityAuraImmunity("worm")
-	inst.components.sanity:AddSanityAuraImmunity("worm_boss_dirt")
+	inst.components.sanity:AddSanityAuraImmunity("worm_boss_piece")
 
     inst.count = 0
 
@@ -298,6 +305,8 @@ local master_postinit = function(inst)
     inst.components.lootdropper:AddRandomLoot("goldnugget", .1)
 	inst.components.lootdropper:AddRandomLoot("redgem", .01)
 	inst.components.lootdropper:AddRandomLoot("bluegem", .01)
+
+    inst.components.locomotor.hop_distance_fn = DisallowBoatHopping
 	
 	local treasure_amount = TUNING.CHARACTER_PREFAB_MODCONFIGDATA["Treasure_Amount"]
     inst.components.lootdropper.numrandomloot = treasure_amount

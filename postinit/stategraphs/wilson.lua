@@ -122,7 +122,7 @@ local states = {
 			end),
 		}
 	},
-
+	
 	State {
 		name = "burrow_pst",
 		tags = {"canrotate", "hiding", "nomorph"},
@@ -196,22 +196,44 @@ local states = {
 			TimeEvent(15 * FRAMES, function(inst)
 				inst.Physics:Stop()
 			end),
-			FrameEvent(15, function(inst)
-				SpawnAt("worm", inst)
-			end),
 			FrameEvent(17, function(inst)
-				SpawnAt("dirt_puff", inst)
+				local x, y, z = inst.Transform:GetWorldPosition()
+				local platform = inst:GetCurrentPlatform()
+
+				if not (platform ~= nil and TheWorld.Map:IsOceanTileAtPoint(x, y, z)) then
+					SpawnAt("dirt_puff", inst)
+				end
 			end),
 			TimeEvent(17 * FRAMES, function(inst)
 				inst.components.hunger:DoDelta(-2.5)
-			end)
+			end),
+			FrameEvent(21, function(inst) -- change drown frames here
+				local x, y, z = inst.Transform:GetWorldPosition()
+				local platform = inst:GetCurrentPlatform()
+				
+				if platform ~= nil and TheWorld.Map:IsOceanTileAtPoint(x, y, z) then
+					platform.SoundEmitter:PlaySound("dontstarve/common/destroy_wood")
+					platform:PushEvent("spawnnewboatleak", {pt = inst:GetPosition(), leak_size = "med_leak"})
+					inst:ShowHUD(false)
+				end
+			end),
 		},
-
+		
 		events = {
 			EventHandler("animover", function(inst)
 				local inventory = inst.components.inventory
 				if inst.AnimState:AnimDone() then
 					inst:Hide()
+
+					local x, y, z = inst.Transform:GetWorldPosition()
+					local platform = inst:GetCurrentPlatform()
+
+					if platform ~= nil and TheWorld.Map:IsOceanTileAtPoint(x, y, z) then
+						inst:DoTaskInTime(1, function() inst.sg:GoToState("sink_instant") end)
+
+						return
+					end
+
 					inst:PushEvent("dropallaggro")
 					inventory:Equip(SpawnPrefab("wurrow_handslot"))
 					inst.components.moisture.inherentWaterproofness = 1000
@@ -497,12 +519,15 @@ local states = {
 		
 		timeline = {
 			TimeEvent(4 * FRAMES, function(inst)
-				inst.sg:RemoveStateTag("busy")
+				-- inst.sg:RemoveStateTag("busy")
 			end),
 			TimeEvent(6 * FRAMES, function(inst)
 				inst.AnimState:PlayAnimation("jumpout")
 			end),
 			TimeEvent(6 * FRAMES, 	SpawnMoveFx),
+			FrameEvent(6, function(inst)
+				inst.sg:RemoveStateTag("noattack")
+			end),
 			FrameEvent(7, function(inst)
 				SpawnAt("dirt_puff", inst)
 			end),
@@ -514,6 +539,12 @@ local states = {
 			end),
 			FrameEvent(20, function(inst)
 				SpawnAt("shovel_dirt", inst)
+			end),
+			FrameEvent(21, function(inst)
+				inst.sg:AddStateTag("noattack")
+			end),
+			TimeEvent(26 * FRAMES, function(inst)
+				inst:Hide()
 			end),
 		},
 		

@@ -1,5 +1,5 @@
 local assets = {
-    Asset("ANIM", "anim/dreadstone.zip"),
+    Asset("ANIM", "anim/wurrow_lure_medium.zip"),
 }
 
 local function fn(inst)
@@ -9,8 +9,8 @@ local function fn(inst)
     inst.entity:AddAnimState()
     inst.entity:AddNetwork()
 
-    inst.AnimState:SetBank("dreadstone")
-    inst.AnimState:SetBuild("dreadstone")
+    inst.AnimState:SetBank("wurrow_lure_medium")
+    inst.AnimState:SetBuild("wurrow_lure_medium")
     inst.AnimState:PlayAnimation("idle")
 
     inst.entity:SetPristine()

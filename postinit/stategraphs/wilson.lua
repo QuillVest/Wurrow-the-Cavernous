@@ -122,7 +122,7 @@ local states = {
 			end),
 		}
 	},
-	
+
 	State {
 		name = "burrow_pst",
 		tags = {"canrotate", "hiding", "nomorph"},
@@ -196,32 +196,31 @@ local states = {
 			TimeEvent(15 * FRAMES, function(inst)
 				inst.Physics:Stop()
 			end),
+			FrameEvent(15, function(inst)
+				SpawnAt("worm", inst)
+			end),
 			FrameEvent(17, function(inst)
 				SpawnAt("dirt_puff", inst)
 			end),
 			TimeEvent(17 * FRAMES, function(inst)
 				inst.components.hunger:DoDelta(-2.5)
 			end)
-			-- TimeEvent(18 * FRAMES, function(inst)
-			--	 inst.Light:Enable(false)
-			-- end),
 		},
-		
+
 		events = {
 			EventHandler("animover", function(inst)
+				local inventory = inst.components.inventory
 				if inst.AnimState:AnimDone() then
 					inst:Hide()
 					inst:PushEvent("dropallaggro")
-					
+					inventory:Equip(SpawnPrefab("wurrow_handslot"))
 					inst.components.moisture.inherentWaterproofness = 1000
-					inst.components.combat.damagemultiplier = 8.16
+					inst.components.combat:SetDefaultDamage(81.6)
 					inst.components.hunger.burnratemodifiers:SetModifier(inst, 2, "burrowingpenalty")
 					inst.components.temperature.mintemp = 6
 					inst.components.temperature.maxtemp = 63
 					inst:AddTag("burrowed")
 					inst:AddTag("bear_trap_immune")
-					inst:AddTag("bat")
-					inst:AddTag("batvision")
 					
 					if inst.components.sandstormwatcher then
 						inst.components.sandstormwatcher:SetSandstormSpeedMultiplier(1)
@@ -246,8 +245,11 @@ local states = {
 			inst:AddTag("scarytoprey")
 			inst:RemoveTag("burrowed")
 			inst:RemoveTag("bear_trap_immune")
-			inst:RemoveTag("bat")
-			inst:RemoveTag("batvision")
+
+			local equip = inst.components.inventory:GetEquippedItem(EQUIPSLOTS.HANDS)
+			if equip and equip.prefab == "wurrow_handslot" then 
+				equip:Remove()
+			end
 			
 			local buffaction = ba or inst:GetBufferedAction()
 			inst.sg.statemem.retry_ba = ba
@@ -258,11 +260,6 @@ local states = {
 		end,
 		
 		timeline = {
-			-- TimeEvent(10 * FRAMES, function(inst)
-			--	 if inst.components.beard then
-			--		 inst.Light:Enable(true)
-			--	 end
-			-- end),
 			FrameEvent(3, function(inst)
 				SpawnAt("shovel_dirt", inst)
 			end),
@@ -296,7 +293,7 @@ local states = {
 			EventHandler("animqueueover", function(inst)
 				if inst.AnimState:AnimDone() then
 					inst.components.moisture.inherentWaterproofness = 0
-					inst.components.combat.damagemultiplier = 1.0
+					inst.components.combat:SetDefaultDamage(10)
 					inst.components.hunger.burnratemodifiers:RemoveModifier(inst, "burrowingpenalty")
 					
 					if inst.components.timer:TimerExists("treasure_drop") and not inst.components.timer:IsPaused("treasure_drop") then
@@ -323,7 +320,6 @@ local states = {
 	},
 
 	--	Actions
-	
 	State {
 		name = "burrow_drop",
 		tags = {"doing", "busy", "noattack"},
@@ -444,9 +440,6 @@ local states = {
 			TimeEvent(4 * FRAMES, function(inst)
 				inst.sg:RemoveStateTag("busy")
 			end),
-			-- TimeEvent(6 * FRAMES, function(inst)
-			--	 inst.SoundEmitter:PlaySound("")
-			-- end),
 			TimeEvent(6 * FRAMES, function(inst)
 				inst.AnimState:PlayAnimation("jumpout")
 			end),
@@ -456,8 +449,14 @@ local states = {
 			TimeEvent(8 * FRAMES, function(inst)
 				inst:Show()
 			end),
+			TimeEvent(9 * FRAMES, function(inst)
+				inst.components.hunger:DoDelta(-1)
+			end),
 			TimeEvent(12 * FRAMES, function(inst)
 				inst:PerformBufferedAction()
+			end),
+			TimeEvent(12 * FRAMES, function(inst)
+				inst.SoundEmitter:PlaySound("dontstarve/wilson/dig")
 			end),
 			TimeEvent(20 * FRAMES, 	SpawnMoveFx),
 			FrameEvent(22, function(inst)
@@ -500,9 +499,6 @@ local states = {
 			TimeEvent(4 * FRAMES, function(inst)
 				inst.sg:RemoveStateTag("busy")
 			end),
-			-- TimeEvent(6 * FRAMES, function(inst)
-			--	 inst.SoundEmitter:PlaySound("")
-			-- end),
 			TimeEvent(6 * FRAMES, function(inst)
 				inst.AnimState:PlayAnimation("jumpout")
 			end),
@@ -518,9 +514,6 @@ local states = {
 			end),
 			FrameEvent(20, function(inst)
 				SpawnAt("shovel_dirt", inst)
-			end),
-			TimeEvent(26 * FRAMES, function(inst)
-				inst:Hide()
 			end),
 		},
 		
@@ -595,11 +588,10 @@ ENV.AddStategraphPostInit("wilson", function(sg)
 	end
 	
 --	Actions
-
 	local burrow_attack = sg.actionhandlers[ACTIONS.ATTACK].deststate
 	sg.actionhandlers[ACTIONS.ATTACK].deststate = function(inst, action, ...)
 		local equip = inst.components.inventory:GetEquippedItem(EQUIPSLOTS.HANDS)
-		if equip == nil and inst:HasTag("burrowed") then
+		if equip and equip.prefab == "wurrow_handslot" and inst:HasTag("burrowed") then
 			return "burrow_attack"
 		end
 		

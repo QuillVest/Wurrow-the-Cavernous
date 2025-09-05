@@ -6,10 +6,13 @@ local assets = {
     Asset( "ANIM", "anim/wurrow.zip"),
     Asset( "ANIM", "anim/ghost_wurrow_build.zip"),
 	Asset( "ANIM", "anim/beard_wurrow.zip" ),
+    Asset( "ANIM", "anim/wurrow_lure_medium.zip"),
+    Asset( "ANIM", "anim/worm.zip")
 }
 
 local prefabs = {
     "wormlight",
+    "wurrow_lure_medium",
 }
 
 local start_inv = {}
@@ -24,12 +27,6 @@ prefabs = FlattenTree({ prefabs, start_inv }, true)
 local function OnResetBeard(inst)
     inst.AnimState:ClearOverrideSymbol("beard")
     inst.Light:Enable(false)
-end
-
-local function OnShaveBerry(inst)
-    -- if inst.components.beard then
-    --     inst.components.beard:Reset()
-    -- end
 end
 
 local BEARD_DAYS = { 2, 4, 6 }
@@ -49,7 +46,7 @@ local function OnGrowMediumBeard(inst, skinname)
     inst.Light:Enable(true)
 	inst.Light:SetRadius(2)
 	inst.Light:SetFalloff(.5)
-	inst.Light:SetIntensity(0.8)
+	inst.Light:SetIntensity(0.75)
 	inst.Light:SetColour(128/255,255/255,255/255)
     if skinname == nil then
         inst.AnimState:OverrideSymbol("beard", "beard_wurrow", "beard_medium")
@@ -142,6 +139,56 @@ local function burrow_treasure(inst, data)
     end
 end
 
+local function wurrow_handslot_dirt(inst)
+    local inventory = inst.components.inventory
+    
+    local handdirt = inventory:GetEquippedItem(EQUIPSLOTS.HANDS)
+    if handdirt then
+        handdirt.components.equippable.un_unequipable = nil
+        handfur:Remove()
+    end
+end
+
+local WURROW_COLOURCUBES = {
+    day = resolvefilepath("images/colour_cubes/bat_vision_on_cc.tex"),
+    dusk = resolvefilepath("images/colour_cubes/bat_vision_on_cc.tex"),
+    night = resolvefilepath("images/colour_cubes/bat_vision_on_cc.tex"),
+    full_moon = "images/colour_cubes/fungus_cc.tex",
+}
+
+local function WurrowEnterLight(inst)
+end
+
+local function WurrowEnterDark(inst)
+end
+
+local function CheckLight(inst)
+	if inst:IsInLight() and not inst:HasTag("burrowed") then
+		if inst.updatewurrowvisiontask == nil then
+			inst.updatewurrowvisiontask = inst:DoTaskInTime(0, function()
+				inst.components.playervision:SetCustomCCTable(nil)
+				inst.components.playervision:ForceNightVision(false)
+                inst:RemoveTag("wurrowindark")
+
+				if inst.updatewurrowvisiontask ~= nil then
+					inst.updatewurrowvisiontask:Cancel()
+				end
+			end)
+		end
+	else
+		if inst.updatewurrowvisiontask ~= nil then
+			inst.updatewurrowvisiontask:Cancel()
+		end
+
+		inst.updatewurrowvisiontask = nil
+        if inst:HasTag("burrowed") then
+		    inst.components.playervision:SetCustomCCTable(WURROW_COLOURCUBES)
+		    inst.components.playervision:ForceNightVision(true)
+            inst:AddTag("wurrowindark")
+        end
+    end
+end
+
 ------------------------------------------------------------------------------------------------------------
 
 local common_postinit = function(inst)
@@ -150,11 +197,15 @@ local common_postinit = function(inst)
 	inst:AddTag("nowormholesanityloss")
     inst:AddTag("wet") --Doesn't currently do anything
 	inst:AddTag("cavedweller")
-	-- inst:AddTag("nightvision") --Not going to be used until I code the burrowing vision
+    inst:AddTag("nightvision")
     inst:AddTag("wurrow") --Might try to reduce the amount of tags by changing the depth worm aggro tag
 	inst:AddTag("bearded")
     inst:AddTag("acidrainimmune")
     -- inst:AddTag("canbetrapped") --Will be used later for Wurrow to trigger traps and get stunned
+
+    inst:DoPeriodicTask(.3, CheckLight)
+	inst:ListenForEvent("enterdark", WurrowEnterDark)
+	inst:ListenForEvent("enterlight", WurrowEnterLight)
 
     inst.stackmoisture = false
 
@@ -177,9 +228,12 @@ end
 ------------------------------------------------------------------------------------------------------------
 
 local master_postinit = function(inst)
-
     local lure = SpawnPrefab("wurrow_lure")
     lure.Transform:SetPosition(inst:GetPosition():Get())
+
+    inst:DoPeriodicTask(.3, CheckLight)
+	inst:ListenForEvent("enterdark", WurrowEnterDark)
+	inst:ListenForEvent("enterlight", WurrowEnterLight)
 
     inst.starting_inventory = start_inv[TheNet:GetServerGameMode()] or start_inv.default
 
@@ -214,13 +268,11 @@ local master_postinit = function(inst)
     inst.components.beard:AddCallback(BEARD_DAYS[2], OnGrowMediumBeard)
     inst.components.beard:AddCallback(BEARD_DAYS[3], OnGrowLongBeard)
 
-    inst:ListenForEvent("shaved", OnShaveBerry)
-
     inst.entity:AddLight()
 	inst.Light:Enable(true)
 	inst.Light:SetRadius(4)
 	inst.Light:SetFalloff(.5)
-	inst.Light:SetIntensity(0.8)
+	inst.Light:SetIntensity(0.75)
 	inst.Light:SetColour(128/255,255/255,255/255)
 
 	inst.OnLoad = onload
@@ -233,7 +285,7 @@ local master_postinit = function(inst)
 	inst.components.sanity.no_moisture_penalty = true
 
 	inst.components.sanity:AddSanityAuraImmunity("worm")
-	inst.components.sanity:AddSanityAuraImmunity("worm_boss_head")
+	inst.components.sanity:AddSanityAuraImmunity("worm_boss_dirt")
 
     inst.count = 0
 

@@ -34,6 +34,9 @@ Assets = {
     --- TOOTH KITS ---
     Asset("ATLAS", "images/inventoryimages/toothkit_flint.xml"),
     Asset("IMAGE", "images/inventoryimages/toothkit_flint.tex"),
+
+    --- Sonar ---
+    Asset("IMAGE", "images/colour_cubes/bat_vision_on_cc.tex"),
 }
 
 AddMinimapAtlas("images/map_icons/wurrow.xml")

@@ -1,6 +1,8 @@
 PrefabFiles = {
 	"wurrow",
 	"wurrow_none",
-    "toothkit_flint",
+    "toothkits",
 	"wurrow_lure_medium",
+	"wurrow_handslot",
+    "wurrow_pulse_fx"
 }

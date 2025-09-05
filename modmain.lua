@@ -62,6 +62,7 @@ local WURROW_BURROWED_ACTIONS = {
     "DROP",
     "PICK",
     "PICKUP",
+    "LOOKAT",
 }
 
 local LocoMotor = require("components/locomotor")

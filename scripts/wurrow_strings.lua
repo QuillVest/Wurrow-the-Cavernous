@@ -11,3 +11,4 @@ STRINGS.SKIN_NAMES.wurrow_skins = "Wurrow"
 
 --- PREFABS ---
 STRINGS.NAMES.TOOTHKIT_FLINT = "Flint Whetstone"
+STRINGS.NAMES.WURROW_HANDSLOT = ""

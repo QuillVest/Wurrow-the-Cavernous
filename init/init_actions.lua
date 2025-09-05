@@ -5,7 +5,7 @@ local AddAction = ENV.AddAction
 local AddStategraphActionHandler = ENV.AddStategraphActionHandler
 
 AddAction("BURROW", "Burrow", function(act)
-	if act.doer and act.doer:HasTag("wurrow") and not act.doer:HasTag("burrowed") and inst.components.hunger:GetPercent() >= 0.2 then
+	if act.doer and act.doer:HasTag("wurrow") and not act.doer:HasTag("burrowed") and inst.components.hunger:GetPercent() >= 0.1 then
 		return true
 	end
 end)

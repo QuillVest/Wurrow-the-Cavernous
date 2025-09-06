@@ -173,25 +173,25 @@ local states = {
 			end
 		end,
 	},
-	
+
 	-- Enter / Exit
 	State{
 		name = "burrow",
 		tags = {"doing", "busy"},
-		
+
 		onenter = function(inst)
-			inst.AnimState:PlayAnimation("jump", false)
+			inst.AnimState:PlayAnimation("jump")
 			inst.DynamicShadow:Enable(false)
 			inst.components.locomotor:Stop()
 			inst:RemoveTag("scarytoprey")
 			inst.components.locomotor:SetTriggersCreep(false)
-			
+
 			local buffaction = inst:GetBufferedAction()
 			if buffaction and buffaction.pos then
 				inst:ForceFacePoint(buffaction:GetActionPoint():Get())
 			end
 		end,
-		
+
 		timeline = {
 			TimeEvent(15 * FRAMES, function(inst)
 				inst.Physics:Stop()
@@ -239,11 +239,11 @@ local states = {
 					inst.components.moisture.inherentWaterproofness = 1000
 					inst.components.combat:SetDefaultDamage(81.6)
 					inst.components.hunger.burnratemodifiers:SetModifier(inst, 2, "burrowingpenalty")
-					inst.components.temperature.mintemp = 6
-					inst.components.temperature.maxtemp = 63
+					inst.components.temperature.mintemp = 3
+					inst.components.temperature.maxtemp = 67
 					inst:AddTag("burrowed")
 					inst:AddTag("bear_trap_immune")
-					
+
 					if inst.components.sandstormwatcher then
 						inst.components.sandstormwatcher:SetSandstormSpeedMultiplier(1)
 					end
@@ -505,11 +505,11 @@ local states = {
 			end
 		end,
 	},
-	
+
 	State {
 		name = "burrow_attack",
 		tags = {"doing", "busy", "noattack"},
-		
+
 		onenter = function(inst)
 			inst.components.locomotor:Stop()
 			inst.SoundEmitter:KillSound("move")
@@ -547,12 +547,12 @@ local states = {
 				inst:Hide()
 			end),
 		},
-		
+
 		ontimeout = function(inst)
 			inst:Hide()
 			inst.sg:GoToState("idle", true)
 		end,
-		
+
 		onexit = function(inst)
 			if inst.bufferedaction == inst.sg.statemem.action then
 				inst:ClearBufferedAction()
@@ -560,7 +560,7 @@ local states = {
 				inst.sg:GoToState("idle")
 			end
 		end,
-		
+
 		events = {
 			EventHandler("animover", function(inst)
 				inst:Hide()
@@ -574,11 +574,11 @@ ENV.AddStategraphPostInit("wilson", function(sg)
 	for _, event in pairs(events) do
 		sg.events[event.name] = event
 	end
-	
+
 	for _, state in pairs(states) do
 		sg.states[state.name] = state
 	end
-	
+
 --	Events
 	
 	local oldlocomote = sg.events["locomote"].fn

@@ -7,7 +7,6 @@ local assets = {
     Asset( "ANIM", "anim/ghost_wurrow_build.zip"),
 	Asset( "ANIM", "anim/beard_wurrow.zip" ),
     Asset( "ANIM", "anim/wurrow_lure_medium.zip"),
-    Asset( "ANIM", "anim/worm.zip")
 }
 
 local prefabs = {

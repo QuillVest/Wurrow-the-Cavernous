@@ -1,5 +1,6 @@
 require("wurrow_strings")
-require("wurrow_tunings")
+
+modimport("scripts/announcement_strings.lua")
 
 local inits = {
     "init_actions",
@@ -7,6 +8,7 @@ local inits = {
 	"init_prefabs",
 	"init_wurrow",
 	"init_recipes",
+    "init_tunings",
 }
 
 local stategraphs = {
@@ -29,8 +31,21 @@ for _, v in pairs(components) do
     modimport("postinit/components/"..v)
 end
 
-------------------------------------------------------------------------------------------------------------
---- Courtesy of ADM ---
+---———————————————= MISCELLANEOUS FUNCTIONS =———————————————---
+
+AddComponentPostInit("playeractionpicker", function(self)
+	if self.inst.prefab == "wurrow" then
+		local old = self.GetRightClickActions
+		self.GetRightClickActions = function(self, position, target)
+				if target and self.inst:HasTag("burrowed") and target:HasTag(GLOBAL.ACTIONS.DIG.id.."_workable") then
+					return self:SortActionList({ GLOBAL.ACTIONS.DIG }, target)
+				end
+			return old(self, position, target)
+		end
+	end
+end)
+
+--- Courtesy of ADM
 local WURROW_BURROWED_ACTIONS = {
     "BURROW",
     "RESURFACE",
@@ -40,6 +55,7 @@ local WURROW_BURROWED_ACTIONS = {
     "DROP",
     "PICK",
     "PICKUP",
+    "LOOKAT",
 }
 
 local LocoMotor = require("components/locomotor")
@@ -54,20 +70,7 @@ function LocoMotor:PushAction(bufferedaction, ...)
     return OldPushAction(self, bufferedaction, ...)
 end
 
---- MISCELLANEOUS FUNCTIONS ---
-AddComponentPostInit("playeractionpicker", function(self)
-	if self.inst.prefab == "wurrow" then
-		local old = self.GetRightClickActions
-		self.GetRightClickActions = function(self, position, target)
-				if target and self.inst:HasTag("burrowed") and target:HasTag(GLOBAL.ACTIONS.DIG.id.."_workable") then
-					return self:SortActionList({ GLOBAL.ACTIONS.DIG }, target)
-				end
-			return old(self, position, target)
-		end
-	end
-end)
-
---- Courtesy of Ilaskus ---
+--- Courtesy of Ilaskus
 AddPrefabPostInit("worm", function(inst)
     if not GLOBAL.TheWorld.ismastersim then
         return

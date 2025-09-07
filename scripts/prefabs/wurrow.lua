@@ -127,7 +127,7 @@ end
 ------------------------------------------------------------------------------------------------------------
 
 local function burrow_treasure(inst, data)
-    local frequency = TUNING.CHARACTER_PREFAB_MODCONFIGDATA["Treasure_Frequency"]
+    local frequency = TUNING.WURROW_MODCONFIGDATA["Treasure_Frequency"]
 
     if data.name == "treasure_drop" then
         -- inst.components.lootdropper:PickRandomLoot() discarded return???
@@ -307,7 +307,7 @@ local master_postinit = function(inst)
 
     inst.components.locomotor.hop_distance_fn = DisallowBoatHopping
 	
-	local treasure_amount = TUNING.CHARACTER_PREFAB_MODCONFIGDATA["Treasure_Amount"]
+	local treasure_amount = TUNING.WURROW_MODCONFIGDATA["Treasure_Amount"]
     inst.components.lootdropper.numrandomloot = treasure_amount
 
     inst:AddComponent("timer")

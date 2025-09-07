@@ -16,7 +16,7 @@ local function SpawnMoveFx(inst)
 end
 
 local states = {
-	--	Movement
+---———————————————= BURROW MOVEMENT =———————————————---
 	State{
 		name = "burrow_pre",
 		tags = {"moving", "canrotate", "hiding", "nomorph"},
@@ -44,8 +44,8 @@ local states = {
 		tags = {"moving", "canrotate", "hiding", "nomorph"},
 		
 		onenter = function(inst)
-			local treasure_config = TUNING.CHARACTER_PREFAB_MODCONFIGDATA["Burrow_Treasure"]
-			local frequency = TUNING.CHARACTER_PREFAB_MODCONFIGDATA["Treasure_Frequency"]
+			local treasure_config = TUNING.WURROW_MODCONFIGDATA["Burrow_Treasure"]
+			local frequency = TUNING.WURROW_MODCONFIGDATA["Treasure_Frequency"]
 
 			if treasure_config == 1 then
 				if not inst.components.timer:TimerExists("treasure_drop") then
@@ -86,8 +86,8 @@ local states = {
 		tags = {"moving", "canrotate", "hiding", "nomorph"},
 		
 		onenter = function(inst)
-			local treasure_config = TUNING.CHARACTER_PREFAB_MODCONFIGDATA["Burrow_Treasure"]
-			local frequency = TUNING.CHARACTER_PREFAB_MODCONFIGDATA["Treasure_Frequency"]
+			local treasure_config = TUNING.WURROW_MODCONFIGDATA["Burrow_Treasure"]
+			local frequency = TUNING.WURROW_MODCONFIGDATA["Treasure_Frequency"]
 
 			if treasure_config == 1 then
 				if not inst.components.timer:TimerExists("treasure_drop") then
@@ -173,25 +173,25 @@ local states = {
 			end
 		end,
 	},
-
-	-- Enter / Exit
+	
+---———————————————= BURROW =———————————————---
 	State{
 		name = "burrow",
 		tags = {"doing", "busy"},
-
+		
 		onenter = function(inst)
-			inst.AnimState:PlayAnimation("jump")
+			inst.AnimState:PlayAnimation("jump", false)
 			inst.DynamicShadow:Enable(false)
 			inst.components.locomotor:Stop()
 			inst:RemoveTag("scarytoprey")
 			inst.components.locomotor:SetTriggersCreep(false)
-
+			
 			local buffaction = inst:GetBufferedAction()
 			if buffaction and buffaction.pos then
 				inst:ForceFacePoint(buffaction:GetActionPoint():Get())
 			end
 		end,
-
+		
 		timeline = {
 			TimeEvent(15 * FRAMES, function(inst)
 				inst.Physics:Stop()
@@ -239,11 +239,11 @@ local states = {
 					inst.components.moisture.inherentWaterproofness = 1000
 					inst.components.combat:SetDefaultDamage(81.6)
 					inst.components.hunger.burnratemodifiers:SetModifier(inst, 2, "burrowingpenalty")
-					inst.components.temperature.mintemp = 3
-					inst.components.temperature.maxtemp = 67
+					inst.components.temperature.mintemp = 6
+					inst.components.temperature.maxtemp = 63
 					inst:AddTag("burrowed")
 					inst:AddTag("bear_trap_immune")
-
+					
 					if inst.components.sandstormwatcher then
 						inst.components.sandstormwatcher:SetSandstormSpeedMultiplier(1)
 					end
@@ -341,18 +341,18 @@ local states = {
 		},
 	},
 
-	--	Actions
+---———————————————= BURROW ACTIONS =———————————————---
 	State {
 		name = "burrow_drop",
 		tags = {"doing", "busy", "noattack"},
-		
+
 		onenter = function(inst)
 			inst.components.locomotor:Stop()
 			inst.SoundEmitter:KillSound("move")
 			inst.sg.statemem.action = inst.bufferedaction
 			inst.sg:SetTimeout(10 * FRAMES)
 		end,
-		
+
 		timeline = {
 			TimeEvent(4 * FRAMES, function(inst)
 				inst.sg:RemoveStateTag("busy")
@@ -364,7 +364,7 @@ local states = {
 				inst:PerformBufferedAction()
 			end),
 		},
-		
+
 		ontimeout = function(inst)
 			inst.sg:GoToState("idle", true)
 		end,
@@ -375,7 +375,7 @@ local states = {
 			end
 		end,
 	},
-	
+
 	State {
 		name = "burrow_pickup",
 		tags = {"doing", "busy", "noattack"},
@@ -505,11 +505,11 @@ local states = {
 			end
 		end,
 	},
-
+	
 	State {
 		name = "burrow_attack",
 		tags = {"doing", "busy", "noattack"},
-
+		
 		onenter = function(inst)
 			inst.components.locomotor:Stop()
 			inst.SoundEmitter:KillSound("move")
@@ -547,12 +547,12 @@ local states = {
 				inst:Hide()
 			end),
 		},
-
+		
 		ontimeout = function(inst)
 			inst:Hide()
 			inst.sg:GoToState("idle", true)
 		end,
-
+		
 		onexit = function(inst)
 			if inst.bufferedaction == inst.sg.statemem.action then
 				inst:ClearBufferedAction()
@@ -560,7 +560,7 @@ local states = {
 				inst.sg:GoToState("idle")
 			end
 		end,
-
+		
 		events = {
 			EventHandler("animover", function(inst)
 				inst:Hide()
@@ -574,13 +574,12 @@ ENV.AddStategraphPostInit("wilson", function(sg)
 	for _, event in pairs(events) do
 		sg.events[event.name] = event
 	end
-
+	
 	for _, state in pairs(states) do
 		sg.states[state.name] = state
 	end
-
---	Events
 	
+---———————————————= EVENTS =———————————————---
 	local oldlocomote = sg.events["locomote"].fn
 	sg.events["locomote"].fn = function(inst, ...)
 		if not inst:HasTag("burrowed") then
@@ -618,7 +617,7 @@ ENV.AddStategraphPostInit("wilson", function(sg)
 		return oldknockback(inst, ...)
 	end
 	
---	Actions
+---———————————————= ACTIONS =———————————————---
 	local burrow_attack = sg.actionhandlers[ACTIONS.ATTACK].deststate
 	sg.actionhandlers[ACTIONS.ATTACK].deststate = function(inst, action, ...)
 		local equip = inst.components.inventory:GetEquippedItem(EQUIPSLOTS.HANDS)
@@ -665,8 +664,6 @@ ENV.AddStategraphPostInit("wilson", function(sg)
 		return burrow_dig(inst, action, ...)
 	end
 	
---	States
-	
 	local oldidle = sg.states["idle"].onenter
 	sg.states["idle"].onenter = function(inst, ...)
 		if inst:HasTag("burrowed") then
@@ -676,8 +673,6 @@ ENV.AddStategraphPostInit("wilson", function(sg)
 		end
 	end
 end)
-
-----
 
 local states_client = {
 	State{

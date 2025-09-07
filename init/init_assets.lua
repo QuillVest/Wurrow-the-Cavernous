@@ -31,13 +31,12 @@ Assets = {
 	Asset( "IMAGE", "images/names_gold_wurrow.tex" ),
     Asset( "ATLAS", "images/names_gold_wurrow.xml" ),
 
-    --- TOOTH KITS ---
+    ---———————————————= TOOTHKITS =———————————————---
     Asset("ATLAS", "images/inventoryimages/toothkit_flint.xml"),
     Asset("IMAGE", "images/inventoryimages/toothkit_flint.tex"),
 
-    --- Sonar ---
+    ---———————————————= SONAR =———————————————---
     Asset("IMAGE", "images/colour_cubes/bat_vision_on_cc.tex"),
 }
 
 AddMinimapAtlas("images/map_icons/wurrow.xml")
--- AddMinimapAtlas("images/wormden.xml")

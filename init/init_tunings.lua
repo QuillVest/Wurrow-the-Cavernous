@@ -10,16 +10,16 @@ TUNING.GAMEMODE_STARTING_ITEMS.DEFAULT.WURROW = {
 
 TUNING.WURROW_MODCONFIGDATA = {}
 
----———————————————= STATS =———————————————---
+---———————————————={ Stats }=———————————————---
 TUNING.WURROW_MODCONFIGDATA["Health"] = GetModConfigData("Health")
 TUNING.WURROW_MODCONFIGDATA["Hunger"] = GetModConfigData("Hunger")
 TUNING.WURROW_MODCONFIGDATA["Sanity"] = GetModConfigData("Sanity")
 
----———————————————= BURROWING =———————————————---
+---———————————————={ Burrowing }=———————————————---
 TUNING.WURROW_MODCONFIGDATA["Burrow_Drain_Move"] = GetModConfigData("Burrow_Drain_Move")
 TUNING.WURROW_MODCONFIGDATA["Burrow_Drain_Still"] = GetModConfigData("Burrow_Drain_Still")
 
----———————————————= TREASURE =———————————————---
+---———————————————={ Treasure }=———————————————---
 TUNING.WURROW_MODCONFIGDATA["Burrow_Treasure"] = GetModConfigData("Burrow_Treasure")
 TUNING.WURROW_MODCONFIGDATA["Treasure_Frequency"] = GetModConfigData("Treasure_Frequency")
 TUNING.WURROW_MODCONFIGDATA["Treasure_Amount"] = GetModConfigData("Treasure_Amount")

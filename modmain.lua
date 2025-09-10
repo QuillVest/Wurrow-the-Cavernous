@@ -31,8 +31,7 @@ for _, v in pairs(components) do
     modimport("postinit/components/"..v)
 end
 
----———————————————= MISCELLANEOUS FUNCTIONS =———————————————---
-
+---———————————————={ MISCELLANEOUS FUNCTIONS }=———————————————---
 AddComponentPostInit("playeractionpicker", function(self)
 	if self.inst.prefab == "wurrow" then
 		local old = self.GetRightClickActions

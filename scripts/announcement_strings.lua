@@ -1,5 +1,5 @@
 --This is compatability for rezecib's status announcements mod.
- if not GLOBAL.STRINGS._STATUS_ANNOUNCEMENTS then GLOBAL.STRINGS._STATUS_ANNOUNCEMENTS = {} end
+if not GLOBAL.STRINGS._STATUS_ANNOUNCEMENTS then GLOBAL.STRINGS._STATUS_ANNOUNCEMENTS = {} end
 GLOBAL.STRINGS._STATUS_ANNOUNCEMENTS.WURROW = {
     HUNGER = {
         FULL = "I'm stuffed!",

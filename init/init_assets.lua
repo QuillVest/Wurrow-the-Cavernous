@@ -31,11 +31,11 @@ Assets = {
 	Asset( "IMAGE", "images/names_gold_wurrow.tex" ),
     Asset( "ATLAS", "images/names_gold_wurrow.xml" ),
 
-    ---———————————————= TOOTHKITS =———————————————---
+    ---———————————————={ Toothkits }=———————————————---
     Asset("ATLAS", "images/inventoryimages/toothkit_flint.xml"),
     Asset("IMAGE", "images/inventoryimages/toothkit_flint.tex"),
 
-    ---———————————————= SONAR =———————————————---
+    ---———————————————={ Sonar }=———————————————---
     Asset("IMAGE", "images/colour_cubes/bat_vision_on_cc.tex"),
 }
 

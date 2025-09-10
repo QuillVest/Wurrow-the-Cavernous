@@ -5,13 +5,14 @@ local assets = {
 
     Asset( "ANIM", "anim/wurrow.zip"),
     Asset( "ANIM", "anim/ghost_wurrow_build.zip"),
-	Asset( "ANIM", "anim/beard_wurrow.zip" ),
-    Asset( "ANIM", "anim/wurrow_lure_medium.zip"),
+    Asset( "ANIM", "anim/wurrow_lure.zip"),
+    Asset( "ANIM", "anim/wurrow_burrow.zip"),
 }
 
 local prefabs = {
     "wormlight",
-    "wurrow_lure_medium",
+    "wurrow_lure_fx",
+    "wurrow_lure"
 }
 
 local start_inv = {}
@@ -21,52 +22,35 @@ end
 
 prefabs = FlattenTree({ prefabs, start_inv }, true)
 
-------------------------------------------------------------------------------------------------------------
+---———————————————=[ Lure Functions ]=———————————————---
 
-local function OnResetBeard(inst)
-    inst.AnimState:ClearOverrideSymbol("beard")
+---———————————————={ Miscellaneous Functions }=———————————————---
+local function onbecamehuman(inst)
     inst.Light:Enable(false)
 end
 
-local BEARD_DAYS = { 2, 4, 6 }
-local BEARD_BITS = { 1, 1, 1 }
-
-local function OnGrowShortBeard(inst, skinname)
-    inst.Light:Enable(false)
-    if skinname == nil then
-        inst.AnimState:OverrideSymbol("beard", "beard_wurrow", "beard_short")
-    else
-        inst.AnimState:OverrideSkinSymbol("beard", skinname, "beard_short" )
-    end
-    inst.components.beard.bits = BEARD_BITS[1]
+local function onbecameghost(inst)
+   inst.Light:Enable(false)
 end
 
-local function OnGrowMediumBeard(inst, skinname)
-    inst.Light:Enable(true)
-	inst.Light:SetRadius(2)
-	inst.Light:SetFalloff(.5)
-	inst.Light:SetIntensity(0.75)
-	inst.Light:SetColour(128/255,255/255,255/255)
-    if skinname == nil then
-        inst.AnimState:OverrideSymbol("beard", "beard_wurrow", "beard_medium")
+local function onload(inst)
+    inst:ListenForEvent("ms_respawnedfromghost", onbecamehuman)
+    inst:ListenForEvent("ms_becameghost", onbecameghost)
+    if inst:HasTag("playerghost") then
+        onbecameghost(inst)
     else
-        inst.AnimState:OverrideSkinSymbol("beard", skinname, "beard_medium" )
+        onbecamehuman(inst)
     end
-    inst.components.beard.bits = BEARD_BITS[1]
 end
 
-local function OnGrowLongBeard(inst, skinname)
-    inst.Light:Enable(false)
-    if skinname == nil then
-        inst.AnimState:OverrideSymbol("beard", "beard_wurrow", "beard_long")
-    else
-        inst.AnimState:OverrideSkinSymbol("beard", skinname, "beard_long" )
+local function CustomSanityFn(inst, dt)
+    if TheWorld.state.isday and not TheWorld:HasTag("cave") then
+        return -(7.5 / (TUNING.SEG_TIME * 2))
     end
-    inst.components.beard.bits = BEARD_BITS[1]
+    return 0
 end
 
-------------------------------------------------------------------------------------------------------------
-
+---———————————————={ Burrow Functions }=———————————————---
 local function CanDig(pt)
     return TheWorld.Map:IsPassableAtPoint(pt:Get()) and not TheWorld.Map:IsGroundTargetBlocked(pt)
 end
@@ -97,40 +81,10 @@ local function OnSetOwner(inst)
     end
 end
 
-------------------------------------------------------------------------------------------------------------
-
-local function onbecamehuman(inst)
-    inst.Light:Enable(false)
-end
-
-local function onbecameghost(inst)
-   inst.Light:Enable(false)
-end
-
-local function onload(inst)
-    inst:ListenForEvent("ms_respawnedfromghost", onbecamehuman)
-    inst:ListenForEvent("ms_becameghost", onbecameghost)
-    if inst:HasTag("playerghost") then
-        onbecameghost(inst)
-    else
-        onbecamehuman(inst)
-    end
-end
-
-local function CustomSanityFn(inst, dt)
-    if TheWorld.state.isday and not TheWorld:HasTag("cave") then
-        return -(7.5 / (TUNING.SEG_TIME * 2))
-    end
-    return 0
-end
-
-------------------------------------------------------------------------------------------------------------
-
 local function burrow_treasure(inst, data)
     local frequency = TUNING.WURROW_MODCONFIGDATA["Treasure_Frequency"]
 
     if data.name == "treasure_drop" then
-        -- inst.components.lootdropper:PickRandomLoot() discarded return???
         inst.components.lootdropper:DropLoot()
         if inst:HasTag("burrowed") then
             inst.components.timer:StartTimer("treasure_drop", frequency)
@@ -148,6 +102,14 @@ local function wurrow_handslot_dirt(inst)
     end
 end
 
+local function DisallowBoatHopping(inst, speedmult)
+    if inst:HasTag("burrowed") then
+        return 0
+    end
+    return nil
+end
+
+---———————————————={ Burrow Vision }=———————————————---
 local WURROW_COLOURCUBES = {
     day = resolvefilepath("images/colour_cubes/bat_vision_on_cc.tex"),
     dusk = resolvefilepath("images/colour_cubes/bat_vision_on_cc.tex"),
@@ -188,15 +150,7 @@ local function CheckLight(inst)
     end
 end
 
-local function DisallowBoatHopping(inst, speedmult)
-    if inst:HasTag("burrowed") then
-        return 0
-    end
-    return nil
-end
-
-------------------------------------------------------------------------------------------------------------
-
+---———————————————={ Common Postinit }=———————————————---
 local common_postinit = function(inst)
 	inst:AddTag("monster")
 	inst:AddTag("worm")
@@ -205,9 +159,7 @@ local common_postinit = function(inst)
 	inst:AddTag("cavedweller")
     inst:AddTag("nightvision")
     inst:AddTag("wurrow") --Might try to reduce the amount of tags by changing the depth worm aggro tag
-	inst:AddTag("bearded")
     inst:AddTag("acidrainimmune")
-    -- inst:AddTag("canbetrapped") --Will be used later for Wurrow to trigger traps and get stunned
 
     inst:DoPeriodicTask(.3, CheckLight)
 	inst:ListenForEvent("enterdark", WurrowEnterDark)
@@ -231,11 +183,19 @@ local common_postinit = function(inst)
 	end
 end
 
-------------------------------------------------------------------------------------------------------------
-
+---———————————————={ Master Postinit }=———————————————---
 local master_postinit = function(inst)
-    local lure = SpawnPrefab("wurrow_lure")
-    lure.Transform:SetPosition(inst:GetPosition():Get())
+    if not inst:HasTag("burrowed") then
+        local lurefx = SpawnPrefab("wurrow_lure_fx")
+		lurefx.entity:SetParent(inst.entity)
+		lurefx.Follower:FollowSymbol(inst.GUID, "headbase", nil, nil, nil, true)
+
+        local lure = SpawnPrefab("wurrow_lure")
+	    lure.entity:SetParent(inst.entity)
+	    lure.Follower:FollowSymbol(inst.GUID, "headbase", nil, nil, nil, true)
+
+        inst.highlightchildren = { lurefx, lure }
+    end
 
     inst:DoPeriodicTask(.3, CheckLight)
 	inst:ListenForEvent("enterdark", WurrowEnterDark)
@@ -265,21 +225,6 @@ local master_postinit = function(inst)
 	foodaffinity:AddPrefabAffinity  ("wormlight",            1.0)
 	foodaffinity:AddPrefabAffinity  ("wormlight_lesser",     1.0)
 	foodaffinity:AddPrefabAffinity  ("cutlichen",            1.0)
-
-	inst:AddComponent("beard")
-    inst.components.beard.onreset = OnResetBeard
-    inst.components.beard.prize = "wormlight"
-    inst.components.beard.is_skinnable = true
-    inst.components.beard:AddCallback(BEARD_DAYS[1], OnGrowShortBeard)
-    inst.components.beard:AddCallback(BEARD_DAYS[2], OnGrowMediumBeard)
-    inst.components.beard:AddCallback(BEARD_DAYS[3], OnGrowLongBeard)
-
-    inst.entity:AddLight()
-	inst.Light:Enable(true)
-	inst.Light:SetRadius(4)
-	inst.Light:SetFalloff(.5)
-	inst.Light:SetIntensity(0.75)
-	inst.Light:SetColour(128/255,255/255,255/255)
 
 	inst.OnLoad = onload
     inst.OnNewSpawn = onload

@@ -63,9 +63,9 @@ AddComponentAction("INVENTORY", "furgel", function(inst, doer, actions)
     end
 end, ENV.modname)
 
-local gelaction = ActionHandler(ACTIONS.APPLYGEL, "domediumaction")
-AddStategraphActionHandler("wilson", gelaction)
-AddStategraphActionHandler("wilson_client", gelaction)
+local gelhandler = ActionHandler(ACTIONS.APPLYGEL, "domediumaction")
+AddStategraphActionHandler("wilson", gelhandler)
+AddStategraphActionHandler("wilson_client", gelhandler)
 
 ---———————————————={ Toothkits }=———————————————---
 STRINGS.ACTIONS.SHARPEN = "Sharpen"

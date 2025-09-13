@@ -47,7 +47,10 @@ end)
 STRINGS.ACTIONS.APPLYGEL = "Apply Gel"
 local APPLYGEL = AddAction("APPLYGEL", STRINGS.ACTIONS.APPLYGEL, function(act)
     if act.doer ~= nil and act.doer:HasTag("wurrow") then
-		target.components.locomotor:SetExternalSpeedMultiplier(inst, "gel_ms", 1.1)
+        target.components.locomotor:SetExternalSpeedMultiplier(inst, "gel_ms", 1.1)
+		if act.invobject.components.finiteuses then
+			act.invobject.components.finiteuses:Use(1)
+		end
 		return true
     end
 end)
@@ -58,14 +61,14 @@ ACTIONS.APPLYGEL.rmb = true
 ACTIONS.APPLYGEL.mount_valid = true
 
 AddComponentAction("INVENTORY", "inventoryitem", function(inst, doer, actions)
-    if doer:HasTag("wurrow") and inst.prefab == "slurtleslime" then
+    if doer:HasTag("wurrow") and inst.prefab == "unearthed_soil" then
         table.insert(actions, ACTIONS.APPLYGEL)
     end
 end, ENV.modname)
 
-local gelaction = ActionHandler(ACTIONS.APPLYGEL, "domediumaction")
-AddStategraphActionHandler("wilson", gelaction)
-AddStategraphActionHandler("wilson_client", gelaction)
+local gelhandler = ActionHandler(ACTIONS.APPLYGEL, "domediumaction")
+AddStategraphActionHandler("wilson", gelhandler)
+AddStategraphActionHandler("wilson_client", gelhandler)
 
 ---———————————————={ Toothkits }=———————————————---
 STRINGS.ACTIONS.SHARPEN = "Sharpen"

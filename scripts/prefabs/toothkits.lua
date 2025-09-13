@@ -26,7 +26,6 @@ local function fn(inst)
     end
 
     inst:AddComponent("inspectable")
-
     inst:AddComponent("inventoryitem")
     inst.components.inventoryitem.imagename = "toothkit_flint"
     inst.components.inventoryitem.atlasname = "images/inventoryimages/toothkit_flint.xml"

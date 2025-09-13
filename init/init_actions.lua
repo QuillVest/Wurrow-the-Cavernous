@@ -5,6 +5,7 @@ local AddAction = ENV.AddAction
 local AddStategraphActionHandler = ENV.AddStategraphActionHandler
 local AddSimPostInit = ENV.AddSimPostInit
 
+---———————————————={ Burrowing }=———————————————---
 AddAction("BURROW", "Burrow", function(act)
 	if act.doer and act.doer:HasTag("wurrow") and not act.doer:HasTag("burrowed") and act.doer.components.hunger:GetPercent() >= 0.1 then
 		return true
@@ -41,3 +42,26 @@ AddSimPostInit(function()
 		ACTIONS.RESURFACE.invalid_hold_action = true
 	end
 end)
+
+---———————————————={ Toothkits }=———————————————---
+STRINGS.ACTIONS.SHARPEN = "Sharpen"
+local SHARPEN = AddAction("SHARPEN", STRINGS.ACTIONS.SHARPEN, function(act)
+    if act.doer ~= nil and act.target ~= nil and act.doer:HasTag("wurrow") then
+        act.doer.components.combat:SetDefaultDamage(100)
+    end
+end)
+
+ACTIONS.SHARPEN.id = "SHARPEN"
+ACTIONS.SHARPEN.priority = 3
+ACTIONS.SHARPEN.rmb = true
+ACTIONS.SHARPEN.mount_valid = true
+
+AddComponentAction("INVENTORY", "inventoryitem", function(inst, doer, actions, right)
+    if right and doer:HasTag("wurrow") and inst:HasTag("toothkit_flint") then
+        table.insert(actions, ACTIONS.SHARPEN)
+    end
+end, ENV.modname)
+
+local sharpener = ActionHandler(ACTIONS.SHARPEN, "domediumaction")
+ENV.AddStategraphActionHandler("wilson", sharpener)
+ENV.AddStategraphActionHandler("wilson_client", sharpener)

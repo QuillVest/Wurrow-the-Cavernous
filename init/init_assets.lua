@@ -31,12 +31,22 @@ Assets = {
 	Asset( "IMAGE", "images/names_gold_wurrow.tex" ),
     Asset( "ATLAS", "images/names_gold_wurrow.xml" ),
 
+    Asset("IMAGE", "images/colour_cubes/bat_vision_on_cc.tex"),
+
     ---———————————————={ Toothkits }=———————————————---
     Asset("ATLAS", "images/inventoryimages/toothkit_flint.xml"),
     Asset("IMAGE", "images/inventoryimages/toothkit_flint.tex"),
 
-    ---———————————————={ Sonar }=———————————————---
-    Asset("IMAGE", "images/colour_cubes/bat_vision_on_cc.tex"),
+    Asset("ATLAS", "images/inventoryimages/pocketsand.xml"),
+    Asset("IMAGE", "images/inventoryimages/pocketsand.tex"),
+
+    ---———————————————={ Miscellaneous }=———————————————---
+    Asset("ANIM", "anim/bottle.zip"),
+    Asset("ANIM", "anim/swap_gelblobbottle.zip"),
+    Asset("ANIM", "anim/swap_bottle.zip"),
+
+    Asset("ATLAS", "images/inventoryimages/unearthed_soil.xml"),
+    Asset("IMAGE", "images/inventoryimages/unearthed_soil.tex"),
 }
 
 AddMinimapAtlas("images/map_icons/wurrow.xml")

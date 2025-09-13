@@ -3,7 +3,8 @@ PrefabFiles = {
 	"wurrow_none",
 
     "toothkits",
-	"pocket_sand",
+	"pocketsand",
+	"unearthed_soil",
 	"wurrow_handslot",
 	
     "wurrow_pulse_fx",

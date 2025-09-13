@@ -11,4 +11,11 @@ STRINGS.SKIN_NAMES.wurrow_skins = "Wurrow"
 
 ---———————————————={ Prefabs }=———————————————---
 STRINGS.NAMES.TOOTHKIT_FLINT = "Flint Whetstone"
+STRINGS.NAMES.POCKETSAND = "Jar of Dirt"
+STRINGS.NAMES.UNEARTHED_SOIL = "Dirt"
+
 STRINGS.NAMES.WURROW_HANDSLOT = ""
+
+---———————————————={ Recipes }=———————————————---
+STRINGS.RECIPE_DESC.POCKETSAND = "I'm gonna put some dirt in your eye."
+STRINGS.RECIPE_DESC.TOOTHKIT_FLINT = "To sharpen all them teeth!"

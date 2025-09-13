@@ -184,6 +184,7 @@ local states = {
 			inst.components.locomotor:Stop()
 			inst:RemoveTag("scarytoprey")
 			inst.components.locomotor:SetTriggersCreep(false)
+			-- inst.RemovePrefab("wurrow_lure_fx")
 
 			if TheWorld:HasTag("cave") then
        			inst.components.locomotor.walkspeed = 7.5
@@ -198,6 +199,9 @@ local states = {
 		end,
 		
 		timeline = {
+			-- TimeEvent(0 * FRAMES, function(inst)
+			-- 	RemoveAll("wurrow_lure_fx")
+			-- end),
 			TimeEvent(15 * FRAMES, function(inst)
 				inst.Physics:Stop()
 			end),

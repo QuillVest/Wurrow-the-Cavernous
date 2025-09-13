@@ -1,7 +1,5 @@
 require("wurrow_strings")
 
-modimport("scripts/announcement_strings.lua")
-
 local inits = {
     "init_actions",
 	"init_assets",
@@ -19,6 +17,8 @@ local components = {
 	"carefulwalker",
 }
 
+modimport("compatibilities/announcement_strings.lua")
+
 for _, v in pairs(inits) do
 	modimport("init/"..v)
 end
@@ -31,7 +31,9 @@ for _, v in pairs(components) do
     modimport("postinit/components/"..v)
 end
 
----———————————————={ MISCELLANEOUS FUNCTIONS }=———————————————---
+RegisterInventoryItemAtlas(GLOBAL.resolvefilepath("images/inventoryimages/unearthed_soil.xml"), "unearthed_soil.tex")
+
+---———————————————={ Miscellanous Functions }=———————————————---
 AddComponentPostInit("playeractionpicker", function(self)
 	if self.inst.prefab == "wurrow" then
 		local old = self.GetRightClickActions

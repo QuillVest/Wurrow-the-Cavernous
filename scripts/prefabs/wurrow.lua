@@ -3,10 +3,9 @@ local MakePlayerCharacter = require "prefabs/player_common"
 local assets = {
     Asset("SCRIPT", "scripts/prefabs/player_common.lua"),
 
-    Asset( "ANIM", "anim/wurrow.zip"),
-    Asset( "ANIM", "anim/ghost_wurrow_build.zip"),
-    Asset( "ANIM", "anim/wurrow_lure.zip"),
-    Asset( "ANIM", "anim/wurrow_burrow.zip"),
+    Asset("ANIM", "anim/wurrow.zip"),
+    Asset("ANIM", "anim/ghost_wurrow_build.zip"),
+    Asset("ANIM", "anim/wurrow_lure.zip"),
 }
 
 local prefabs = {
@@ -98,7 +97,7 @@ local function wurrow_handslot_dirt(inst)
     local handdirt = inventory:GetEquippedItem(EQUIPSLOTS.HANDS)
     if handdirt then
         handdirt.components.equippable.un_unequipable = nil
-        handfur:Remove()
+        handdirt:Remove()
     end
 end
 
@@ -241,7 +240,8 @@ local master_postinit = function(inst)
     inst.count = 0
 
     inst:AddComponent("lootdropper")
-    inst.components.lootdropper:AddRandomLoot("farm_soil_debris", .80)
+    inst.components.lootdropper:AddRandomLoot("farm_soil_debris", .75)
+    inst.components.lootdropper:AddRandomLoot("unearthed_soil", .60)
     inst.components.lootdropper:AddRandomLoot("flint", .40)
     inst.components.lootdropper:AddRandomLoot("rocks", .40)
 	inst.components.lootdropper:AddRandomLoot("nitre", .25)

@@ -31,6 +31,9 @@ local function fn(inst)
     inst.components.inventoryitem.imagename = "toothkit_flint"
     inst.components.inventoryitem.atlasname = "images/inventoryimages/toothkit_flint.xml"
 
+    inst:AddComponent("tool")
+    inst.components.tool:SetAction(ACTIONS.PLAY)
+
     inst:AddComponent("finiteuses")
     inst.components.finiteuses:SetMaxUses(10)
     inst.components.finiteuses:SetUses(10)

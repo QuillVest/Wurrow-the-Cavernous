@@ -13,7 +13,7 @@ local function fn()
 
     inst.AnimState:SetBank("wurrow_burrow")
     inst.AnimState:SetBuild("wurrow_burrow")
-    inst.AnimState:PlayAnimation("wurrow_burrow_pre")
+    inst.AnimState:PlayAnimation("mound_out")
 	
 	inst.entity:SetPristine()
 

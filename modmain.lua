@@ -17,6 +17,10 @@ local components = {
 	"carefulwalker",
 }
 
+local prefabs = {
+    "slurtleslime",
+}
+
 modimport("compatibilities/announcement_strings.lua")
 
 for _, v in pairs(inits) do
@@ -29,6 +33,10 @@ end
 
 for _, v in pairs(components) do
     modimport("postinit/components/"..v)
+end
+
+for _, v in pairs(prefabs) do
+    modimport("postinit/prefabs/"..v)
 end
 
 RegisterInventoryItemAtlas(GLOBAL.resolvefilepath("images/inventoryimages/unearthed_soil.xml"), "unearthed_soil.tex")

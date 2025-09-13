@@ -45,9 +45,9 @@ end)
 
 ---———————————————={ Gel }=———————————————---
 STRINGS.ACTIONS.APPLYGEL = "Apply Gel"
-local APPLYGEL = AddAction("APPLYGEL", STRINGS.ACTIONS.APPLYGEL, function(act)
+AddAction("APPLYGEL", STRINGS.ACTIONS.APPLYGEL, function(act)
     if act.doer ~= nil and act.doer:HasTag("wurrow") then
-		target.components.locomotor:SetExternalSpeedMultiplier(inst, "gel_ms", 1.1)
+		act.doer.components.locomotor:SetExternalSpeedMultiplier(act.doer, "gel_ms", 1.1)
 		return true
     end
 end)
@@ -57,8 +57,8 @@ ACTIONS.APPLYGEL.priority = 3
 ACTIONS.APPLYGEL.rmb = true
 ACTIONS.APPLYGEL.mount_valid = true
 
-AddComponentAction("INVENTORY", "inventoryitem", function(inst, doer, actions)
-    if doer:HasTag("wurrow") and inst.prefab == "slurtleslime" then
+AddComponentAction("INVENTORY", "furgel", function(inst, doer, actions)
+    if doer:HasTag("wurrow") then
         table.insert(actions, ACTIONS.APPLYGEL)
     end
 end, ENV.modname)
@@ -69,7 +69,7 @@ AddStategraphActionHandler("wilson_client", gelaction)
 
 ---———————————————={ Toothkits }=———————————————---
 STRINGS.ACTIONS.SHARPEN = "Sharpen"
-local SHARPEN = AddAction("SHARPEN", STRINGS.ACTIONS.SHARPEN, function(act)
+AddAction("SHARPEN", STRINGS.ACTIONS.SHARPEN, function(act)
     if act.doer ~= nil and act.doer:HasTag("wurrow") then
         act.doer:AddDebuff("buff_toothkit", "buff_toothkit")
 		if act.invobject.components.finiteuses then

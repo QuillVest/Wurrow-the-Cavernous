@@ -184,7 +184,6 @@ local states = {
 			inst.components.locomotor:Stop()
 			inst:RemoveTag("scarytoprey")
 			inst.components.locomotor:SetTriggersCreep(false)
-			-- inst.RemovePrefab("wurrow_lure_fx")
 
 			if TheWorld:HasTag("cave") then
        			inst.components.locomotor.walkspeed = 7.5
@@ -199,9 +198,6 @@ local states = {
 		end,
 		
 		timeline = {
-			-- TimeEvent(0 * FRAMES, function(inst)
-			-- 	RemoveAll("wurrow_lure_fx")
-			-- end),
 			TimeEvent(15 * FRAMES, function(inst)
 				inst.Physics:Stop()
 			end),
@@ -216,7 +212,7 @@ local states = {
 			TimeEvent(17 * FRAMES, function(inst)
 				inst.components.hunger:DoDelta(-2.5)
 			end),
-			FrameEvent(21, function(inst) -- change drown frames here
+			FrameEvent(21, function(inst)
 				local x, y, z = inst.Transform:GetWorldPosition()
 				local platform = inst:GetCurrentPlatform()
 				
@@ -246,7 +242,9 @@ local states = {
 					inst:PushEvent("dropallaggro")
 					inventory:Equip(SpawnPrefab("wurrow_handslot"))
 					inst.components.moisture.inherentWaterproofness = 1000
+					
 					inst.components.combat:SetDefaultDamage(81.6)
+					inst:PushEvent("burrow")
 					inst.components.hunger.burnratemodifiers:SetModifier(inst, 2, "burrowingpenalty")
 					inst.components.temperature.mintemp = 6
 					inst.components.temperature.maxtemp = 63

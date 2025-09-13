@@ -46,8 +46,9 @@ end)
 ---———————————————={ Toothkits }=———————————————---
 STRINGS.ACTIONS.SHARPEN = "Sharpen"
 local SHARPEN = AddAction("SHARPEN", STRINGS.ACTIONS.SHARPEN, function(act)
-    if act.doer ~= nil and act.target ~= nil and act.doer:HasTag("wurrow") then
-        act.doer.components.combat:SetDefaultDamage(100)
+    if act.doer ~= nil and act.doer:HasTag("wurrow") then
+        act.doer:AddDebuff("buff_toothkit", "buff_toothkit")
+		return true
     end
 end)
 
@@ -56,12 +57,12 @@ ACTIONS.SHARPEN.priority = 3
 ACTIONS.SHARPEN.rmb = true
 ACTIONS.SHARPEN.mount_valid = true
 
-AddComponentAction("INVENTORY", "inventoryitem", function(inst, doer, actions, right)
-    if right and doer:HasTag("wurrow") and inst:HasTag("toothkit_flint") then
+AddComponentAction("INVENTORY", "inventoryitem", function(inst, doer, actions)
+    if doer:HasTag("wurrow") and inst.prefab == "toothkit_flint" then
         table.insert(actions, ACTIONS.SHARPEN)
     end
 end, ENV.modname)
 
-local sharpener = ActionHandler(ACTIONS.SHARPEN, "domediumaction")
-ENV.AddStategraphActionHandler("wilson", sharpener)
-ENV.AddStategraphActionHandler("wilson_client", sharpener)
+local sharpener = ActionHandler(ACTIONS.SHARPEN, "dolongaction")
+AddStategraphActionHandler("wilson", sharpener)
+AddStategraphActionHandler("wilson_client", sharpener)

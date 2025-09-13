@@ -159,6 +159,7 @@ local common_postinit = function(inst)
     inst:AddTag("nightvision")
     inst:AddTag("wurrow") --Might try to reduce the amount of tags by changing the depth worm aggro tag
     inst:AddTag("acidrainimmune")
+    inst:AddTag("gelable")
 
     inst:DoPeriodicTask(.3, CheckLight)
 	inst:ListenForEvent("enterdark", WurrowEnterDark)

@@ -10,8 +10,10 @@ local function toothkit_attach(inst, target)
 end
 
 local function toothkit_detach(inst, target)
-	if target.components.combat ~= nil then
+	if target.components.combat ~= nil and target:HasTag("burrowed") then
 		target.components.combat:SetDefaultDamage(81.6)
+	else
+		target.components.combat:SetDefaultDamage(10)
 	end
 end
 

@@ -30,6 +30,9 @@ local function dirt(inst)
     inst.components.inventoryitem.imagename = "unearthed_soil"
     inst.components.inventoryitem.atlasname = "images/inventoryimages/unearthed_soil.xml"
 
+    inst:AddComponent("stackable")
+	inst.components.stackable.maxsize = TUNING.STACK_SIZE_SMALLITEM
+
     MakeHauntableLaunch(inst)
 
     return inst

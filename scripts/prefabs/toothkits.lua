@@ -32,8 +32,8 @@ local function fn(inst)
     inst.components.inventoryitem.atlasname = "images/inventoryimages/toothkit_flint.xml"
 
     inst:AddComponent("finiteuses")
-    inst.components.finiteuses:SetMaxUses(10)
-    inst.components.finiteuses:SetUses(10)
+    inst.components.finiteuses:SetMaxUses(3)
+    inst.components.finiteuses:SetUses(3)
     inst.components.finiteuses:SetOnFinished(inst.Remove)
 
     MakeHauntableLaunch(inst)

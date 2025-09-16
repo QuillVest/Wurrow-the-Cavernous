@@ -11,5 +11,7 @@ PrefabFiles = {
 	"wurrow_lure_fx",
 	"wurrow_lure",
 	"wurrow_burrow",
-	"wurrowbuffs",
+
+	"wurrowbuff_toothkit",
+	"wurrowbuff_gel",
 }

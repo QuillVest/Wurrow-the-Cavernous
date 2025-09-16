@@ -186,9 +186,9 @@ local states = {
 			inst.components.locomotor:SetTriggersCreep(false)
 
 			if TheWorld:HasTag("cave") then
-       			inst.components.locomotor.walkspeed = 7.5
+       			inst.components.locomotor.walkspeed = 7.2
     		else
-				inst.components.locomotor.walkspeed = 6.9
+				inst.components.locomotor.walkspeed = 6.6
 			end
 			
 			local buffaction = inst:GetBufferedAction()
@@ -196,7 +196,7 @@ local states = {
 				inst:ForceFacePoint(buffaction:GetActionPoint():Get())
 			end
 		end,
-		
+
 		timeline = {
 			TimeEvent(15 * FRAMES, function(inst)
 				inst.Physics:Stop()
@@ -223,7 +223,7 @@ local states = {
 				end
 			end),
 		},
-		
+
 		events = {
 			EventHandler("animover", function(inst)
 				local inventory = inst.components.inventory
@@ -242,7 +242,7 @@ local states = {
 					inst:PushEvent("dropallaggro")
 					inventory:Equip(SpawnPrefab("wurrow_handslot"))
 					inst.components.moisture.inherentWaterproofness = 1000
-					
+
 					inst.components.combat:SetDefaultDamage(81.6)
 					inst:PushEvent("burrow")
 					inst.components.hunger.burnratemodifiers:SetModifier(inst, 2, "burrowingpenalty")
@@ -250,30 +250,33 @@ local states = {
 					inst.components.temperature.maxtemp = 63
 					inst:AddTag("burrowed")
 					inst:AddTag("bear_trap_immune")
-					
+
 					if inst.components.sandstormwatcher then
 						inst.components.sandstormwatcher:SetSandstormSpeedMultiplier(1)
 					end
-					
+
 					inst.sg:GoToState("burrow_idle")
 				end
 			end)
 		},
 	},
-	
+
 	State {
 		name = "resurface",
 		tags = {"doing", "busy"},
-		
+
 		onenter = function(inst, ba)
 			inst:Show()
-			
+
 			inst.AnimState:PlayAnimation("jumpout")
 			inst.components.locomotor:StopMoving()
 			inst.components.locomotor:SetTriggersCreep(true)
 			inst:AddTag("scarytoprey")
 			inst:RemoveTag("burrowed")
 			inst:RemoveTag("bear_trap_immune")
+
+			inst.components.locomotor.walkspeed = 6
+			
 
 			local equip = inst.components.inventory:GetEquippedItem(EQUIPSLOTS.HANDS)
 			if equip and equip.prefab == "wurrow_handslot" then 

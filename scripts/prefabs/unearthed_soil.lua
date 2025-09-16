@@ -33,6 +33,8 @@ local function dirt(inst)
     inst:AddComponent("stackable")
 	inst.components.stackable.maxsize = TUNING.STACK_SIZE_SMALLITEM
 
+    inst:AddComponent("furgel")
+
     MakeHauntableLaunch(inst)
 
     return inst

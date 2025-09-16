@@ -45,12 +45,31 @@ end)
 
 ---———————————————={ Gel }=———————————————---
 STRINGS.ACTIONS.APPLYGEL = "Apply Gel"
+
 AddAction("APPLYGEL", STRINGS.ACTIONS.APPLYGEL, function(act)
     if act.doer ~= nil and act.doer:HasTag("wurrow") then
-		act.doer.components.locomotor:SetExternalSpeedMultiplier(act.doer, "gel_ms", 1.1)
+        act.doer:AddDebuff("buff_gelled", "buff_gelled")
+		act.invobject:Remove()
+		-- if act.invobject.stackable ~= nil and act.invobject.stackable:IsStack() then
+        -- 	act.invobject:Get():Remove()
+    	-- else
+        -- 	act.invobject:Remove()
+    	-- end
 		return true
     end
 end)
+
+-- ACTIONS.APPLYGEL.strfn = function(act, ...)
+--     local gels = act.invobject
+--     return gels and (
+--         gels:HasTag("slurtleslime") and "GENERIC"
+-- 		or gels:HasTag("unearthed_soil" and "SOIL"))
+-- end
+
+-- STRINGS.ACTIONS.APPLYGEL = {
+-- 	GENERIC = "Apply Gel",
+-- 	SOIL = "Rub Soil",
+-- }
 
 ACTIONS.APPLYGEL.id = "APPLYGEL"
 ACTIONS.APPLYGEL.priority = 3
@@ -63,7 +82,7 @@ AddComponentAction("INVENTORY", "furgel", function(inst, doer, actions)
     end
 end, ENV.modname)
 
-local gelhandler = ActionHandler(ACTIONS.APPLYGEL, "domediumaction")
+local gelhandler = ActionHandler(ACTIONS.APPLYGEL, "dolongaction")
 AddStategraphActionHandler("wilson", gelhandler)
 AddStategraphActionHandler("wilson_client", gelhandler)
 

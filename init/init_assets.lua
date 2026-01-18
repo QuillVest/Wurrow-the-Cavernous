@@ -33,20 +33,31 @@ Assets = {
 
     Asset("IMAGE", "images/colour_cubes/bat_vision_on_cc.tex"),
 
-    ---———————————————={ Toothkits }=———————————————---
-    Asset("ATLAS", "images/inventoryimages/toothkit_flint.xml"),
-    Asset("IMAGE", "images/inventoryimages/toothkit_flint.tex"),
+    Asset("ATLAS", "images/wurrow_inventory.xml"),
+    Asset("IMAGE", "images/wurrow_inventory.tex"),
 
-    Asset("ATLAS", "images/inventoryimages/pocketsand.xml"),
-    Asset("IMAGE", "images/inventoryimages/pocketsand.tex"),
-
-    ---———————————————={ Miscellaneous }=———————————————---
+    ---———————————————={ Animations }=———————————————---
     Asset("ANIM", "anim/bottle.zip"),
     Asset("ANIM", "anim/swap_gelblobbottle.zip"),
     Asset("ANIM", "anim/swap_bottle.zip"),
 
-    Asset("ATLAS", "images/inventoryimages/unearthed_soil.xml"),
-    Asset("IMAGE", "images/inventoryimages/unearthed_soil.tex"),
+    Asset("ANIM", "anim/toothkits.zip"),
+    Asset("ANIM", "anim/wurrow_lure.zip"),
 }
 
 AddMinimapAtlas("images/map_icons/wurrow.xml")
+
+local ITEMS = {
+	"toothkit_flint",
+    "toothkit_marble",
+    "toothkit_calcite",
+    "toothkit_thulecite",
+    "toothkit_brightshade",
+    "toothkit_dreadstone",
+    "unearthed_soil",
+    "pocketsand",
+}
+
+for i, v in pairs(ITEMS) do
+	RegisterInventoryItemAtlas("images/wurrow_inventory.xml", v..".tex")
+end

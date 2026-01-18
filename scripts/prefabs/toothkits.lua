@@ -1,43 +1,50 @@
-local assets = {
-    Asset("ANIM", "anim/toothkit_flint.zip"),
-    Asset("ATLAS", "images/inventoryimages/toothkit_flint.xml"),
-    Asset("IMAGE", "images/inventoryimages/toothkit_flint.tex"),
-}
+local function Toothkits(name, anim, max, min)
+	local assets = {
+		Asset("ANIM", "anim/toothkits.zip"),
+	}
 
-local function fn(inst)
-    local inst = CreateEntity()
+	local function fn()
+		local inst = CreateEntity()
 
-    inst.entity:AddTransform()
-    inst.entity:AddAnimState()
-    inst.entity:AddNetwork()
+		inst.entity:AddTransform()
+		inst.entity:AddAnimState()
+		inst.entity:AddNetwork()
 
-    MakeInventoryPhysics(inst)
+		inst:AddTag("toothkit")
 
-    inst.AnimState:SetBank("toothkit_flint")
-    inst.AnimState:SetBuild("toothkit_flint")
-    inst.AnimState:PlayAnimation("idle")
+		MakeInventoryPhysics(inst)
 
-    MakeInventoryFloatable(inst, "small", 0.05, {0.75, 0.4, 0.75})
+        MakeInventoryFloatable(inst, "small", 0.05, {0.75, 0.4, 0.75})
 
-    inst.entity:SetPristine()
+		inst.AnimState:SetBuild("toothkits")
+		inst.AnimState:SetBank("toothkits")
+		inst.AnimState:PlayAnimation(anim)
 
-    if not TheWorld.ismastersim then
-        return inst
-    end
+		inst.entity:SetPristine()
 
-    inst:AddComponent("inspectable")
-    inst:AddComponent("inventoryitem")
-    inst.components.inventoryitem.imagename = "toothkit_flint"
-    inst.components.inventoryitem.atlasname = "images/inventoryimages/toothkit_flint.xml"
+		if not TheWorld.ismastersim then
+			return inst
+		end
 
-    inst:AddComponent("finiteuses")
-    inst.components.finiteuses:SetMaxUses(3)
-    inst.components.finiteuses:SetUses(3)
-    inst.components.finiteuses:SetOnFinished(inst.Remove)
+		inst:AddComponent("inspectable")
+		inst:AddComponent("inventoryitem")
 
-    MakeHauntableLaunch(inst)
+        inst:AddComponent("finiteuses")
+        inst.components.finiteuses:SetMaxUses(max)
+        inst.components.finiteuses:SetUses(min)
+        inst.components.finiteuses:SetOnFinished(inst.Remove)
 
-    return inst
+		MakeHauntableLaunch(inst)
+
+		return inst
+	end
+
+	return Prefab(name, fn, assets)
 end
 
-return Prefab("toothkit_flint", fn, assets)
+return Toothkits("toothkit_flint", "idle_whetstone", 4, 4),
+	   Toothkits("toothkit_marble", "idle_grindstone", 6, 6),
+	   Toothkits("toothkit_calcite", "idle_forceps", 5, 5),
+	   Toothkits("toothkit_thulecite", "idle_chisel", 8, 8),
+	   Toothkits("toothkit_brightshade", "idle_sandpaper", 3, 3),
+	   Toothkits("toothkit_dreadstone", "idle_toothbrush", 3, 3)

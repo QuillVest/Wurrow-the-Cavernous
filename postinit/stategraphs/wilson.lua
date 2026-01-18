@@ -246,8 +246,8 @@ local states = {
 					inst.components.combat:SetDefaultDamage(81.6)
 					inst:PushEvent("burrow")
 					inst.components.hunger.burnratemodifiers:SetModifier(inst, 2, "burrowingpenalty")
-					inst.components.temperature.mintemp = 6
-					inst.components.temperature.maxtemp = 63
+					inst.components.temperature.mintemp = 3
+					inst.components.temperature.maxtemp = 65
 					inst:AddTag("burrowed")
 					inst:AddTag("bear_trap_immune")
 
@@ -276,7 +276,6 @@ local states = {
 			inst:RemoveTag("bear_trap_immune")
 
 			inst.components.locomotor.walkspeed = 6
-			
 
 			local equip = inst.components.inventory:GetEquippedItem(EQUIPSLOTS.HANDS)
 			if equip and equip.prefab == "wurrow_handslot" then 

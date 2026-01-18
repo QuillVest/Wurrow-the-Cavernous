@@ -1,0 +1,14 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Atlas>
+	<Texture filename="wurrow_inventory.tex" />
+	<Elements>
+		<Element name="pocketsand.tex" u1="0.251" u2="0.499" v2="0.499" v1="0.001" variant="" />
+		<Element name="toothkit_brightshade.tex" u1="0.501" u2="0.749" v2="0.999" v1="0.501" variant="" />
+		<Element name="toothkit_calcite.tex" u1="0.751" u2="0.999" v2="0.999" v1="0.501" variant="" />
+		<Element name="toothkit_dreadstone.tex" u1="0.501" u2="0.749" v2="0.499" v1="0.001" variant="" />
+		<Element name="toothkit_flint.tex" u1="0.751" u2="0.999" v2="0.499" v1="0.001" variant="" />
+		<Element name="toothkit_marble.tex" u1="0.001" u2="0.249" v2="0.999" v1="0.501" variant="" />
+		<Element name="toothkit_thulecite.tex" u1="0.251" u2="0.499" v2="0.999" v1="0.501" variant="" />
+		<Element name="unearthed_soil.tex" u1="0.001" u2="0.249" v2="0.499" v1="0.001" variant="" />
+	</Elements>
+</Atlas>

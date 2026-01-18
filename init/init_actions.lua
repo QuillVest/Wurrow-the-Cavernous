@@ -90,7 +90,19 @@ AddStategraphActionHandler("wilson_client", gelhandler)
 STRINGS.ACTIONS.SHARPEN = "Sharpen"
 AddAction("SHARPEN", STRINGS.ACTIONS.SHARPEN, function(act)
     if act.doer ~= nil and act.doer:HasTag("wurrow") then
-        act.doer:AddDebuff("buff_toothkit", "buff_toothkit")
+		local debuffMap = {
+			toothkit_flint = "buff_tkflint",
+			toothkit_marble = "buff_tkmarble",
+			toothkit_calcite = "buff_tkcalcite",
+			toothkit_thulecite = "buff_tkthulecite",
+			toothkit_electric = "buff_tkelectric",
+			toothkit_brightshade = "buff_tkbrightshade",
+			toothkit_dreadstone = "buff_tkdreadstone",
+		}
+
+		local debuff = debuffMap[act.invobject.prefab]
+		act.doer:AddDebuff(debuff, debuff)
+
 		if act.invobject.components.finiteuses then
 			act.invobject.components.finiteuses:Use(1)
 		end
@@ -104,7 +116,7 @@ ACTIONS.SHARPEN.rmb = true
 ACTIONS.SHARPEN.mount_valid = true
 
 AddComponentAction("INVENTORY", "inventoryitem", function(inst, doer, actions)
-    if doer:HasTag("wurrow") and inst.prefab == "toothkit_flint" then
+    if doer:HasTag("wurrow") and inst:HasTag("toothkit") then
         table.insert(actions, ACTIONS.SHARPEN)
     end
 end, ENV.modname)

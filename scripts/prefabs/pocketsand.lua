@@ -2,8 +2,6 @@ local assets = {
     Asset("ANIM", "anim/bottle.zip"),
 	Asset("ANIM", "anim/swap_bottle.zip"),
 	Asset("ANIM", "anim/swap_gelblobbottle.zip"),
-	Asset("ATLAS", "images/inventoryimages/pocketsand.xml"),
-    Asset("IMAGE", "images/inventoryimages/pocketsand.tex"),
 }
 
 local prefabs = {
@@ -92,8 +90,6 @@ local function pocketsandfn(inst)
 
     inst:AddComponent("inspectable")
 	inst:AddComponent("inventoryitem")
-	inst.components.inventoryitem.imagename = "pocketsand"
-	inst.components.inventoryitem.atlasname = "images/inventoryimages/pocketsand.xml"
 
     inst:AddComponent("stackable")
 	inst.components.stackable.maxsize = TUNING.STACK_SIZE_LARGEITEM

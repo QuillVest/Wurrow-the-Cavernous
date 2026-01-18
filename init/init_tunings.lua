@@ -3,9 +3,7 @@ TUNING.WURROW_HUNGER = 225
 TUNING.WURROW_SANITY = 125
 
 TUNING.GAMEMODE_STARTING_ITEMS.DEFAULT.WURROW = {
-	"slurper_pelt",
-    "slurper_pelt",
-    "slurper_pelt",
+	"toothkit_flint",
 }
 
 TUNING.WURROW_MODCONFIGDATA = {}

@@ -39,7 +39,7 @@ for _, v in pairs(prefabs) do
     modimport("postinit/prefabs/"..v)
 end
 
-RegisterInventoryItemAtlas(GLOBAL.resolvefilepath("images/inventoryimages/unearthed_soil.xml"), "unearthed_soil.tex")
+RegisterInventoryItemAtlas(GLOBAL.resolvefilepath("images/wurrow_inventory.xml"), "unearthed_soil.tex")
 
 ---———————————————={ Miscellanous Functions }=———————————————---
 AddComponentPostInit("playeractionpicker", function(self)

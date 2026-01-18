@@ -185,17 +185,11 @@ end
 
 ---———————————————={ Master Postinit }=———————————————---
 local master_postinit = function(inst)
-    if not inst:HasTag("burrowed") then
-        local lurefx = SpawnPrefab("wurrow_lure_fx")
-		lurefx.entity:SetParent(inst.entity)
-		lurefx.Follower:FollowSymbol(inst.GUID, "headbase", nil, nil, nil, true)
-
-        local lure = SpawnPrefab("wurrow_lure")
-	    lure.entity:SetParent(inst.entity)
-	    lure.Follower:FollowSymbol(inst.GUID, "headbase", nil, nil, nil, true)
-
-        inst.highlightchildren = { lurefx, lure }
-    end
+    inst._lurefx = SpawnPrefab("wurrowlure_flowering")
+    inst._lurefx.entity:SetParent(inst.entity)
+    inst._lurefx.Follower:FollowSymbol(inst.GUID, "headbase", nil, nil, nil, true)
+    
+    inst.highlightchildren = { inst._lurefx }
 
     inst:DoPeriodicTask(.3, CheckLight)
 	inst:ListenForEvent("enterdark", WurrowEnterDark)

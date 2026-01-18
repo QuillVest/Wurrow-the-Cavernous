@@ -11,6 +11,12 @@ STRINGS.SKIN_NAMES.wurrow_skins = "Wurrow"
 
 ---———————————————={ Prefabs }=———————————————---
 STRINGS.NAMES.TOOTHKIT_FLINT = "Flint Whetstone"
+STRINGS.NAMES.TOOTHKIT_MARBLE = "Marble Grindstone"
+STRINGS.NAMES.TOOTHKIT_CALCITE = "Calcite Forceps"
+STRINGS.NAMES.TOOTHKIT_THULECITE = "Thulecite Chisel"
+STRINGS.NAMES.TOOTHKIT_BRIGHTSHADE = "Illuminant Sandpaper"
+STRINGS.NAMES.TOOTHKIT_DREADSTONE = "Dreadful Toothbrush"
+
 STRINGS.NAMES.POCKETSAND = "Jar of Dirt"
 STRINGS.NAMES.UNEARTHED_SOIL = "Dirt"
 
@@ -19,3 +25,8 @@ STRINGS.NAMES.WURROW_HANDSLOT = ""
 ---———————————————={ Recipes }=———————————————---
 STRINGS.RECIPE_DESC.POCKETSAND = "I'm gonna put some dirt in your eye."
 STRINGS.RECIPE_DESC.TOOTHKIT_FLINT = "To sharpen all them teeth!"
+STRINGS.RECIPE_DESC.TOOTHKIT_MARBLE = "Heavy and cracking."
+STRINGS.RECIPE_DESC.TOOTHKIT_CALCITE = "Not for recreational use."
+STRINGS.RECIPE_DESC.TOOTHKIT_THULECITE = "Smells old."
+STRINGS.RECIPE_DESC.TOOTHKIT_BRIGHTSHADE = "480 grit flashy goodness."
+STRINGS.RECIPE_DESC.TOOTHKIT_DREADSTONE = "May have artificial darkeners."

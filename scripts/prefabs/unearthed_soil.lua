@@ -1,7 +1,5 @@
 local assets = {
     Asset("ANIM", "anim/unearthed_soil.zip"),
-    Asset("ATLAS", "images/inventoryimages/unearthed_soil.xml"),
-    Asset("IMAGE", "images/inventoryimages/unearthed_soil.tex"),
 }
 
 local function dirt(inst)
@@ -27,8 +25,6 @@ local function dirt(inst)
 
     inst:AddComponent("inspectable")
     inst:AddComponent("inventoryitem")
-    inst.components.inventoryitem.imagename = "unearthed_soil"
-    inst.components.inventoryitem.atlasname = "images/inventoryimages/unearthed_soil.xml"
 
     inst:AddComponent("stackable")
 	inst.components.stackable.maxsize = TUNING.STACK_SIZE_SMALLITEM

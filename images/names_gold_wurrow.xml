@@ -1,1 +1,7 @@
-<Atlas><Texture filename="names_gold_wurrow.tex" /><Elements><Element name="wurrow.tex" u1="0.00048828125" u2="0.85498046875" v1="0.1533203125" v2="0.9990234375" /></Elements></Atlas>
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Atlas>
+	<Texture filename="names_gold_wurrow.tex" />
+	<Elements>
+		<Element name="names_gold_wurrow.tex" u1="0.001" u2="0.85446875" v2="0.999" v1="0.15334375" variant="" />
+	</Elements>
+</Atlas>

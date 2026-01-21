@@ -5,7 +5,6 @@ PrefabFiles = {
 	
 	"wurrow_handslot",
     "wurrow_pulse_fx",
-	"wurrow_burrow",
 
 	"wurrowbuff_toothkit",
 	"wurrowbuff_gel",

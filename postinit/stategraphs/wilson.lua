@@ -104,10 +104,7 @@ local states = {
 		timeline = {
 			FrameEvent(0, function(inst)
 				SpawnAt("farm_soil", inst)
-			end),
-			FrameEvent(11, function(inst)
-				SpawnAt("farm_soil", inst)
-			end),
+			end)
 		},
 		
 		events = {
@@ -227,15 +224,16 @@ local states = {
 		events = {
 			EventHandler("animover", function(inst)
 				local inventory = inst.components.inventory
+
+				inst.AnimState:PlayAnimation("idle_budding", true)
+
 				if inst.AnimState:AnimDone() then
-					inst:Hide()
 
 					local x, y, z = inst.Transform:GetWorldPosition()
 					local platform = inst:GetCurrentPlatform()
 
 					if platform ~= nil and TheWorld.Map:IsOceanTileAtPoint(x, y, z) then
 						inst:DoTaskInTime(1, function() inst.sg:GoToState("sink_instant") end)
-
 						return
 					end
 
@@ -266,8 +264,6 @@ local states = {
 		tags = {"doing", "busy"},
 
 		onenter = function(inst, ba)
-			inst:Show()
-
 			inst.AnimState:PlayAnimation("jumpout")
 			inst.components.locomotor:StopMoving()
 			inst.components.locomotor:SetTriggersCreep(true)
@@ -409,12 +405,12 @@ local states = {
 		},
 		
 		ontimeout = function(inst)
-			inst:Hide()
+
 			inst.sg:GoToState("idle", true)
 		end,
 		
 		onexit = function(inst)
-			inst:Hide()
+
 			if inst.bufferedaction == inst.sg.statemem.action then
 				inst:ClearBufferedAction()
 			end
@@ -464,51 +460,45 @@ local states = {
 			inst.AnimState:PlayAnimation("wurrow_harvesting")
 			inst.AnimState:PushAnimation("wurrow_harvesting")
 			inst.sg.statemem.action = inst.bufferedaction
-			inst.sg:SetTimeout(25 * FRAMES)
+			inst.sg:SetTimeout(15 * FRAMES)
 		end,
 		
 		timeline = {
 			TimeEvent(4 * FRAMES, function(inst)
 				inst.sg:RemoveStateTag("busy")
 			end),
-			TimeEvent(6 * FRAMES, function(inst)
-				inst.AnimState:PlayAnimation("jumpout")
-			end),
-			FrameEvent(7, function(inst)
+			FrameEvent(6, function(inst)
 				SpawnAt("dirt_puff", inst)
 			end),
-			TimeEvent(8 * FRAMES, function(inst)
-				inst:Show()
-			end),
-			TimeEvent(9 * FRAMES, function(inst)
+			TimeEvent(6 * FRAMES, function(inst)
 				inst.components.hunger:DoDelta(-1)
 			end),
-			TimeEvent(12 * FRAMES, function(inst)
+			TimeEvent(10 * FRAMES, function(inst)
 				inst:PerformBufferedAction()
 			end),
+			TimeEvent(10 * FRAMES, 	SpawnMoveFx),
 			TimeEvent(12 * FRAMES, function(inst)
 				inst.SoundEmitter:PlaySound("dontstarve/wilson/dig")
 			end),
-			TimeEvent(20 * FRAMES, 	SpawnMoveFx),
-			FrameEvent(22, function(inst)
+			FrameEvent(15, function(inst)
 				SpawnAt("shovel_dirt", inst)
 			end),
 		},
 
 		events = {
 			EventHandler("animover", function(inst)
-				inst:Hide()
+	
 				inst.sg:GoToState("idle")
 			end),
 		},
 		
 		ontimeout = function(inst)
-			inst:Hide()
+
 			inst.sg:GoToState("idle", true)
 		end,
 		
 		onexit = function(inst)
-			inst:Hide()
+
 			if inst.bufferedaction == inst.sg.statemem.action then
 				inst:ClearBufferedAction()
 			end
@@ -523,56 +513,45 @@ local states = {
 			inst.components.locomotor:Stop()
 			inst.SoundEmitter:KillSound("move")
 			inst.sg.statemem.action = inst.bufferedaction
-			inst.sg:SetTimeout(30 * FRAMES)
+			inst.sg:SetTimeout(40 * FRAMES)
 		end,
 		
 		timeline = {
-			TimeEvent(4 * FRAMES, function(inst)
-				-- inst.sg:RemoveStateTag("busy")
-			end),
-			TimeEvent(6 * FRAMES, function(inst)
+			TimeEvent(11 * FRAMES, function(inst)
 				inst.AnimState:PlayAnimation("jumpout")
 			end),
-			TimeEvent(6 * FRAMES, 	SpawnMoveFx),
-			FrameEvent(6, function(inst)
+			TimeEvent(11 * FRAMES, 	SpawnMoveFx),
+			FrameEvent(11, function(inst)
 				inst.sg:RemoveStateTag("noattack")
 			end),
-			FrameEvent(7, function(inst)
+			FrameEvent(12, function(inst)
 				SpawnAt("dirt_puff", inst)
 			end),
-			TimeEvent(8 * FRAMES, function(inst)
-				inst:Show()
-			end),
-			TimeEvent(17 * FRAMES, function(inst)
+			TimeEvent(22 * FRAMES, function(inst)
 				inst:PerformBufferedAction()
 			end),
-			FrameEvent(20, function(inst)
+			FrameEvent(25, function(inst)
 				SpawnAt("shovel_dirt", inst)
 			end),
-			FrameEvent(21, function(inst)
+			FrameEvent(26, function(inst)
 				inst.sg:AddStateTag("noattack")
-			end),
-			TimeEvent(26 * FRAMES, function(inst)
-				inst:Hide()
 			end),
 		},
 		
 		ontimeout = function(inst)
-			inst:Hide()
+
 			inst.sg:GoToState("idle", true)
 		end,
 		
 		onexit = function(inst)
 			if inst.bufferedaction == inst.sg.statemem.action then
 				inst:ClearBufferedAction()
-				inst:Hide()
 				inst.sg:GoToState("idle")
 			end
 		end,
 		
 		events = {
 			EventHandler("animover", function(inst)
-				inst:Hide()
 				inst.sg:GoToState("idle")
 			end),
 		},
@@ -609,7 +588,6 @@ ENV.AddStategraphPostInit("wilson", function(sg)
 	local olddeath = sg.events["death"].fn
 	sg.events["death"].fn = function(inst, ...)
 		if inst.prefab == "wurrow" then
-			inst:Show()
 			inst:RemoveTag("burrowed")
 		end
 		
@@ -619,7 +597,6 @@ ENV.AddStategraphPostInit("wilson", function(sg)
 	local oldknockback = sg.events["knockback"].fn
 	sg.events["knockback"].fn = function(inst, ...)
 		if inst.prefab == "wurrow" then
-			inst:Show()
 			inst:RemoveTag("burrowed")
 		end
 		

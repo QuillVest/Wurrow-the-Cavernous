@@ -4,7 +4,6 @@ Assets = {
 
     Asset( "IMAGE", "images/selectscreen_portraits/wurrow.tex" ),
     Asset( "ATLAS", "images/selectscreen_portraits/wurrow.xml" ),
-
     Asset( "IMAGE", "images/selectscreen_portraits/wurrow_silho.tex" ),
     Asset( "ATLAS", "images/selectscreen_portraits/wurrow_silho.xml" ),
 
@@ -27,7 +26,6 @@ Assets = {
 
 	Asset( "IMAGE", "images/names_wurrow.tex" ),
     Asset( "ATLAS", "images/names_wurrow.xml" ),
-
 	Asset( "IMAGE", "images/names_gold_wurrow.tex" ),
     Asset( "ATLAS", "images/names_gold_wurrow.xml" ),
 
@@ -43,6 +41,8 @@ Assets = {
 
     Asset("ANIM", "anim/toothkits.zip"),
     Asset("ANIM", "anim/wurrow_lure.zip"),
+
+    Asset("ANIM", "anim/wurrow_animations.zip"),
 }
 
 AddMinimapAtlas("images/map_icons/wurrow.xml")

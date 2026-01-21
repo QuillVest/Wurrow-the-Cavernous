@@ -6,6 +6,7 @@ local assets = {
     Asset("ANIM", "anim/wurrow.zip"),
     Asset("ANIM", "anim/ghost_wurrow_build.zip"),
     Asset("ANIM", "anim/wurrow_lure.zip"),
+    Asset("ANIM", "anim/wurrow_animations.zip"),
 }
 
 local prefabs = {
@@ -235,7 +236,6 @@ local master_postinit = function(inst)
     inst.count = 0
 
     inst:AddComponent("lootdropper")
-    inst.components.lootdropper:AddRandomLoot("farm_soil_debris", .75)
     inst.components.lootdropper:AddRandomLoot("unearthed_soil", .60)
     inst.components.lootdropper:AddRandomLoot("flint", .40)
     inst.components.lootdropper:AddRandomLoot("rocks", .40)

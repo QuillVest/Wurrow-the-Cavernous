@@ -2,7 +2,7 @@
 local function tkflint_attach(inst, target)
 	if target.components.combat ~= nil then
 		inst:ListenForEvent("burrow", function()
-			target.components.combat:SetDefaultDamage(102)
+			target.components.combat:SetDefaultDamage(136)
 		end, target)
 		inst:ListenForEvent("resurface", function()
 			target.components.combat:SetDefaultDamage(10)
@@ -12,14 +12,14 @@ end
 
 local function tkflint_detach(inst, target)
 	if target.components.combat ~= nil and target:HasTag("burrowed") then
-		target.components.combat:SetDefaultDamage(81.6)
+		target.components.combat:SetDefaultDamage(108.8)
 	else
 		target.components.combat:SetDefaultDamage(10)
 	end
 end
 
 ---———————————————={ Marble }=———————————————---
---- Might still split into Crimson/Azure Grindstones
+--- Is being turned into the station buffer
 local function tkmarble_attach(inst, target)
 	if target.components.combat ~= nil then
 		inst:ListenForEvent("burrow", function()
@@ -33,7 +33,7 @@ end
 
 local function tkmarble_detach(inst, target)
 	if target.components.combat ~= nil and target:HasTag("burrowed") then
-		target.components.combat:SetDefaultDamage(81.6)
+		target.components.combat:SetDefaultDamage(108.8)
 	else
 		target.components.combat:SetDefaultDamage(10)
 	end
@@ -43,7 +43,7 @@ end
 local function tkcalcite_attach(inst, target)
 	if target.components.combat ~= nil then
 		inst:ListenForEvent("burrow", function()
-			target.components.combat:SetDefaultDamage(153)
+			target.components.combat:SetDefaultDamage(204)
 		end, target)
 		inst:ListenForEvent("resurface", function()
 			target.components.combat:SetDefaultDamage(10)
@@ -53,7 +53,7 @@ end
 
 local function tkcalcite_detach(inst, target)
 	if target.components.combat ~= nil and target:HasTag("burrowed") then
-		target.components.combat:SetDefaultDamage(81.6)
+		target.components.combat:SetDefaultDamage(108.8)
 	else
 		target.components.combat:SetDefaultDamage(10)
 	end
@@ -63,7 +63,7 @@ end
 local function tkelectric_attach(inst, target)
 	if target.components.combat ~= nil then
 		inst:ListenForEvent("burrow", function()
-			target.components.combat:SetDefaultDamage(153)
+			target.components.combat:SetDefaultDamage(272)
 		end, target)
 		inst:ListenForEvent("resurface", function()
 			target.components.combat:SetDefaultDamage(10)
@@ -73,7 +73,7 @@ end
 
 local function tkelectric_detach(inst, target)
 	if target.components.combat ~= nil and target:HasTag("burrowed") then
-		target.components.combat:SetDefaultDamage(81.6)
+		target.components.combat:SetDefaultDamage(108.8)
 	else
 		target.components.combat:SetDefaultDamage(10)
 	end
@@ -83,7 +83,7 @@ end
 local function tkthulecite_attach(inst, target)
 	if target.components.combat ~= nil then
 		inst:ListenForEvent("burrow", function()
-			target.components.combat:SetDefaultDamage(178.5)
+			target.components.combat:SetDefaultDamage(238)
 		end, target)
 		inst:ListenForEvent("resurface", function()
 			target.components.combat:SetDefaultDamage(10)
@@ -93,7 +93,7 @@ end
 
 local function tkthulecite_detach(inst, target)
 	if target.components.combat ~= nil and target:HasTag("burrowed") then
-		target.components.combat:SetDefaultDamage(81.6)
+		target.components.combat:SetDefaultDamage(108.8)
 	else
 		target.components.combat:SetDefaultDamage(10)
 	end
@@ -103,7 +103,7 @@ end
 local function tkbrightshade_attach(inst, target)
 	if target.components.combat ~= nil then
 		inst:ListenForEvent("burrow", function()
-			target.components.combat:SetDefaultDamage(255)
+			target.components.combat:SetDefaultDamage(238)
 		end, target)
 		inst:ListenForEvent("resurface", function()
 			target.components.combat:SetDefaultDamage(10)
@@ -113,7 +113,7 @@ end
 
 local function tkbrightshade_detach(inst, target)
 	if target.components.combat ~= nil and target:HasTag("burrowed") then
-		target.components.combat:SetDefaultDamage(81.6)
+		target.components.combat:SetDefaultDamage(108.8)
 	else
 		target.components.combat:SetDefaultDamage(10)
 	end
@@ -123,7 +123,7 @@ end
 local function tkdreadstone_attach(inst, target)
 	if target.components.combat ~= nil then
 		inst:ListenForEvent("burrow", function()
-			target.components.combat:SetDefaultDamage(255)
+			target.components.combat:SetDefaultDamage(238)
 		end, target)
 		inst:ListenForEvent("resurface", function()
 			target.components.combat:SetDefaultDamage(10)
@@ -133,7 +133,7 @@ end
 
 local function tkdreadstone_detach(inst, target)
 	if target.components.combat ~= nil and target:HasTag("burrowed") then
-		target.components.combat:SetDefaultDamage(81.6)
+		target.components.combat:SetDefaultDamage(108.8)
 	else
 		target.components.combat:SetDefaultDamage(10)
 	end
@@ -207,10 +207,10 @@ local function MakeBuff(name, onattachedfn, onextendedfn, ondetachedfn, duration
 end
 
 return 
-	MakeBuff("tkflint", tkflint_attach, nil, tkflint_detach, 30),
-	MakeBuff("tkmarble", tkmarble_attach, nil, tkmarble_detach, 30),
-	MakeBuff("tkcalcite", tkcalcite_attach, nil, tkcalcite_detach, 30),
-	MakeBuff("tkthulecite", tkthulecite_attach, nil, tkthulecite_detach, 30),
-	MakeBuff("tkelectric", tkelectric_attach, nil, tkelectric_detach, 30),
-	MakeBuff("tkbrightshade", tkbrightshade_attach, nil, tkbrightshade_detach, 30),
-	MakeBuff("tkdreadstone", tkdreadstone_attach, nil, tkdreadstone_detach, 30)
+	MakeBuff("tkflint", tkflint_attach, nil, tkflint_detach, 60),
+	MakeBuff("tkmarble", tkmarble_attach, nil, tkmarble_detach, 60),
+	MakeBuff("tkcalcite", tkcalcite_attach, nil, tkcalcite_detach, 60),
+	MakeBuff("tkthulecite", tkthulecite_attach, nil, tkthulecite_detach, 60),
+	MakeBuff("tkelectric", tkelectric_attach, nil, tkelectric_detach, 60),
+	MakeBuff("tkbrightshade", tkbrightshade_attach, nil, tkbrightshade_detach, 60),
+	MakeBuff("tkdreadstone", tkdreadstone_attach, nil, tkdreadstone_detach, 60)

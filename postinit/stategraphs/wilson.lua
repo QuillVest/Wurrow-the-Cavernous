@@ -147,12 +147,12 @@ local states = {
 		tags = {"idle", "canrotate"},
 		
 		onenter = function(inst)
-			if inst.sg.lasttags and not inst.sg.lasttags["busy"] then
-				inst.components.locomotor:StopMoving()
-			else
-				inst.components.locomotor:Stop()
-				inst.components.locomotor:Clear()
-			end
+			-- if inst.sg.lasttags and not inst.sg.lasttags["busy"] then
+			-- 	inst.components.locomotor:StopMoving()
+			-- else
+			-- 	inst.components.locomotor:Stop()
+			-- 	inst.components.locomotor:Clear()
+			-- end
 			inst:ClearBufferedAction()
 			
 			local drownable = inst.components.drownable
@@ -183,7 +183,7 @@ local states = {
 			inst.components.locomotor:SetTriggersCreep(false)
 
 			if TheWorld:HasTag("cave") then
-       			inst.components.locomotor.walkspeed = 7.2
+       			inst.components.locomotor.walkspeed = 6.9
     		else
 				inst.components.locomotor.walkspeed = 6.6
 			end
@@ -225,10 +225,10 @@ local states = {
 			EventHandler("animover", function(inst)
 				local inventory = inst.components.inventory
 
-				inst.AnimState:PlayAnimation("idle_budding", true)
+				-- inst.AnimState:PlayAnimation("idle_flowering", true)
 
 				if inst.AnimState:AnimDone() then
-
+					inst:Hide()
 					local x, y, z = inst.Transform:GetWorldPosition()
 					local platform = inst:GetCurrentPlatform()
 
@@ -241,7 +241,7 @@ local states = {
 					inventory:Equip(SpawnPrefab("wurrow_handslot"))
 					inst.components.moisture.inherentWaterproofness = 1000
 
-					inst.components.combat:SetDefaultDamage(81.6)
+					inst.components.combat:SetDefaultDamage(108.8)
 					inst:PushEvent("burrow")
 					inst.components.hunger.burnratemodifiers:SetModifier(inst, 2, "burrowingpenalty")
 					inst.components.temperature.mintemp = 3
@@ -264,6 +264,7 @@ local states = {
 		tags = {"doing", "busy"},
 
 		onenter = function(inst, ba)
+			inst:Show()
 			inst.AnimState:PlayAnimation("jumpout")
 			inst.components.locomotor:StopMoving()
 			inst.components.locomotor:SetTriggersCreep(true)
@@ -513,39 +514,46 @@ local states = {
 			inst.components.locomotor:Stop()
 			inst.SoundEmitter:KillSound("move")
 			inst.sg.statemem.action = inst.bufferedaction
-			inst.sg:SetTimeout(40 * FRAMES)
+			inst.sg:SetTimeout(45 * FRAMES)
 		end,
 		
 		timeline = {
-			TimeEvent(11 * FRAMES, function(inst)
-				inst.AnimState:PlayAnimation("jumpout")
-			end),
-			TimeEvent(11 * FRAMES, 	SpawnMoveFx),
-			FrameEvent(11, function(inst)
-				inst.sg:RemoveStateTag("noattack")
-			end),
-			FrameEvent(12, function(inst)
+			TimeEvent(13 * FRAMES, 	SpawnMoveFx),
+			FrameEvent(23, function(inst)
 				SpawnAt("dirt_puff", inst)
 			end),
-			TimeEvent(22 * FRAMES, function(inst)
+			TimeEvent(24 * FRAMES, function(inst)
+				inst:Show()
+			end),
+			TimeEvent(24 * FRAMES, function(inst)
+				inst.AnimState:PlayAnimation("jumpout")
+			end),
+			FrameEvent(23, function(inst)
+				inst.sg:RemoveStateTag("noattack")
+			end),
+			TimeEvent(36 * FRAMES, function(inst)
 				inst:PerformBufferedAction()
 			end),
-			FrameEvent(25, function(inst)
+			FrameEvent(35, function(inst)
 				SpawnAt("shovel_dirt", inst)
 			end),
-			FrameEvent(26, function(inst)
+			TimeEvent(42 * FRAMES, function(inst)
+				inst:Hide()
+			end),
+			FrameEvent(45, function(inst)
 				inst.sg:AddStateTag("noattack")
 			end),
 		},
 		
 		ontimeout = function(inst)
-
+			inst:Hide()
 			inst.sg:GoToState("idle", true)
 		end,
 		
 		onexit = function(inst)
 			if inst.bufferedaction == inst.sg.statemem.action then
 				inst:ClearBufferedAction()
+				inst:Hide()
 				inst.sg:GoToState("idle")
 			end
 		end,
@@ -588,6 +596,7 @@ ENV.AddStategraphPostInit("wilson", function(sg)
 	local olddeath = sg.events["death"].fn
 	sg.events["death"].fn = function(inst, ...)
 		if inst.prefab == "wurrow" then
+			inst:Show()
 			inst:RemoveTag("burrowed")
 		end
 		
@@ -597,6 +606,7 @@ ENV.AddStategraphPostInit("wilson", function(sg)
 	local oldknockback = sg.events["knockback"].fn
 	sg.events["knockback"].fn = function(inst, ...)
 		if inst.prefab == "wurrow" then
+			inst:Show()
 			inst:RemoveTag("burrowed")
 		end
 		

@@ -13,7 +13,6 @@ local function Toothkits(name, anim, max, min)
 		inst:AddTag("toothkit")
 
 		MakeInventoryPhysics(inst)
-
         MakeInventoryFloatable(inst, "small", 0.05, {0.75, 0.4, 0.75})
 
 		inst.AnimState:SetBuild("toothkits")
@@ -42,12 +41,12 @@ local function Toothkits(name, anim, max, min)
 	return Prefab(name, fn, assets)
 end
 
-return Toothkits("toothkit_flint", "idle_whetstone", 4, 4),
-	   Toothkits("toothkit_stinger", "idle_stinger", 6, 6),
-	   Toothkits("toothkit_calcite", "idle_forceps", 5, 5),
-	   Toothkits("toothkit_bone", "idle_bone", 3, 3),
-	   Toothkits("toothkit_thulecite", "idle_chisel", 8, 8),
-	   Toothkits("toothkit_brightshade", "idle_sandpaper", 3, 3),
-	   Toothkits("toothkit_dreadstone", "idle_toothbrush", 3, 3),
-	   Toothkits("toothkit_moonglass", "idle_moonglass", 3, 3),
-	   Toothkits("toothkit_scrap", "idle_scrap", 3, 3)
+return Toothkits("toothkit_flint", "flint", 5, 5),
+	   Toothkits("toothkit_stinger", "stinger", 7, 7),
+	   Toothkits("toothkit_calcite", "calcite", 8, 8),
+	   Toothkits("toothkit_bone", "bone", 25, 25),
+	   Toothkits("toothkit_thulecite", "thulecite", 10, 10),
+	   Toothkits("toothkit_brightshade", "brightshade", 5, 5),
+	   Toothkits("toothkit_dreadstone", "dreadstone", 5, 5),
+	   Toothkits("toothkit_moonglass", "moonglass", 2, 2),
+	   Toothkits("toothkit_scrap", "scrap", 100, 100)

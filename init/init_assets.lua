@@ -33,6 +33,7 @@ Assets = {
 
     Asset("ATLAS", "images/wurrow_inventory.xml"),
     Asset("IMAGE", "images/wurrow_inventory.tex"),
+    Asset("ATLAS_BUILD", "images/wurrow_inventory.xml", 256),
 
     ---———————————————={ Animations }=———————————————---
     Asset("ANIM", "anim/bottle.zip"),
@@ -47,20 +48,9 @@ Assets = {
 
 AddMinimapAtlas("images/map_icons/wurrow.xml")
 
-local ITEMS = {
-	"toothkit_flint",
-    "toothkit_stinger",
-    "toothkit_calcite",
-    "toothkit_bone",
-    "toothkit_thulecite",
-    "toothkit_brightshade",
-    "toothkit_dreadstone",
-    "toothkit_moonglass",
-    "toothkit_scrap",
-    "unearthed_soil",
-    "pocketsand",
-}
-
-for i, v in pairs(ITEMS) do
-	RegisterInventoryItemAtlas("images/wurrow_inventory.xml", v..".tex")
+local WURROW_ICONS = GLOBAL.resolvefilepath("images/wurrow_inventory.xml")
+local _GetInventoryItemAtlas_Internal = GLOBAL.GetInventoryItemAtlas_Internal
+function GLOBAL.GetInventoryItemAtlas_Internal(imagename, ...)
+    return GLOBAL.TheSim:AtlasContains(WURROW_ICONS, imagename) and WURROW_ICONS
+            or _GetInventoryItemAtlas_Internal(imagename, ...)
 end

@@ -1,5 +1,5 @@
----———————————————={ Flint }=———————————————---
-local function tkflint_attach(inst, target)
+---———————————————={ Stinger }=———————————————---
+local function tkstinger_attach(inst, target)
 	if target.components.combat ~= nil then
 		inst:ListenForEvent("burrow", function()
 			target.components.combat:SetDefaultDamage(136)
@@ -10,7 +10,7 @@ local function tkflint_attach(inst, target)
 	end
 end
 
-local function tkflint_detach(inst, target)
+local function tkstinger_detach(inst, target)
 	if target.components.combat ~= nil and target:HasTag("burrowed") then
 		target.components.combat:SetDefaultDamage(108.8)
 	else
@@ -18,8 +18,8 @@ local function tkflint_detach(inst, target)
 	end
 end
 
----———————————————={ Stinger }=———————————————---
-local function tkstinger_attach(inst, target)
+---———————————————={ Flint }=———————————————---
+local function tkflint_attach(inst, target)
 	if target.components.combat ~= nil then
 		inst:ListenForEvent("burrow", function()
 			target.components.combat:SetDefaultDamage(170)
@@ -30,7 +30,7 @@ local function tkstinger_attach(inst, target)
 	end
 end
 
-local function tkstinger_detach(inst, target)
+local function tkflint_detach(inst, target)
 	if target.components.combat ~= nil and target:HasTag("burrowed") then
 		target.components.combat:SetDefaultDamage(108.8)
 	else
@@ -245,9 +245,9 @@ local function MakeBuff(name, onattachedfn, onextendedfn, ondetachedfn, duration
 	return Prefab("buff_"..name, fn)
 end
 
-return 
-	MakeBuff("tkflint", tkflint_attach, nil, tkflint_detach, 60),
+return
 	MakeBuff("tkstinger", tkstinger_attach, nil, tkstinger_detach, 60),
+	MakeBuff("tkflint", tkflint_attach, nil, tkflint_detach, 60),
 	MakeBuff("tkcalcite", tkcalcite_attach, nil, tkcalcite_detach, 60),
 	MakeBuff("tkbone", tkbone_attach, nil, tkbone_detach, 60),
 	MakeBuff("tkthulecite", tkthulecite_attach, nil, tkthulecite_detach, 60),

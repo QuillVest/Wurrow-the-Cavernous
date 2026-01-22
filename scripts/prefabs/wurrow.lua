@@ -236,9 +236,9 @@ local master_postinit = function(inst)
     inst.count = 0
 
     inst:AddComponent("lootdropper")
-    inst.components.lootdropper:AddRandomLoot("unearthed_soil", .60)
     inst.components.lootdropper:AddRandomLoot("flint", .40)
     inst.components.lootdropper:AddRandomLoot("rocks", .40)
+    inst.components.lootdropper:AddRandomLoot("unearthed_soil", .30)
 	inst.components.lootdropper:AddRandomLoot("nitre", .25)
 	inst.components.lootdropper:AddRandomLoot("marble", .15)
     inst.components.lootdropper:AddRandomLoot("goldnugget", .1)

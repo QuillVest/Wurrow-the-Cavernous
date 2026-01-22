@@ -10,10 +10,18 @@ end
 
 WurrowRecipe("pocketsand",
     {Ingredient("messagebottleempty", 1),
-    Ingredient("unearthed_soil", 1)},
-    GLOBAL.TECH.SCIENCE_ONE,
+    Ingredient("unearthed_soil", 2)},
+    GLOBAL.TECH.NONE,
     {builder_tag = "wurrow", nounlock=false},
     {"WEAPONS"}
+)
+
+WurrowRecipe("toothkit_stinger",
+    {Ingredient("stinger", 6),
+    Ingredient("messagebottleempty", 1)},
+    GLOBAL.TECH.NONE,
+    {builder_tag = "wurrow", nounlock=false},
+    {"TOOLS"}
 )
 
 WurrowRecipe("toothkit_flint",
@@ -25,16 +33,8 @@ WurrowRecipe("toothkit_flint",
     {"TOOLS"}
 )
 
-WurrowRecipe("toothkit_stinger",
-    {Ingredient("stinger", 6),
-    Ingredient("messagebottleempty", 1)},
-    GLOBAL.TECH.SCIENCE_ONE,
-    {builder_tag = "wurrow", nounlock=false},
-    {"TOOLS"}
-)
-
 WurrowRecipe("toothkit_calcite",
-    {Ingredient("slurtle_shellpieces", 4),
+    {Ingredient("slurtle_shellpieces", 3),
     Ingredient("slurper_pelt", 2)},
     GLOBAL.TECH.SCIENCE_TWO,
     {builder_tag = "wurrow", nounlock=false},
@@ -80,8 +80,8 @@ WurrowRecipe("toothkit_dreadstone",
 WurrowRecipe("toothkit_moonglass",
     {Ingredient("moonglass", 6),
     Ingredient("moonrocknugget", 4)},
-    GLOBAL.TECH.CELESTIAL,
-    {builder_tag = "wurrow", nounlock=false},
+    GLOBAL.TECH.CELESTIAL_ONE,
+    {builder_tag = "wurrow", nounlock=true},
     {"TOOLS"}
 )
 

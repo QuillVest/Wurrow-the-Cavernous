@@ -92,12 +92,14 @@ AddAction("SHARPEN", STRINGS.ACTIONS.SHARPEN, function(act)
     if act.doer ~= nil and act.doer:HasTag("wurrow") then
 		local debuffMap = {
 			toothkit_flint = "buff_tkflint",
-			toothkit_marble = "buff_tkmarble",
+			toothkit_stinger = "buff_tkstinger",
 			toothkit_calcite = "buff_tkcalcite",
+			toothkit_bone = "buff_tkbone",
 			toothkit_thulecite = "buff_tkthulecite",
-			toothkit_electric = "buff_tkelectric",
 			toothkit_brightshade = "buff_tkbrightshade",
 			toothkit_dreadstone = "buff_tkdreadstone",
+			toothkit_moonglass = "buff_tkmoonglass",
+			toothkit_scrap = "buff_tkscrap",
 		}
 
 		local debuff = debuffMap[act.invobject.prefab]

@@ -2,13 +2,16 @@
 <Atlas>
 	<Texture filename="wurrow_inventory.tex" />
 	<Elements>
-		<Element name="pocketsand.tex" u1="0.251" u2="0.499" v2="0.499" v1="0.001" variant="" />
-		<Element name="toothkit_brightshade.tex" u1="0.501" u2="0.749" v2="0.999" v1="0.501" variant="" />
-		<Element name="toothkit_calcite.tex" u1="0.751" u2="0.999" v2="0.999" v1="0.501" variant="" />
-		<Element name="toothkit_dreadstone.tex" u1="0.501" u2="0.749" v2="0.499" v1="0.001" variant="" />
-		<Element name="toothkit_flint.tex" u1="0.751" u2="0.999" v2="0.499" v1="0.001" variant="" />
-		<Element name="toothkit_marble.tex" u1="0.001" u2="0.249" v2="0.999" v1="0.501" variant="" />
-		<Element name="toothkit_thulecite.tex" u1="0.251" u2="0.499" v2="0.999" v1="0.501" variant="" />
-		<Element name="unearthed_soil.tex" u1="0.001" u2="0.249" v2="0.499" v1="0.001" variant="" />
+		<Element name="pocketsand" u1="0.251" u2="0.499" v2="0.499" v1="0.251" variant="" />
+		<Element name="toothkitone" u1="0.251" u2="0.499" v2="0.999" v1="0.751" variant="b" />
+		<Element name="toothkitrightshade" u1="0.751" u2="0.999" v2="0.749" v1="0.501" variant="b" />
+		<Element name="toothkitalcite" u1="0.501" u2="0.749" v2="0.749" v1="0.501" variant="c" />
+		<Element name="toothkitreadstone" u1="0.751" u2="0.999" v2="0.999" v1="0.751" variant="d" />
+		<Element name="toothkitlint" u1="0.501" u2="0.749" v2="0.499" v1="0.251" variant="f" />
+		<Element name="toothkitoonglass" u1="0.001" u2="0.249" v2="0.749" v1="0.501" variant="m" />
+		<Element name="toothkitcrap" u1="0.001" u2="0.249" v2="0.999" v1="0.751" variant="s" />
+		<Element name="toothkittinger" u1="0.251" u2="0.499" v2="0.749" v1="0.501" variant="s" />
+		<Element name="toothkithulecite" u1="0.501" u2="0.749" v2="0.999" v1="0.751" variant="t" />
+		<Element name="unearthedoil" u1="0.001" u2="0.249" v2="0.499" v1="0.251" variant="s" />
 	</Elements>
 </Atlas>

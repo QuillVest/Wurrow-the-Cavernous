@@ -18,12 +18,11 @@ local function tkflint_detach(inst, target)
 	end
 end
 
----———————————————={ Marble }=———————————————---
---- Is being turned into the station buffer
-local function tkmarble_attach(inst, target)
+---———————————————={ Stinger }=———————————————---
+local function tkstinger_attach(inst, target)
 	if target.components.combat ~= nil then
 		inst:ListenForEvent("burrow", function()
-			target.components.combat:SetDefaultDamage(127.5)
+			target.components.combat:SetDefaultDamage(170)
 		end, target)
 		inst:ListenForEvent("resurface", function()
 			target.components.combat:SetDefaultDamage(10)
@@ -31,7 +30,7 @@ local function tkmarble_attach(inst, target)
 	end
 end
 
-local function tkmarble_detach(inst, target)
+local function tkstinger_detach(inst, target)
 	if target.components.combat ~= nil and target:HasTag("burrowed") then
 		target.components.combat:SetDefaultDamage(108.8)
 	else
@@ -59,11 +58,11 @@ local function tkcalcite_detach(inst, target)
 	end
 end
 
----———————————————={ Electric }=———————————————---
-local function tkelectric_attach(inst, target)
+---———————————————={ Bone }=———————————————---
+local function tkbone_attach(inst, target)
 	if target.components.combat ~= nil then
 		inst:ListenForEvent("burrow", function()
-			target.components.combat:SetDefaultDamage(272)
+			target.components.combat:SetDefaultDamage(204)
 		end, target)
 		inst:ListenForEvent("resurface", function()
 			target.components.combat:SetDefaultDamage(10)
@@ -71,7 +70,7 @@ local function tkelectric_attach(inst, target)
 	end
 end
 
-local function tkelectric_detach(inst, target)
+local function tkbone_detach(inst, target)
 	if target.components.combat ~= nil and target:HasTag("burrowed") then
 		target.components.combat:SetDefaultDamage(108.8)
 	else
@@ -132,6 +131,46 @@ local function tkdreadstone_attach(inst, target)
 end
 
 local function tkdreadstone_detach(inst, target)
+	if target.components.combat ~= nil and target:HasTag("burrowed") then
+		target.components.combat:SetDefaultDamage(108.8)
+	else
+		target.components.combat:SetDefaultDamage(10)
+	end
+end
+
+---———————————————={ Moonglass }=———————————————---
+local function tkmoonglass_attach(inst, target)
+	if target.components.combat ~= nil then
+		inst:ListenForEvent("burrow", function()
+			target.components.combat:SetDefaultDamage(272)
+		end, target)
+		inst:ListenForEvent("resurface", function()
+			target.components.combat:SetDefaultDamage(10)
+		end, target)
+	end
+end
+
+local function tkmoonglass_detach(inst, target)
+	if target.components.combat ~= nil and target:HasTag("burrowed") then
+		target.components.combat:SetDefaultDamage(108.8)
+	else
+		target.components.combat:SetDefaultDamage(10)
+	end
+end
+
+---———————————————={ Scrap }=———————————————---
+local function tkscrap_attach(inst, target)
+	if target.components.combat ~= nil then
+		inst:ListenForEvent("burrow", function()
+			target.components.combat:SetDefaultDamage(272)
+		end, target)
+		inst:ListenForEvent("resurface", function()
+			target.components.combat:SetDefaultDamage(10)
+		end, target)
+	end
+end
+
+local function tkscrap_detach(inst, target)
 	if target.components.combat ~= nil and target:HasTag("burrowed") then
 		target.components.combat:SetDefaultDamage(108.8)
 	else
@@ -208,9 +247,11 @@ end
 
 return 
 	MakeBuff("tkflint", tkflint_attach, nil, tkflint_detach, 60),
-	MakeBuff("tkmarble", tkmarble_attach, nil, tkmarble_detach, 60),
+	MakeBuff("tkstinger", tkstinger_attach, nil, tkstinger_detach, 60),
 	MakeBuff("tkcalcite", tkcalcite_attach, nil, tkcalcite_detach, 60),
+	MakeBuff("tkbone", tkbone_attach, nil, tkbone_detach, 60),
 	MakeBuff("tkthulecite", tkthulecite_attach, nil, tkthulecite_detach, 60),
-	MakeBuff("tkelectric", tkelectric_attach, nil, tkelectric_detach, 60),
 	MakeBuff("tkbrightshade", tkbrightshade_attach, nil, tkbrightshade_detach, 60),
-	MakeBuff("tkdreadstone", tkdreadstone_attach, nil, tkdreadstone_detach, 60)
+	MakeBuff("tkdreadstone", tkdreadstone_attach, nil, tkdreadstone_detach, 60),
+	MakeBuff("tkmoonglass", tkmoonglass_attach, nil, tkmoonglass_detach, 60),
+	MakeBuff("tkscrap", tkscrap_attach, nil, tkscrap_detach, 60)

@@ -25,10 +25,10 @@ WurrowRecipe("toothkit_flint",
     {"TOOLS"}
 )
 
-WurrowRecipe("toothkit_marble",
-    {Ingredient("marble", 3),
-    Ingredient("log", 1)},
-    GLOBAL.TECH.SCIENCE_TWO,
+WurrowRecipe("toothkit_stinger",
+    {Ingredient("stinger", 6),
+    Ingredient("messagebottleempty", 1)},
+    GLOBAL.TECH.SCIENCE_ONE,
     {builder_tag = "wurrow", nounlock=false},
     {"TOOLS"}
 )
@@ -36,6 +36,15 @@ WurrowRecipe("toothkit_marble",
 WurrowRecipe("toothkit_calcite",
     {Ingredient("slurtle_shellpieces", 4),
     Ingredient("slurper_pelt", 2)},
+    GLOBAL.TECH.SCIENCE_TWO,
+    {builder_tag = "wurrow", nounlock=false},
+    {"TOOLS"}
+)
+
+WurrowRecipe("toothkit_bone",
+    {Ingredient("walrus_tusk", 1),
+    Ingredient("fossil_piece", 4),
+    Ingredient("boneshard", 3)},
     GLOBAL.TECH.SCIENCE_TWO,
     {builder_tag = "wurrow", nounlock=false},
     {"TOOLS"}
@@ -66,4 +75,21 @@ WurrowRecipe("toothkit_dreadstone",
     GLOBAL.TECH.SHADOWFORGING_TWO,
     {builder_tag = "wurrow", nounlock=true, station_tag="shadow_forge"},
     {"CRAFTING_STATION"}
+)
+
+WurrowRecipe("toothkit_moonglass",
+    {Ingredient("moonglass", 6),
+    Ingredient("moonrocknugget", 4)},
+    GLOBAL.TECH.CELESTIAL,
+    {builder_tag = "wurrow", nounlock=false},
+    {"TOOLS"}
+)
+
+WurrowRecipe("toothkit_scrap",
+    {Ingredient("wagpunk_bits", 4),
+    Ingredient("trinket_6", 2),
+    Ingredient("chestupgrade_stacksize", 1)},
+    GLOBAL.TECH.SCIENCE_TWO,
+    {builder_tag = "wurrow", nounlock=false},
+    {"TOOLS"}
 )

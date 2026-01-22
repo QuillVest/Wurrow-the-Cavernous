@@ -49,11 +49,14 @@ AddMinimapAtlas("images/map_icons/wurrow.xml")
 
 local ITEMS = {
 	"toothkit_flint",
-    "toothkit_marble",
+    "toothkit_stinger",
     "toothkit_calcite",
+    "toothkit_bone",
     "toothkit_thulecite",
     "toothkit_brightshade",
     "toothkit_dreadstone",
+    "toothkit_moonglass",
+    "toothkit_scrap",
     "unearthed_soil",
     "pocketsand",
 }

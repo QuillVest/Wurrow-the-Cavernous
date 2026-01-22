@@ -43,8 +43,11 @@ local function Toothkits(name, anim, max, min)
 end
 
 return Toothkits("toothkit_flint", "idle_whetstone", 4, 4),
-	   Toothkits("toothkit_marble", "idle_grindstone", 6, 6),
+	   Toothkits("toothkit_stinger", "idle_stinger", 6, 6),
 	   Toothkits("toothkit_calcite", "idle_forceps", 5, 5),
+	   Toothkits("toothkit_bone", "idle_bone", 3, 3),
 	   Toothkits("toothkit_thulecite", "idle_chisel", 8, 8),
 	   Toothkits("toothkit_brightshade", "idle_sandpaper", 3, 3),
-	   Toothkits("toothkit_dreadstone", "idle_toothbrush", 3, 3)
+	   Toothkits("toothkit_dreadstone", "idle_toothbrush", 3, 3),
+	   Toothkits("toothkit_moonglass", "idle_moonglass", 3, 3),
+	   Toothkits("toothkit_scrap", "idle_scrap", 3, 3)

@@ -85,6 +85,7 @@ return {
 			REVIVE_FAILED = "only_used_by_wanda",
 			WARP_NO_POINTS_LEFT = "only_used_by_wanda",
 			SHARD_UNAVAILABLE = "only_used_by_wanda",
+			NO_TELEPORT_ZONE = "only_used_by_wanda",
 		},
 		CAST_SPELLBOOK =
 		{
@@ -114,8 +115,8 @@ return {
         },
         CHARGE_FROM =
         {
-            NOT_ENOUGH_CHARGE = "only_used_by_wx78",
-            CHARGE_FULL = "only_used_by_wx78",
+            NOT_ENOUGH_CHARGE = "Why am I not shocked? It's dead!",
+            CHARGE_FULL = "Power-full!",
         },
 		COMPARE_WEIGHABLE =
 		{
@@ -284,6 +285,7 @@ return {
         PICK =
         {
             NOTHING_INSIDE = "It's empty.",
+			STUCK = "It's stuck.",
         },
         PICKUP =
         {
@@ -328,7 +330,7 @@ return {
             TOOMANYBEES = "only_used_by_waxwell_and_wicker",
             NOMOONINCAVES = "only_used_by_waxwell_and_wicker",
             ALREADYFULLMOON = "only_used_by_waxwell_and_wicker",
-            -- Electrocute
+            -- rifts5.1
             DEADBIRDS = "only_used_by_waxwell_and_wicker",
         },
 		REMOTE_TELEPORT =
@@ -496,6 +498,12 @@ return {
         {
             MISSED = "Drat, I missed.",
         },
+
+		-- Winter 2025
+		SOAKIN =
+		{
+			NOSPACE = "Displace is not possible.",--there's someone in that space. there's no room there.
+		},
     },
 
 	ANNOUNCE_CANNOT_BUILD =
@@ -716,7 +724,7 @@ return {
 	},
 
     --hallowed nights
-    ANNOUNCE_SPOOKED = "Did you see that?!",
+    ANNOUNCE_SPOOKED = "Ah!",
 	ANNOUNCE_BRAVERY_POTION = "Those trees don't seem so spooky anymore.",
 	ANNOUNCE_MOONPOTION_FAILED = "Perhaps I didn't let it steep long enough...",
 
@@ -1142,7 +1150,7 @@ return {
     ANNOUNCE_OTTERBOAT_OUTOFSHALLOWS = "I've got a sinking feeling this should've stayed in the shallows.",
     ANNOUNCE_OTTERBOAT_DENBROKEN = "Getting rid of that den might have started a chain reaction...",
 
-    ANNOUNCE_GATHER_MERM = "Must be a Merm thing.",
+    ANNOUNCE_GATHER_MERM = "Must be a merm thing.",
 
     -- rifts 4
     ANNOUNCE_EXIT_GELBLOB = "I was drowning in that... stuff!",
@@ -1180,11 +1188,25 @@ return {
     ANNOUNCE_FLOATER_HELD = "I was busy drowning but something came up... me!",
     ANNOUNCE_FLOATER_LETGO = "I hate being kept in susp-",
 
-    -- Electrocute
+    -- rifts5.1
     ANNOUNCE_LUNARHAIL_BIRD_SOUNDS = "So that's the sound of a murder of crows.",
     ANNOUNCE_LUNARHAIL_BIRD_CORPSES = "They're dropping like birds.",
     ANNOUNCE_FLOAT_SWIM_TIRED = "I'm too tired.",
     ANOUNCE_MUTATED_BIRD_ATTACK = "Birds!",
+
+    -- Rift 6
+    ANNOUNCE_WEAPON_TOOWEAK = "I need something stronger!",
+    ANNOUNCE_VAULT_TELEPORTER_DOES_NOTHING = "Maybe there's something wrong on the other side?",
+
+	-- Rift 6.1
+	ANNOUNCE_LIGHTSOUT_SHADOWHAND = "Wait a minute, what is that doing down here?",
+
+    -- Hallowed Nights 2025
+    ANNOUNCE_MUTATED_BUZZARD_ARRIVAL = "Buzz off! We're not dead yet! Wait a minute, these ones are mutated.", -- Mutated buzzards arrive to lurk and circle the player
+
+    -- Winter's Feast 2025
+    ANNOUNCE_HERMITCRAB_SHELL_BADTELEPORTPOINT = "Why am I still here?",
+    ANNOUNCE_HERMITCRAB_SHELL_ARRIVE = "I feel sea sick!",
 
 	BATTLECRY =
 	{
@@ -1769,6 +1791,8 @@ return {
 		TURF_FUNGUS="Yet another ground type.",
 		TURF_FUNGUS_MOON = "Yet another ground type.",
 		TURF_ARCHIVE = "Yet another ground type.",
+        TURF_VAULT = "Yet another ground type.",
+        TURF_VENT = "Yet another ground type.",
 		TURF_SINKHOLE="Yet another ground type.",
 		TURF_UNDERROCK="Yet another ground type.",
 		TURF_MUD="Yet another ground type.",
@@ -3340,6 +3364,7 @@ return {
         WINTER_ORNAMENTBOSS = "This one is especially impressive.",
 		WINTER_ORNAMENTFORGE = "I should hang this one over a fire.",
 		WINTER_ORNAMENTGORGE = "For some reason it makes me hungry.",
+        WINTER_ORNAMENTPEARL = "Really fine work considering she has claws.",
 
         WINTER_FOOD1 = "The anatomy's not right, but I'll overlook it.", --gingerbread cookie
         WINTER_FOOD2 = "I'm going to eat forty. For science.", --sugar cookie
@@ -4436,6 +4461,13 @@ return {
             LINE_4 = "These markings look different from the ones in the rest of the ruins.",
             LINE_5 = "So much knowledge, if only I could read it!",
         },
+		VAULT_RUNE = "I can't read that.",
+		VAULT_STATUE =
+		{
+			LORE1 = "Looks like he met a dark end...",
+			LORE2 = "This really bugs me.",
+			LORE3 = "They make a pointed argument.",
+		},
 
         ARCHIVE_RESONATOR = {
             GENERIC = "Why use a map when you could use a mind-bogglingly complex piece of machinery?",
@@ -5138,6 +5170,7 @@ return {
 
         PLAYBILL_THE_DOLL = "\"Authored by C.W.\"",
         PLAYBILL_THE_VEIL = "\"Brought to you by the Heralds of Tenebrau.\"",
+        PLAYBILL_THE_VAULT = "Written by \"E.\"?",
         STATUEHARP_HEDGESPAWNER = "The flowers grew back, but the head didn't.",
         HEDGEHOUND = "It's an ambush!",
         HEDGEHOUND_BUSH = "It's a bush.",
@@ -5744,7 +5777,7 @@ return {
         FLOTATIONCUSHION = "Oh, buoyancy!",
         LUNAR_SEED = "This formed part of its crown.",
 
-        -- electrocute
+        -- rifts5.1
         WAGBOSS_ROBOT_CONSTRUCTIONSITE = "Keeping it under wraps for now.",
         WAGBOSS_ROBOT_CONSTRUCTIONSITE_KIT = "Big automatons really do come in small packages.",
         WAGBOSS_ROBOT_CREATION_PARTS = "It comes in pieces!",
@@ -5767,15 +5800,194 @@ return {
         },
 
         BUZZARDCORPSE = {
-            GENERIC = "TODO",
-            BURNING = "TODO",
-            REVIVING = "TODO",
+            GENERIC  = "I call fowl.", --witnessing the corpse
+            BURNING  = "That's what I call a firebird.", --when its burning
+            REVIVING = "It's becoming a new species!", --when its mutating and being revived
         },
 
-        MUTATEDBUZZARD = {
-            GENERIC = "TODO", -- Generic string
-            EATING_CORPSE = "TODO", -- Eating from a fresh corpse (might be from the players kill or another creatures kill)
+        MUTATEDBUZZARD_GESTALT = {
+            GENERIC = "I admire its dead-ication.", -- Generic string
+            EATING_CORPSE = "Don't mind me, just carrion eating.", -- Eating from a fresh corpse (might be from the players kill or another creatures kill)
         },
+
+        -- Rifts 6
+
+        SHADOWTHRALL_CENTIPEDE = {
+            HEAD = "Heads or heads?", --The head segment
+            BODY = "Dreadful!", --The body segment
+            FLIPPED = "Bottoms up!", --When it's flipped over (either head or body segment)
+        },
+
+        TREE_ROCK =
+		{
+			BURNING = "It looks a little hot under the collar.", --It's vines are burning, it will collapse
+			CHOPPED = "It lacks support.", --It's 'chopped', so the rock fell
+			GENERIC = "Looks vine to me.", --Rock is still on tree
+		},
+
+        -- NOTE: Unsure about HOT and COLD, just do GENERIC, GAS, MIASMA for now!
+        CAVE_VENT_ROCK =
+        {
+            GENERIC = "I'm not sure which way it vent.", -- Not ventilating anything
+            HOT     = "Things are really heating up.", -- Ventiliating hot air, making the area warm
+            GAS     = "That's exhausting.", -- Ventiliating Toadstools gas fumes and spores
+            MIASMA  = "What about miasma?", -- Ventiliating the shadow rift miasma
+        },
+        CAVE_FERN_WITHERED = "It's a withered fern.",
+        FLOWER_CAVE_WITHERED = "It's dim bulb.",
+
+		ABYSSPILLAR_MINION =
+		{
+			GENERIC = "I'm glad it's just a statue.", --off, looks like decor/statue
+			ACTIVATED = "How unoriginal!", --turned on and hopping over puzzle pillars
+		},
+		ABYSSPILLAR_TRIAL = "I've got some pull around here.",
+
+        VAULT_TELEPORTER =
+        {
+            GENERIC = "This piece really moves me.",
+            BROKEN = "It's broken.",
+            UNPOWERED = "It needs power.",
+        },
+		VAULT_TELEPORTER_UNDERCONSTRUCTION = "\"This Waymark is under development for a future update.\"",
+		VAULT_ORB = "I think this plays a roll.",
+        VAULT_LOBBY_EXIT = "An exit hole?",
+		VAULT_CHANDELIER_BROKEN = "Light's out.",
+
+		ANCIENT_HUSK = "Something bad happened here.",
+		MASK_ANCIENT_HANDMAIDHAT = "I wouldn't bug her.",
+		MASK_ANCIENT_ARCHITECTHAT = "I don't see the resemblance.",
+		MASK_ANCIENT_MASONHAT = "It looks heavier than the others.",
+
+        TREE_ROCK_SEED = "It's a seed.",
+        TREE_ROCK_SAPLING = "It had a rocky start.",
+
+        -- Rifts 6.1
+        OCEANWHIRLBIGPORTALEXIT = "I sea debris.", -- The flotsam pickable not the waterfall.
+
+		VAULT_TORCH =
+		{
+			GENERIC = "Is that a light switch?",
+			BROKEN = "The switch looks broken.", --the torch still functions, just the lever is broken
+		},
+
+        CAVE_VENT_MITE =
+		{
+			DEAD = "Out of gas!",
+			GENERIC = "What mite it be?",
+			SLEEPING = "Careful, it mite wake up.",
+            VENTING = "It's fuming mad!", -- in the shield state and venting out gasses
+        },
+
+		--Hallowed Nights 2025
+
+		PUMPKINHAT =
+		{
+			GENERIC = "That's a hollow expression.",
+			UNCARVED = "It's no gourd to wear without a face.",--can't wear it unless it's carved.
+		},
+
+        PENGUINCORPSE =
+		{
+            GENERIC  = "I call fowl.", --witnessing the corpse
+            BURNING  = "That's what I call a firebird.", --when its burning
+            REVIVING = "It's becoming a new species!", --when its mutating and being revived
+		},
+        SPIDERCORPSE =
+		{
+			GENERIC = "Ewwww!",
+			BURNING = "Much better.",
+			REVIVING = "This is all wrong.",
+		},
+        SPIDERQUEENCORPSE =
+		{
+			GENERIC = "Eww! I feel sick.",
+			BURNING = "Much better.",
+			REVIVING = "This is not good.",
+		},
+        MERMCORPSE =
+		{
+			GENERIC = "A merm has died.",
+			BURNING = "That smell is the worst.",
+			REVIVING = "Dead merm waking!",
+		},
+        GENERIC_CORPSE = -- A generic set of lines for ANY corpse, until they get their own unique lines at least.
+        {
+            GENERIC = "It's definitely dead.",
+            BURNING = "No coming back from that.",
+            REVIVING = "Many unhappy returns.",
+        },
+
+		--Winter's Feast 2025
+
+		HERMITHOTSPRING  =
+        {
+            BOMBED = "The perfect formula for relaxing.",
+            GENERIC = "If only I could soak my weary bones.",
+            EMPTY = "Where's the water?",
+        },
+		HERMITHOTSPRING_CONSTR = "It's under construction.",
+		MEATRACK_HERMIT_MULTI = --talk to vito; want to reuse MEATRACK, but less meat focused; more fish/tea
+        {
+            DONE = "Jerky time!",
+            DRYING = "Drying takes time.",
+            DRYINGINRAIN = "Drying takes even longer in rain.",
+            GENERIC =  "These really are drying times.",
+            BURNT = "The rack got dried.",
+            DONE_NOTMEAT = "In laboratory terms, we would call that \"dry\".",
+            DRYING_NOTMEAT = "Drying things is not an exact science.",
+            DRYINGINRAIN_NOTMEAT = "Rain, rain, go away. Be wet again another day.",
+            DONE_SALT = "Sodium salty.",
+			ABANDONED = "It dried its best.",
+        },
+		HERMITHOUSE_ORNAMENT = "How chiming.",
+		HERMITHOUSE_LAUNDRY = "Should I say something, or is it unmentionable?",
+
+        PETALS_DRIED = "Nice dry.",
+        PETALS_EVIL_DRIED = "Nice dry.",
+        FOLIAGE_DRIED = "Nice dry.",
+        SUCCULENT_PICKED_DRIED = "Nice dry.",
+        FIRENETTLES_DRIED = "Nice dry.",
+        TILLWEED_DRIED = "Nice dry.",
+        MOON_TREE_BLOSSOM_DRIED = "Nice dry.",
+        FORGETMELOTS_DRIED = "Nice dry.",
+
+        HERMITCRABTEA_PETALS = "Mmmm, sweet sereni-tea.",
+        HERMITCRABTEA_PETALS_EVIL = "Insani-tea!",
+        HERMITCRABTEA_FOLIAGE = "Don't worry, I won't go crazy with it.",
+        HERMITCRABTEA_SUCCULENT_PICKED = "I should save it for desert.",
+        HERMITCRABTEA_FIRENETTLES = "It should come with a warming label.",
+        HERMITCRABTEA_TILLWEED = "Let's raise a little health!",
+        HERMITCRABTEA_MOON_TREE_BLOSSOM = "I don't mean to wane, but it's kind of waxy.",
+        HERMITCRABTEA_FORGETMELOTS = "It really melts away my madness.",
+        SHELLWEAVER = "I salt to make something useful.",
+        ICESTAFF2 = "It comes with a freeze upgrade!",
+        ICESTAFF3 = "Even more powerful, icy.",
+        NONSLIPGRIT = "It's quite gripping!",
+        NONSLIPGRITBOOSTED = "Now we're really gaining some traction!",
+        DESICCANT = "Just dry and dry again!",
+        DESICCANTBOOSTED = "It leaves me high and dry!",
+        HERMITCRAB_SHELL = "Shell we go to Pearl's?",
+        SALTY_DOGHAT = "It only comes with a friend-ship.",
+        SALTY_DOG = "Who's a proud little seal pup?",
+
+        HERMITCRAB_TEASHOP =
+        {
+            GENERIC = "The shop is emp-tea.", -- Inactive state, no Pearl inside.
+            ACTIVE = "Tea time!", -- Active, Pearl is inside, can buy from her
+            BREWING = "I paid a steep price.", -- A trade just happened and she's brewing the tea!|
+            BURNT = "Her shop is toast.", -- burnt strings.
+        },
+
+        FISHMEAT_DRIED = "That fish is a real jerk.",
+        FISHMEAT_SMALL_DRIED = "That fish is a real jerk.",
+
+        HERMITCRAB_LIGHTPOST = -- Similar to YOTS_LANTERN_POST
+        {
+            GENERIC = "They really lighten the mood.",
+            ABANDONED = "It's so sad, I can't stand it.",
+        },
+        HERMITCRAB_LIGHTPOST_ITEM = "Let's string together some ambiance.",
     },
 
     DESCRIBE_GENERIC = "It's a... thing.",

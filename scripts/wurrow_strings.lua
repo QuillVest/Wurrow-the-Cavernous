@@ -20,6 +20,8 @@ STRINGS.NAMES.TOOTHKIT_DREADSTONE = "Dreadstone Toothbrush"
 STRINGS.NAMES.TOOTHKIT_MOONGLASS = "Glassy Floss"
 STRINGS.NAMES.TOOTHKIT_SCRAP = "D.E.N.T.A.L. Polisher"
 
+STRINGS.NAMES.GRINDSTONE = "Marble Grindstone"
+
 STRINGS.NAMES.POCKETSAND = "Jar of Dirt"
 STRINGS.NAMES.UNEARTHED_SOIL = "Dirt"
 
@@ -35,5 +37,7 @@ STRINGS.RECIPE_DESC.TOOTHKIT_BRIGHTSHADE = "1000 grit."
 STRINGS.RECIPE_DESC.TOOTHKIT_DREADSTONE = "May contain artificial teeth darkeners."
 STRINGS.RECIPE_DESC.TOOTHKIT_MOONGLASS = "For those bits of food stuck in your teeth."
 STRINGS.RECIPE_DESC.TOOTHKIT_SCRAP = "Make sure to replace the pad regularly."
+
+STRINGS.NAMES.GRINDSTONE = "Not for recreational use!"
 
 STRINGS.RECIPE_DESC.POCKETSAND = "I'm gonna put some dirt in your eye."

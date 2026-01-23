@@ -9,6 +9,7 @@ PrefabFiles = {
 	"wurrowbuff_toothkit",
 	"wurrowbuff_gel",
 
+	"grindstone",
     "toothkits",
 	"pocketsand",
 	"unearthed_soil",

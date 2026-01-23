@@ -16,6 +16,15 @@ WurrowRecipe("pocketsand",
     {"WEAPONS"}
 )
 
+WurrowRecipe("grindstone",
+    {Ingredient("marble", 4),
+    Ingredient("cutstone", 8),
+    Ingredient("boards", 3)},
+    GLOBAL.TECH.SCIENCE_TWO,
+    {builder_tag = "wurrow", nounlock=false},
+    {"STRUCTURES"}
+)
+
 WurrowRecipe("toothkit_stinger",
     {Ingredient("stinger", 6),
     Ingredient("messagebottleempty", 1)},

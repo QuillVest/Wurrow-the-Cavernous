@@ -16,7 +16,7 @@ WurrowRecipe("pocketsand",
     {"WEAPONS"}
 )
 
-WurrowRecipe("grindstone",
+WurrowRecipe("grindstone_kit",
     {Ingredient("marble", 4),
     Ingredient("cutstone", 8),
     Ingredient("boards", 3)},

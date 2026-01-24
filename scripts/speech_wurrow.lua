@@ -641,8 +641,8 @@ return {
 	ANNOUNCE_FREEDOM = "I'm free! I'm finally free!",
 	ANNOUNCE_HIGHRESEARCH = "I feel so smart now!",
 	ANNOUNCE_HOUNDS = "Did you hear that?",
-	ANNOUNCE_WORMS = "Did you feel that?",
-    ANNOUNCE_WORMS_BOSS = "That sounds ominous?",
+	ANNOUNCE_WORMS = "Friends!",
+    ANNOUNCE_WORMS_BOSS = "BIG friend!",
     ANNOUNCE_ACIDBATS = "Did you hear that?",
 	ANNOUNCE_HUNGRY = "I'm so hungry!",
 	ANNOUNCE_HUNT_BEAST_NEARBY = "This track is fresh. The beast must be nearby.",
@@ -682,7 +682,7 @@ return {
     ANNOUNCE_COMPASS_OUT = "This compass doesn't point anymore.",
 	ANNOUNCE_TRAP_WENT_OFF = "Oops.",
 	ANNOUNCE_UNIMPLEMENTED = "OW! I don't think it's ready yet.",
-	ANNOUNCE_WORMHOLE = "That was not a sane thing to do.",
+	ANNOUNCE_WORMHOLE = "Thanks for the ride little guy..",
     ANNOUNCE_WORMHOLE_SAMESPOT = "only_used_by_winona",
 	ANNOUNCE_TOWNPORTALTELEPORT = "I'm not sure that was science.",
 	ANNOUNCE_CANFIX = "\nI think I can fix this!",
@@ -1432,12 +1432,12 @@ return {
         },
         WORTOX =
         {
-            GENERIC = "Greetings to you, %s!",
-            ATTACKER = "I knew %s couldn't be trusted!",
-            MURDERER = "Time to grab the imp by the horns!",
-            REVIVER = "Thanks for lending a helping claw, %s.",
-            GHOST = "I reject the reality of ghosts and imps.",
-            FIRESTARTER = "%s is becoming a survival liability.",
+            GENERIC = "%s!!!",
+            ATTACKER = "How could %s betray me...",
+            MURDERER = "I'll sink my teeth in you!",
+            REVIVER = "Thank you %s!",
+            GHOST = "I'll bring you back.",
+            FIRESTARTER = "Is %s cold?",
         },
         WORMWOOD =
         {
@@ -1526,15 +1526,15 @@ return {
         LAVA_POND_ROCK = "As gneiss a place as any.",
 
 		WEBBERSKULL = "Poor little guy. He deserves a proper funeral.",
-		WORMLIGHT = "Looks delicious.",
-		WORMLIGHT_LESSER = "Kinda wrinkled.",
+		WORMLIGHT = "Did I drop mine?.",
+		WORMLIGHT_LESSER = "Grow little one!",
 		WORM =
 		{
-		    PLANT = "Seems safe to me.",
-		    DIRT = "Just looks like a pile of dirt.",
-		    WORM = "It's a worm!",
+		    PLANT = "No one's there.",
+		    DIRT = "That dirt is all lose.",
+		    WORM = "Fred is that you?",
 		},
-        WORMLIGHT_PLANT = "Seems safe to me.",
+        WORMLIGHT_PLANT = "I see you there!",
 		MOLE =
 		{
 			HELD = "Nowhere left to dig, my friend.",
@@ -2139,7 +2139,7 @@ return {
         CHESSPIECE_WARG_MUTATED = "It's just missing that horrible breath.",
         CHESSPIECE_BEARGER_MUTATED = "Somehow it seems crankier than the real one.",
         CHESSPIECE_SHARKBOI = "There's just some-fin about it.",
-        CHESSPIECE_WORMBOSS = "It still shakes me up.",
+        CHESSPIECE_WORMBOSS = "We could've been friends.",
         CHESSPIECE_YOTS = "I usually try to stay away from gold diggers.",
         CHESSPIECE_WAGBOSS_ROBOT = "Great design, questionable execution.",
         CHESSPIECE_WAGBOSS_LUNAR = "I'm over the moon.",
@@ -3421,10 +3421,10 @@ return {
 		KLAUSSACKKEY = "It's really fancy for a deer antler.",
 		WORMHOLE =
 		{
-			GENERIC = "Soft and undulating.",
-			OPEN = "Science compels me to jump in.",
+			GENERIC = "Is it hungry?",
+			OPEN = "In I go!",
 		},
-		WORMHOLE_LIMITED = "Guh, that thing looks worse off than usual.",
+		WORMHOLE_LIMITED = "It's all sick...",
 		ACCOMPLISHMENT_SHRINE = "I want to use it, and I want the world to know that I did.", --single player
 		LIVINGTREE = "Is it watching me?",
 		ICESTAFF = "It's cold to the touch.",
@@ -4240,9 +4240,9 @@ return {
         --Wortox
         WORTOX_SOUL = "only_used_by_wortox", --only wortox can inspect souls
         --WORTOX_DECOY is not needed because it uses the default WORTOX inspection.
-        WORTOX_NABBAG = "He's a chip off the ol' Krampus.",
-        WORTOX_REVIVER = "I can guess what that's fur.",
-        WORTOX_SOULJAR = "It's rather jarring if you think about it.",
+        WORTOX_NABBAG = "Do you think he has any butterflies left over?",
+        WORTOX_REVIVER = "I knew %s could be nice.",
+        WORTOX_SOULJAR = "You'd never catch this worm!",
 
         PORTABLECOOKPOT_ITEM =
         {
@@ -5628,7 +5628,7 @@ return {
         RABBITKINGHORN_CHEST = "I'll use it now and den.",
         RABBITKINGSPEAR = "This will give a good thumpin'.",
         RABBITHAT = "It'll put hare on your head.",
-        WORM_BOSS = "It's a big worm!",
+        WORM_BOSS = "Big worm! He's lived a long time.",
 
         STONE_TABLE = -- Shared between the round and square tables.
         {
@@ -5680,14 +5680,14 @@ return {
             EMPTY = "It has a monstrous appetite.",
             BURNT = "Willow!",
         },
-        YOTS_WORM = "It comes from lesser depths.",
+        YOTS_WORM = "These ones are under-developed..",
         YOTS_LANTERN_POST = 
         {
             GENERIC = "It's post to be there.",
             BURNT = "It's post post",
         },
         YOTS_LANTERN_POST_ITEM = "Where's it post to go?",
-        CHESSPIECE_DEPTHWORM  = "It's a worm, figures.",
+        CHESSPIECE_DEPTHWORM  = "Wormy!",
 
         -- Meta 5
         GHOSTLYELIXIR_LUNAR = "Ah yes. Very science-y.",

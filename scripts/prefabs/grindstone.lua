@@ -10,6 +10,12 @@ local prefabs =
     "collapse_small",
 }
 
+local grindstone_assets =
+{
+    Asset("ANIM", "anim/grindstone.zip"),
+    Asset("INV_IMAGE", "grindstone_kit"),
+}
+
 ---
 
 local IMAGERANGE = 5
@@ -33,9 +39,9 @@ local function OnHammered(inst, worker)
         inst.components.lootdropper:DropLoot()
     end
 
-    if inst.components.inventoryitemholder ~= nil then
-        inst.components.inventoryitemholder:TakeItem()
-    end--- Change for gem slot
+    -- if inst.components.inventoryitemholder ~= nil then
+    --     inst.components.inventoryitemholder:TakeItem()
+    -- end
 
     local fx = SpawnPrefab("collapse_small")
     fx.Transform:SetPosition(inst.Transform:GetWorldPosition())
@@ -45,10 +51,10 @@ local function OnHammered(inst, worker)
 end
 
 local function OnHit(inst, worker)
-    if inst:HasTag("burnt") then return end
+    if inst:HasTag("burnt") then return
+    end
 
-    inst.AnimState:PlayAnimation("hit_open")
-    inst.AnimState:PushAnimation(inst.components.prototyper.on and "proximity_loop" or "idle", inst.components.prototyper.on)
+    inst.AnimState:PlayAnimation("hit")
 end
 
 -- local function OnTurnOn(inst)
@@ -95,7 +101,7 @@ local function OnBuilt(inst)
     inst.AnimState:PlayAnimation("place")
     inst.AnimState:PushAnimation("idle", false)
     inst.SoundEmitter:PlaySound("rifts3/sawhorse/place")
-    inst:PlayIdle(true)
+    -- inst:PlayIdle(true)
 end
 
 local function OnFinished(inst)
@@ -197,10 +203,10 @@ local function fn()
     workable:SetOnFinishCallback(OnHammered)
     workable:SetOnWorkCallback(OnHit)
 
-    local inventoryitemholder = inst:AddComponent("inventoryitemholder")
-    inventoryitemholder:SetAllowedTags({ "redgem", "bluegem", "purplegem", "greengem", "yellowgem", "orangegem", "opalpreciousgem" })
-    inventoryitemholder:SetOnItemGivenFn(OnGemGiven)
-    inventoryitemholder:SetOnItemTakenFn(OnGemTaken)
+    -- local inventoryitemholder = inst:AddComponent("inventoryitemholder")
+    -- inventoryitemholder:SetAllowedTags({ "redgem", "bluegem", "purplegem", "greengem", "yellowgem", "orangegem", "opalpreciousgem" })
+    -- inventoryitemholder:SetOnItemGivenFn(OnGemGiven)
+    -- inventoryitemholder:SetOnItemTakenFn(OnGemTaken)
 
     inst:PlayIdle()
 
@@ -216,4 +222,5 @@ local function fn()
 end
 
 return Prefab("grindstone", fn, assets, prefabs),
+MakeDeployableKitItem("grindstone_kit", "grindstone", "grindstone", "grindstone", "kit", assets),
     MakePlacer("grindstone_placer", "grindstone", "grindstone", "idle")

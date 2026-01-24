@@ -236,14 +236,22 @@ local master_postinit = function(inst)
     inst.count = 0
 
     inst:AddComponent("lootdropper")
-    inst.components.lootdropper:AddRandomLoot("flint", .40)
+    inst.components.lootdropper:AddRandomLoot("flint", .50)
     inst.components.lootdropper:AddRandomLoot("rocks", .40)
-    inst.components.lootdropper:AddRandomLoot("unearthed_soil", .30)
+    inst.components.lootdropper:AddRandomLoot("unearthed_soil", .33)
 	inst.components.lootdropper:AddRandomLoot("nitre", .25)
-	inst.components.lootdropper:AddRandomLoot("marble", .15)
-    inst.components.lootdropper:AddRandomLoot("goldnugget", .1)
-	inst.components.lootdropper:AddRandomLoot("redgem", .01)
-	inst.components.lootdropper:AddRandomLoot("bluegem", .01)
+	inst.components.lootdropper:AddRandomLoot("marble", .25)
+    inst.components.lootdropper:AddRandomLoot("goldnugget", .20)
+    inst.components.lootdropper:AddRandomLoot("moonrocknugget", .15)
+	inst.components.lootdropper:AddRandomLoot("redgem", .03)
+    inst.components.lootdropper:AddRandomLoot("bluegem", .03)
+    inst.components.lootdropper:AddRandomLoot("purplegem", .01)
+	inst.components.lootdropper:AddRandomLoot("dreadstone", .005)
+    -- inst.components.lootdropper:AddRandomLoot("yellowgem", .01) --Desert biomes only
+    -- inst.components.lootdropper:AddRandomLoot("orangegem", .01) --Ruins biomes only
+    -- inst.components.lootdropper:AddRandomLoot("greengem", .01) --Ruins biomes only
+    -- inst.components.lootdropper:AddRandomLoot("moonglass", .01) --Lunar biomes only
+    -- inst.components.lootdropper:AddRandomLoot("fossil_piece", .01) --Caves only
 
     inst.components.locomotor.hop_distance_fn = DisallowBoatHopping
 	

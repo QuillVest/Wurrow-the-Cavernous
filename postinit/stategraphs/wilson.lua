@@ -98,7 +98,7 @@ local states = {
 
 			inst.AnimState:PlayAnimation("walk_loop")
 			inst.components.locomotor:WalkForward()
-			inst.components.locomotor.walkspeed = 4
+			inst.components.locomotor.walkspeedmult = 0.5
 		end,
 		
 		timeline = {
@@ -183,9 +183,9 @@ local states = {
 			inst.components.locomotor:SetTriggersCreep(false)
 
 			if TheWorld:HasTag("cave") then
-       			inst.components.locomotor.walkspeed = 6.9
+       			inst.components.locomotor.walkspeedmult = 1.15
     		else
-				inst.components.locomotor.walkspeed = 6.6
+				inst.components.locomotor.walkspeedmult = 1.1
 			end
 			
 			local buffaction = inst:GetBufferedAction()
@@ -272,7 +272,7 @@ local states = {
 			inst:RemoveTag("burrowed")
 			inst:RemoveTag("bear_trap_immune")
 
-			inst.components.locomotor.walkspeed = 6
+			inst.components.locomotor.walkspeedmult = 1.0
 
 			local equip = inst.components.inventory:GetEquippedItem(EQUIPSLOTS.HANDS)
 			if equip and equip.prefab == "wurrow_handslot" then 
@@ -514,33 +514,33 @@ local states = {
 			inst.components.locomotor:Stop()
 			inst.SoundEmitter:KillSound("move")
 			inst.sg.statemem.action = inst.bufferedaction
-			inst.sg:SetTimeout(45 * FRAMES)
+			inst.sg:SetTimeout(40 * FRAMES)
 		end,
 		
 		timeline = {
-			TimeEvent(13 * FRAMES, 	SpawnMoveFx),
-			FrameEvent(23, function(inst)
+			TimeEvent(10 * FRAMES, 	SpawnMoveFx),
+			FrameEvent(20, function(inst)
 				SpawnAt("dirt_puff", inst)
 			end),
-			TimeEvent(24 * FRAMES, function(inst)
+			TimeEvent(21 * FRAMES, function(inst)
 				inst:Show()
 			end),
-			TimeEvent(24 * FRAMES, function(inst)
+			TimeEvent(21 * FRAMES, function(inst)
 				inst.AnimState:PlayAnimation("jumpout")
 			end),
-			FrameEvent(23, function(inst)
+			FrameEvent(20, function(inst)
 				inst.sg:RemoveStateTag("noattack")
 			end),
-			TimeEvent(36 * FRAMES, function(inst)
+			TimeEvent(33 * FRAMES, function(inst)
 				inst:PerformBufferedAction()
 			end),
-			FrameEvent(35, function(inst)
+			FrameEvent(32, function(inst)
 				SpawnAt("shovel_dirt", inst)
 			end),
-			TimeEvent(42 * FRAMES, function(inst)
+			TimeEvent(39 * FRAMES, function(inst)
 				inst:Hide()
 			end),
-			FrameEvent(45, function(inst)
+			FrameEvent(40, function(inst)
 				inst.sg:AddStateTag("noattack")
 			end),
 		},

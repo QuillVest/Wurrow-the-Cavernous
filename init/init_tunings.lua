@@ -21,3 +21,5 @@ TUNING.WURROW_MODCONFIGDATA["Burrow_Drain_Still"] = GetModConfigData("Burrow_Dra
 TUNING.WURROW_MODCONFIGDATA["Burrow_Treasure"] = GetModConfigData("Burrow_Treasure")
 TUNING.WURROW_MODCONFIGDATA["Treasure_Frequency"] = GetModConfigData("Treasure_Frequency")
 TUNING.WURROW_MODCONFIGDATA["Treasure_Amount"] = GetModConfigData("Treasure_Amount")
+
+TUNING.GRINDSTONE_MAX_USES = 10

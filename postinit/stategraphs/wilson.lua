@@ -98,7 +98,7 @@ local states = {
 
 			inst.AnimState:PlayAnimation("walk_loop")
 			inst.components.locomotor:WalkForward()
-			inst.components.locomotor.walkspeedmult = 0.5
+			inst.components.locomotor.walkspeed = 4
 		end,
 		
 		timeline = {
@@ -183,9 +183,9 @@ local states = {
 			inst.components.locomotor:SetTriggersCreep(false)
 
 			if TheWorld:HasTag("cave") then
-       			inst.components.locomotor.walkspeedmult = 1.15
+       			inst.components.locomotor.walkspeed = 7.5
     		else
-				inst.components.locomotor.walkspeedmult = 1.1
+				inst.components.locomotor.walkspeed = 6.9
 			end
 			
 			local buffaction = inst:GetBufferedAction()
@@ -272,7 +272,7 @@ local states = {
 			inst:RemoveTag("burrowed")
 			inst:RemoveTag("bear_trap_immune")
 
-			inst.components.locomotor.walkspeedmult = 1.0
+			inst.components.locomotor.walkspeed = 6
 
 			local equip = inst.components.inventory:GetEquippedItem(EQUIPSLOTS.HANDS)
 			if equip and equip.prefab == "wurrow_handslot" then 

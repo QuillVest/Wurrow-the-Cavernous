@@ -86,4 +86,4 @@ local function MakeBuff(name, onattachedfn, onextendedfn, ondetachedfn, duration
 	return Prefab("buff_"..name, fn)
 end
 
-return MakeBuff("gelled", gel_attach, nil, gel_detach, 240)
+return MakeBuff("gelled", gel_attach, nil, gel_detach, 30)

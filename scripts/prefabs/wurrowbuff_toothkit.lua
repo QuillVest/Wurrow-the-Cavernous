@@ -246,12 +246,12 @@ local function MakeBuff(name, onattachedfn, onextendedfn, ondetachedfn, duration
 end
 
 return
-	MakeBuff("tkstinger", tkstinger_attach, nil, tkstinger_detach, 60),
-	MakeBuff("tkflint", tkflint_attach, nil, tkflint_detach, 60),
-	MakeBuff("tkcalcite", tkcalcite_attach, nil, tkcalcite_detach, 60),
-	MakeBuff("tkbone", tkbone_attach, nil, tkbone_detach, 60),
-	MakeBuff("tkthulecite", tkthulecite_attach, nil, tkthulecite_detach, 60),
-	MakeBuff("tkbrightshade", tkbrightshade_attach, nil, tkbrightshade_detach, 60),
-	MakeBuff("tkdreadstone", tkdreadstone_attach, nil, tkdreadstone_detach, 60),
-	MakeBuff("tkmoonglass", tkmoonglass_attach, nil, tkmoonglass_detach, 60),
-	MakeBuff("tkscrap", tkscrap_attach, nil, tkscrap_detach, 60)
+	MakeBuff("tkstinger", tkstinger_attach, nil, tkstinger_detach, 120),
+	MakeBuff("tkflint", tkflint_attach, nil, tkflint_detach, 120),
+	MakeBuff("tkcalcite", tkcalcite_attach, nil, tkcalcite_detach, 120),
+	MakeBuff("tkbone", tkbone_attach, nil, tkbone_detach, 120),
+	MakeBuff("tkthulecite", tkthulecite_attach, nil, tkthulecite_detach, 120),
+	MakeBuff("tkbrightshade", tkbrightshade_attach, nil, tkbrightshade_detach, 120),
+	MakeBuff("tkdreadstone", tkdreadstone_attach, nil, tkdreadstone_detach, 120),
+	MakeBuff("tkmoonglass", tkmoonglass_attach, nil, tkmoonglass_detach, 120),
+	MakeBuff("tkscrap", tkscrap_attach, nil, tkscrap_detach, 120)

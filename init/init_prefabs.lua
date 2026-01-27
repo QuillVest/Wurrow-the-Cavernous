@@ -12,5 +12,4 @@ PrefabFiles = {
 	"grindstone",
     "toothkits",
 	"pocketsand",
-	"unearthed_soil",
 }

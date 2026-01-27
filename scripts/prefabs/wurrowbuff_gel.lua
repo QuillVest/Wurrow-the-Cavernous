@@ -3,8 +3,10 @@ local function gel_attach(inst, target)
 		inst:ListenForEvent("burrow", function()
             if TheWorld:HasTag("cave") then
 			    target.components.locomotor:SetExternalSpeedMultiplier(target, "gel_ms", 1.10)
+				-- target.components.locomotor.walkspeed = 8.4
             else
                 target.components.locomotor:SetExternalSpeedMultiplier(target, "gel_ms", 1.05)
+				-- target.components.locomotor.walkspeed = 7.5
             end
 		end, target)
 		inst:ListenForEvent("resurface", function()
@@ -86,4 +88,4 @@ local function MakeBuff(name, onattachedfn, onextendedfn, ondetachedfn, duration
 	return Prefab("buff_"..name, fn)
 end
 
-return MakeBuff("gelled", gel_attach, nil, gel_detach, 30)
+return MakeBuff("gelled", gel_attach, nil, gel_detach, 60)

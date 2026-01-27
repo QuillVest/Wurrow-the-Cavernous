@@ -10,40 +10,33 @@ end
 
 WurrowRecipe("pocketsand",
     {Ingredient("messagebottleempty", 1),
-    Ingredient("unearthed_soil", 2)},
+    Ingredient("spoiled_food", 5),
+    Ingredient("cutgrass", 2)},
     GLOBAL.TECH.NONE,
     {builder_tag = "wurrow", nounlock=false},
     {"WEAPONS"}
 )
 
-WurrowRecipe("grindstone_kit",
-    {Ingredient("marble", 4),
-    Ingredient("cutstone", 8),
-    Ingredient("boards", 3)},
-    GLOBAL.TECH.SCIENCE_TWO,
-    {builder_tag = "wurrow", nounlock=false},
-    {"STRUCTURES"}
-)
-
+---———————————————={ Toothkits }=———————————————---
 WurrowRecipe("toothkit_stinger",
-    {Ingredient("stinger", 6),
-    Ingredient("messagebottleempty", 1)},
+    {Ingredient("stinger", 8),
+    Ingredient("cutgrass", 4)},
     GLOBAL.TECH.NONE,
     {builder_tag = "wurrow", nounlock=false},
     {"TOOLS"}
 )
 
 WurrowRecipe("toothkit_flint",
-    {Ingredient("flint", 2),
-    Ingredient("cutstone", 1),
-    Ingredient("rope", 2)},
+    {Ingredient("flint", 4),
+    Ingredient("cutstone", 2),
+    Ingredient("rope", 3)},
     GLOBAL.TECH.SCIENCE_ONE,
     {builder_tag = "wurrow", nounlock=false},
     {"TOOLS"}
 )
 
 WurrowRecipe("toothkit_calcite",
-    {Ingredient("slurtle_shellpieces", 3),
+    {Ingredient("slurtle_shellpieces", 4),
     Ingredient("slurper_pelt", 2)},
     GLOBAL.TECH.SCIENCE_TWO,
     {builder_tag = "wurrow", nounlock=false},
@@ -52,8 +45,8 @@ WurrowRecipe("toothkit_calcite",
 
 WurrowRecipe("toothkit_bone",
     {Ingredient("walrus_tusk", 1),
-    Ingredient("fossil_piece", 4),
-    Ingredient("boneshard", 3)},
+    Ingredient("fossil_piece", 6),
+    Ingredient("boneshard", 4)},
     GLOBAL.TECH.SCIENCE_TWO,
     {builder_tag = "wurrow", nounlock=false},
     {"TOOLS"}
@@ -101,4 +94,13 @@ WurrowRecipe("toothkit_scrap",
     GLOBAL.TECH.SCIENCE_TWO,
     {builder_tag = "wurrow", nounlock=false},
     {"TOOLS"}
+)
+
+WurrowRecipe("grindstone_kit",
+    {Ingredient("marble", 4),
+    Ingredient("cutstone", 8),
+    Ingredient("boards", 3)},
+    GLOBAL.TECH.SCIENCE_ONE,
+    {builder_tag = "wurrow", nounlock=false},
+    {"STRUCTURES"}
 )

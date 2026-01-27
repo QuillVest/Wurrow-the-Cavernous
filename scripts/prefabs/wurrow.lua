@@ -45,7 +45,7 @@ end
 
 local function CustomSanityFn(inst, dt)
     if TheWorld.state.isday and not TheWorld:HasTag("cave") then
-        return -(7.5 / (TUNING.SEG_TIME * 2))
+        return -(10 / (TUNING.SEG_TIME * 2))
     end
     return 0
 end
@@ -238,7 +238,6 @@ local master_postinit = function(inst)
     inst:AddComponent("lootdropper")
     inst.components.lootdropper:AddRandomLoot("flint", .50)
     inst.components.lootdropper:AddRandomLoot("rocks", .40)
-    inst.components.lootdropper:AddRandomLoot("unearthed_soil", .33)
 	inst.components.lootdropper:AddRandomLoot("nitre", .25)
 	inst.components.lootdropper:AddRandomLoot("marble", .25)
     inst.components.lootdropper:AddRandomLoot("goldnugget", .20)

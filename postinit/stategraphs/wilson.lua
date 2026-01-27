@@ -514,39 +514,43 @@ local states = {
 			inst.components.locomotor:Stop()
 			inst.SoundEmitter:KillSound("move")
 			inst.sg.statemem.action = inst.bufferedaction
-			inst.sg:SetTimeout(40 * FRAMES)
+			inst.sg:SetTimeout(36 * FRAMES)
 		end,
 		
 		timeline = {
-			TimeEvent(10 * FRAMES, 	SpawnMoveFx),
-			FrameEvent(20, function(inst)
+			TimeEvent(9 * FRAMES, 	SpawnMoveFx),
+			FrameEvent(14, function(inst)
 				SpawnAt("dirt_puff", inst)
 			end),
-			TimeEvent(21 * FRAMES, function(inst)
+			TimeEvent(16 * FRAMES, function(inst)
 				inst:Show()
 			end),
-			TimeEvent(21 * FRAMES, function(inst)
+			FrameEvent(16, function(inst)
+				inst.sg:RemoveStateTag("noattack")
+			end),
+			TimeEvent(16 * FRAMES, function(inst)
 				inst.AnimState:PlayAnimation("jumpout")
 			end),
 			FrameEvent(20, function(inst)
 				inst.sg:RemoveStateTag("noattack")
 			end),
-			TimeEvent(33 * FRAMES, function(inst)
+			TimeEvent(26 * FRAMES, function(inst)
 				inst:PerformBufferedAction()
 			end),
 			FrameEvent(32, function(inst)
 				SpawnAt("shovel_dirt", inst)
 			end),
-			TimeEvent(39 * FRAMES, function(inst)
+			TimeEvent(36 * FRAMES, function(inst)
 				inst:Hide()
 			end),
-			FrameEvent(40, function(inst)
+			FrameEvent(36, function(inst)
 				inst.sg:AddStateTag("noattack")
 			end),
 		},
 		
 		ontimeout = function(inst)
 			inst:Hide()
+			inst:PushEvent("dropallaggro")
 			inst.sg:GoToState("idle", true)
 		end,
 		
@@ -554,12 +558,14 @@ local states = {
 			if inst.bufferedaction == inst.sg.statemem.action then
 				inst:ClearBufferedAction()
 				inst:Hide()
+				inst:PushEvent("dropallaggro")
 				inst.sg:GoToState("idle")
 			end
 		end,
 		
 		events = {
 			EventHandler("animover", function(inst)
+				inst:PushEvent("dropallaggro")
 				inst.sg:GoToState("idle")
 			end),
 		},

@@ -10,7 +10,7 @@ STRINGS.NAMES.WURROW = "Wurrow"
 STRINGS.SKIN_NAMES.wurrow_skins = "Wurrow"
 
 ---———————————————={ Prefabs }=———————————————---
-STRINGS.NAMES.TOOTHKIT_STINGER = "Chitin Toothpicks"
+STRINGS.NAMES.TOOTHKIT_STINGER = "Toothpicks"
 STRINGS.NAMES.TOOTHKIT_FLINT = "Whetstone"
 STRINGS.NAMES.TOOTHKIT_CALCITE = "Pelt-Gripped Forceps"
 STRINGS.NAMES.TOOTHKIT_BONE = "Ivory Whetstone"
@@ -24,7 +24,6 @@ STRINGS.NAMES.GRINDSTONE_KIT = "Marble Grindstone Kit"
 STRINGS.NAMES.GRINDSTONE = "Marble Grindstone"
 
 STRINGS.NAMES.POCKETSAND = "Jar of Dirt"
-STRINGS.NAMES.UNEARTHED_SOIL = "Dirt"
 
 STRINGS.NAMES.WURROW_HANDSLOT = ""
 
